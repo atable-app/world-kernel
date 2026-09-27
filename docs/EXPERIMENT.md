@@ -93,9 +93,11 @@ comparison exists. Result: [experiments/continuation](experiments/continuation/R
 
 M3 asked whether recorded work is revisable without being rebuilt, and whether the difference is
 explainable. Five dimensions stayed separate, a consumed dependency forced re-evaluation, a recorded
-human decision was never recomputed, and every result carried an explanation. 15 of 24 pre-registered
-stories were covered, 4 partial, 5 not. Transfer to a second domain and human utility were never
-measured. Result: [experiments/incremental](experiments/incremental/README.md).
+human decision was never recomputed, and every result carried an explanation. 23 of the 24
+stories were covered and one is partial (M3-08: the impact engine carries no assurance
+channel). Transfer to a second domain was measured — a second adapter kept `src/impact`
+byte-identical — and human utility is unreachable, not unmeasured, because it needs a
+consented human observation. Result: [experiments/incremental](experiments/incremental/README.md).
 
 Then the comparison, in [ADR-003](ADR-003-measure-before-building.md). A full recompute, a competent
 application cache, the same application consuming UNI staleness, and the impact core were given the same
@@ -135,13 +137,20 @@ not funded, so M5 closes as a reduction on the same disc as the ones before it, 
 
 ## What would resume it
 
-Exactly one thing, and it is cheap. Re-run `cargo run --example incumbent_comparison` against a graph of
-wide nodes with many unconsumed fields. The consumed-facet advantage is the only measured advantage the
-removed engine had, and it grows with the number of unconsumed fields per node and with graph width. On
-this fixture it was 2 evaluator runs against 1630 lines. If a wider graph makes that saving scale past the
-line count, the reduction was wrong and the rules in `docs/IMPACT-CONTRACT.md` should be implemented
-properly rather than documented. Until that measurement exists, the reduction stands and the cost of being
-wrong is one example runner.
+The one cheap measurement named with the reduction has been run. ADR-004 executed
+`cargo run --example incumbent_comparison` against a graph of wide nodes — the advantage
+scaled linearly and unboundedly with fan-out, and the reversal case is recorded in the
+`reversalCase` section of [experiments/incumbent-comparison/results.json](experiments/incumbent-comparison/results.json) — and on that condition the reduction was reversed
+and M4 resumed at tranche 1 only. The cost of being wrong turned out to be one example
+runner.
 
-Nothing else resumes it. A second domain, a human path, an external effect ledger and the A-B-A
-filesystem race are all unbuilt, unauthorized and not worth resuming on the evidence in this repository.
+What would resume it now are the two checks [ADR-005](ADR-005-reduce-to-the-representation.md)
+names with the M5 reduction: a consumer outside `tests/` that consumes a capsule and gets
+transfer wrong where the planner got it right, and a wider corpus that separates the Kernel
+from the competent baseline. Both are an import and a command, neither needs a milestone,
+and neither is deferred behind one. Both are unobserved today rather than passed.
+
+Nothing else resumes it. A second domain is measured rather than absent; a human path needs
+a consented observation; an external effect dispatcher stays forbidden; and the A-B-A
+window is a limitation SPEC asks to eliminate, tied to the plan's sealed subject profile
+that remains unimplemented and unauthorized.
