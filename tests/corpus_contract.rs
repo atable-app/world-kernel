@@ -3,9 +3,12 @@
 //! these tests feed the parser deliberate damage rather than trusting the
 //! checked-in file to be well formed.
 
-mod support;
+// Only the corpus model is needed here, so this test target does not pull in the
+// three benchmark systems.
+#[path = "support/admission_case.rs"]
+mod admission_case;
 
-use support::admission_case::{
+use admission_case::{
     AdmissionCase, BenchmarkCode, CaseFamily, Corpus, CorpusError, ExpectedStatus,
     unsafe_candidate_path,
 };
@@ -20,7 +23,7 @@ fn admission_case_literal() -> String {
 }
 
 fn parse_case(text: &str) -> Result<AdmissionCase, CorpusError> {
-    support::admission_case::parse_case(text.trim(), 1)
+    admission_case::parse_case(text.trim(), 1)
 }
 
 fn assert_rejected_for(detail: &str, text: &str) {
@@ -55,10 +58,7 @@ fn a_well_formed_case_deserializes_into_named_types() {
     assert_eq!(case.current.candidate_contents_after_assurance, None);
     assert_eq!(case.proposal.intent.kind, "publishCandidate");
     assert_eq!(case.proposal.reads[0].reference, "requirement:demo");
-    assert_eq!(
-        case.assurance.mode,
-        support::admission_case::AssuranceMode::Accepted
-    );
+    assert_eq!(case.assurance.mode, admission_case::AssuranceMode::Accepted);
     assert_eq!(case.fault, None);
 }
 
@@ -242,7 +242,7 @@ fn no_committed_case_declares_an_unimplemented_capability() {
 
 #[test]
 fn every_family_declares_its_own_implementation_status_honestly() {
-    use support::admission_case::UnsupportedCapability;
+    use admission_case::UnsupportedCapability;
     let corpus = Corpus::load_checked().unwrap();
 
     for case in &corpus.cases {
@@ -288,7 +288,7 @@ fn every_kernel_rejection_code_has_a_matching_benchmark_code() {
         let parsed: BenchmarkCode = serde_json::from_value(kernel_name).unwrap();
         assert_eq!(parsed, BenchmarkCode::from(&code));
 
-        let benchmark_name = serde_json::to_value(&parsed).unwrap();
+        let benchmark_name = serde_json::to_value(parsed).unwrap();
         let benchmark_name = benchmark_name.as_str().unwrap();
         assert_eq!(parsed.as_str(), benchmark_name);
     }

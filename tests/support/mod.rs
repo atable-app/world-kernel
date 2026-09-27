@@ -7,3 +7,8 @@
 //! Nothing in here may be imported by `src/`.
 
 pub mod admission_case;
+pub mod assurance;
+pub mod baseline_a;
+pub mod baseline_b;
+pub mod harness;
+pub mod system_c;

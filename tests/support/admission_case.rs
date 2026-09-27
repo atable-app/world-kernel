@@ -186,7 +186,7 @@ pub enum FaultPoint {
 /// every Kernel `RejectionCode`, every `UniCollectorError::code()` value the
 /// corpus provokes, and `UNSUPPORTED` for a declared capability that no system
 /// implements.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum BenchmarkCode {
     UnsupportedSchema,
@@ -502,19 +502,13 @@ impl Corpus {
             });
         }
 
+        // Only a deliberate producer error may publish bytes its assurance
+        // never covered. Every other case must declare the digest the workspace
+        // actually holds, so a stale digest can never hide inside an unrelated
+        // rejection.
         let breaks_binding = matches!(
             case.expected.code,
-            Some(BenchmarkCode::AssessmentMismatch)
-                | Some(BenchmarkCode::CandidateMismatch)
-                | Some(BenchmarkCode::StaleDependency)
-                | Some(BenchmarkCode::PatchConflict)
-                | Some(BenchmarkCode::Unauthorized)
-                | Some(BenchmarkCode::UntrustedAssessmentProvider)
-                | Some(BenchmarkCode::IncompleteView)
-                | Some(BenchmarkCode::UnsupportedSchema)
-                | Some(BenchmarkCode::WrongWorld)
-                | Some(BenchmarkCode::IdempotencyConflict)
-                | Some(BenchmarkCode::StaleWorld)
+            Some(BenchmarkCode::AssessmentMismatch) | Some(BenchmarkCode::CandidateMismatch)
         );
         if !breaks_binding && proposal.candidate.digest != case.expected_digest() {
             errors.push(CorpusError::CandidateDigest {
