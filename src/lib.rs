@@ -2,6 +2,7 @@
 
 pub mod adapters;
 pub mod continuation;
+pub mod impact;
 mod kernel;
 mod model;
 

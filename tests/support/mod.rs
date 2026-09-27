@@ -16,5 +16,7 @@ pub mod baseline_a;
 pub mod baseline_b;
 #[path = "harness.rs"]
 pub mod harness;
+#[path = "impact_fixture.rs"]
+pub mod impact_fixture;
 #[path = "system_c.rs"]
 pub mod system_c;
