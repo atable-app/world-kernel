@@ -249,4 +249,9 @@ impl ReadJournal for AppJournal<'_> {
     fn branch(&mut self) -> Option<String> {
         None
     }
+
+    /// The application records no branches: it caches whole values, and a
+    /// conditional read is already a different read set to it. Declaring that
+    /// here keeps the trait honest rather than letting a default hide it.
+    fn declare_branch(&mut self, _branch: &str) {}
 }

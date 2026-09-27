@@ -248,9 +248,8 @@ fn an_unobserved_capability_is_additional_evidence_and_never_a_verdict() {
     assert_ne!(plan.status, TransferStatus::Incompatible);
     assert_eq!(plan.delta.unknown.len(), 1);
     assert_eq!(plan.delta.unknown[0].key, "capability.app_intent_schema_x");
-    assert_eq!(
+    assert!(
         plan.delta.different.is_empty(),
-        true,
         "an unknown is not a difference"
     );
     assert!(

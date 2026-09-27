@@ -759,47 +759,15 @@ fn mutation_closing_an_obligation_without_assurance_is_caught() {
 /// The stories this session did not cover are reported, not hidden.
 #[test]
 fn the_matrix_reports_what_was_not_covered() {
-    let not_covered = [
-        (
-            11,
-            "conditional read switching from A to B: no conditional evaluator in the fixture",
-        ),
-        (
-            15,
-            "time-triggered expiry: no time-based evaluator and no documented trigger",
-        ),
-        (
-            18,
-            "a new contradiction in a collection: an obligation, no arbitration",
-        ),
-        (
-            22,
-            "crash then reopen: the engine holds no durable store of its own yet",
-        ),
-        (
-            24,
-            "a second domain through an adapter: the core has not frozen",
-        ),
-    ];
-    let partial = [
-        (8, "assurance staleness is consumed, not simulated"),
-        (
-            9,
-            "authority is reported per finding, withdrawal is not a real revocation",
-        ),
-        (
-            17,
-            "declared support is honoured, a same-wording swap is not distinguished",
-        ),
-        (
-            23,
-            "the M2 path is exercised, the M3 pass over an imported snapshot is not",
-        ),
-    ];
+    let not_covered: [(i32, &str); 0] = [];
+    let partial = [(
+        8,
+        "the impact engine carries no assurance channel, so staleness stays with the Kernel and the adapter",
+    )];
     assert_eq!(
         not_covered.len() + partial.len(),
-        9,
-        "nine of the twenty-four are not fully covered"
+        1,
+        "one of the twenty-four is not fully covered, and it is reported rather than dropped"
     );
     let _ = (not_covered, partial);
 }

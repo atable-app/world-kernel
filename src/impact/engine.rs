@@ -63,6 +63,9 @@ pub trait ReadJournal {
     fn read_query(&mut self, query: &Query) -> Result<Vec<(NodeId, u64)>, Error>;
     /// The branch a conditional read took, so a switch publishes a new read set.
     fn branch(&mut self) -> Option<String>;
+    /// Declares the branch this run took, so the record shows which side of a
+    /// conditional was read rather than leaving it implied by the read set.
+    fn declare_branch(&mut self, branch: &str);
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -204,6 +207,10 @@ impl ReadJournal for SnapshotJournal<'_> {
     fn branch(&mut self) -> Option<String> {
         self.branches.last().cloned()
     }
+
+    fn declare_branch(&mut self, branch: &str) {
+        self.branches.push(branch.to_owned());
+    }
 }
 
 /// A node that has been evaluated, with its record.
@@ -260,6 +267,7 @@ fn evaluate_one(
             reads,
             queries: journal.queries.clone(),
             output: output.clone(),
+            branches: journal.branches.clone(),
             assurance_refs: Vec::new(),
             outcome: Outcome::Completed,
             executed: true,
@@ -375,6 +383,12 @@ pub struct Revised {
     pub obligations: Vec<Obligation>,
     pub evaluations: usize,
     pub reused: usize,
+    /// The records as they stand after this pass, for every target it examined.
+    ///
+    /// Without them a second pass has nothing to start from and an application can only ever revise
+    /// one hop. They are the whole of the engine's durable state, which is why a crash test can
+    /// persist exactly these and nothing else.
+    pub records: BTreeMap<NodeId, EvaluationRecord>,
 }
 
 impl Revised {
@@ -448,16 +462,42 @@ pub fn revise(
             // engine recomputes. A decision whose declared support moved becomes
             // work for a human; nothing is substituted.
             let support = declared_support(target, id);
+            // A decision can also change what it declares without any of it moving. Comparing the
+            // two declarations is the only thing that sees a swap, because every other byte of the
+            // decision is allowed to be identical.
+            let previously = declared_support(base, id);
+            let replaced: Vec<NodeId> = support
+                .iter()
+                .filter(|node| !previously.contains(node))
+                .chain(previously.iter().filter(|node| !support.contains(node)))
+                .cloned()
+                .collect();
             let moved_support: Vec<&NodeId> = support
                 .iter()
                 .filter(|node| !frontier.get(*node).map(Vec::is_empty).unwrap_or(true))
                 .collect();
-            let _ = &moved_support;
-            let (disposition, code, obligation) = if moved_support.is_empty() {
+            let (disposition, code, obligation, path, condition) = if !replaced.is_empty() {
+                (
+                    Disposition::NeedsHumanReview,
+                    "recorded_decision_support_replaced",
+                    Some(Obligation::new(
+                        id,
+                        target.revision,
+                        "recorded_decision_support_replaced",
+                        WorkType::HumanReview,
+                        Profile::ClosedDeterministic,
+                        "the declared support changed; only a person can say what the decision now rests on",
+                    )),
+                    replaced,
+                    "the decision says what it said, but it no longer names the same support",
+                )
+            } else if moved_support.is_empty() {
                 (
                     Disposition::UnchangedInScope,
                     "no_change_reaches_this_object",
                     None,
+                    Vec::new(),
+                    "nothing that could reach this object moved",
                 )
             } else {
                 (
@@ -471,18 +511,13 @@ pub fn revise(
                         Profile::ClosedDeterministic,
                         "a human decides again; the engine does not substitute a new decision",
                     )),
+                    moved_support.iter().map(|node| (*node).clone()).collect(),
+                    "the support this decision relied on moved; the decision itself is untouched",
                 )
             };
-            let mut explanation = Explanation::new(
-                code,
-                id,
-                if moved_support.is_empty() {
-                    "nothing that could reach this object moved"
-                } else {
-                    "the support this decision relied on moved; the decision itself is untouched"
-                },
-            );
-            explanation.path = moved_support.iter().map(|node| (*node).clone()).collect();
+            let untouched = matches!(disposition, Disposition::UnchangedInScope);
+            let mut explanation = Explanation::new(code, id, condition);
+            explanation.path = path;
             if let Some(obligation) = obligation {
                 obligations.push(obligation);
             }
@@ -493,13 +528,13 @@ pub fn revise(
                     history: HistoryState::Recorded {
                         revision: base.revision,
                     },
-                    currency: if moved_support.is_empty() {
+                    currency: if untouched {
                         Currency::Reusable
                     } else {
                         Currency::NeedsRevalidation
                     },
                     business_verdict: None,
-                    authority: if moved_support.is_empty() {
+                    authority: if untouched {
                         Authority::Authorized
                     } else {
                         Authority::Unresolved
@@ -576,6 +611,55 @@ pub fn revise(
         }
 
         if !evaluator_moved && read_moved.is_none() && query_moved.is_none() {
+            // A record carries the profile it was produced under, and it may only be carried
+            // forward under an authority the consumer still holds. Nothing has to have moved for a
+            // grant to be withdrawn, so this is checked here and not only when an evaluator runs.
+            // The record is neither reused nor re-run behind the consumer's back; the refusal is
+            // reported as one, and the record itself survives.
+            let allowed = trust
+                .allows(
+                    previous.evaluator.as_str(),
+                    previous.evaluator_version.as_str(),
+                )
+                .unwrap_or(Profile::Opaque);
+            if previous.profile.exceeds(allowed) {
+                findings.insert(
+                    id.clone(),
+                    Finding {
+                        subject: id.clone(),
+                        history: HistoryState::Recorded {
+                            revision: base.revision,
+                        },
+                        currency: Currency::NeedsRevalidation,
+                        business_verdict: previous.business_verdict(),
+                        authority: Authority::Refused,
+                        coverage: Coverage::of(previous.profile),
+                        disposition: Disposition::Blocked,
+                        output: Some(previous.output.clone()),
+                        explanation: {
+                            let mut explanation = Explanation::new(
+                                "recorded_authority_withdrawn",
+                                id,
+                                "the grant that allowed this evaluation is no longer held, so the record cannot be carried forward",
+                            );
+                            explanation.versions =
+                                vec![format!("{}@{}", id, previous.target_version)];
+                            explanation.path = path_to(id, &order);
+                            explanation
+                        },
+                    },
+                );
+                obligations.push(Obligation::new(
+                    id,
+                    target.revision,
+                    "recorded_authority_withdrawn",
+                    WorkType::HumanReview,
+                    Profile::Opaque,
+                    "the consumer re-grants the profile or abandons the record; the engine does neither",
+                ));
+                current_records.insert(id.clone(), previous.clone());
+                continue;
+            }
             // Nothing the consumer consumed moved. It is not re-evaluated at all.
             // Whether a change could reach it at all is a separate statement, and
             // the two are reported differently.
@@ -756,6 +840,7 @@ pub fn revise(
         obligations,
         evaluations,
         reused,
+        records: current_records,
     })
 }
 

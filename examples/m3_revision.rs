@@ -73,13 +73,13 @@ const STORIES: &[Story] = &[
         id: "M3-08",
         label: "same content, assurance turned stale",
         state: "partial",
-        detail: "assurance references are carried, not re-simulated",
+        detail: "the core carries no assurance channel; whether an assurance went stale is the Kernel's and the adapter's call, not the impact engine's",
     },
     Story {
         id: "M3-09",
         label: "current authority withdrawn",
-        state: "partial",
-        detail: "authority is reported per finding, no real revocation",
+        state: "covered",
+        detail: "tests/m3_coverage.rs",
     },
     Story {
         id: "M3-10",
@@ -90,8 +90,8 @@ const STORIES: &[Story] = &[
     Story {
         id: "M3-11",
         label: "conditional read switching from A to B",
-        state: "not_covered",
-        detail: "no conditional evaluator in the fixture",
+        state: "covered",
+        detail: "tests/m3_coverage.rs",
     },
     Story {
         id: "M3-12",
@@ -114,8 +114,8 @@ const STORIES: &[Story] = &[
     Story {
         id: "M3-15",
         label: "an observation expires on explicit time",
-        state: "not_covered",
-        detail: "no time-based evaluator, no documented trigger",
+        state: "covered",
+        detail: "tests/m3_coverage.rs",
     },
     Story {
         id: "M3-16",
@@ -126,14 +126,14 @@ const STORIES: &[Story] = &[
     Story {
         id: "M3-17",
         label: "support replaced, wording identical",
-        state: "partial",
-        detail: "declared support honoured, same-wording swap not distinguished",
+        state: "covered",
+        detail: "tests/m3_coverage.rs",
     },
     Story {
         id: "M3-18",
         label: "a new contradiction in a collection",
-        state: "not_covered",
-        detail: "an obligation only, no arbitration implemented",
+        state: "covered",
+        detail: "tests/m3_coverage.rs",
     },
     Story {
         id: "M3-19",
@@ -156,20 +156,20 @@ const STORIES: &[Story] = &[
     Story {
         id: "M3-22",
         label: "crash then reopen and retry",
-        state: "not_covered",
-        detail: "the engine holds no durable store of its own yet",
+        state: "covered",
+        detail: "tests/m3_recovery.rs, over an application-supplied SQLite store",
     },
     Story {
         id: "M3-23",
         label: "export, import, local change",
-        state: "partial",
-        detail: "the M2 path is exercised, the M3 pass over an imported snapshot is not",
+        state: "covered",
+        detail: "tests/m3_coverage.rs",
     },
     Story {
         id: "M3-24",
         label: "a second domain through an adapter",
-        state: "not_covered",
-        detail: "the core has not frozen",
+        state: "covered",
+        detail: "tests/m3_second_domain.rs, core frozen byte-for-byte",
     },
 ];
 
@@ -248,8 +248,8 @@ fn build_results() -> Value {
         "hypotheses": {
             "H3-Correction": "tested under a stated closed profile; the oracle is a fixed-point recompute that receives no record",
             "H3-Selectivite": "observed: evaluation is avoided where consumed facets hold, and the avoided count is reported",
-            "H3-Transfert": "not measured: the core has not frozen and no second adapter exists",
-            "H3-Utilite": "not measured: this requires a consented observation, and automated tests do not establish it",
+            "H3-Transfert": "measured: a message-routing domain over the same public surface, with src/impact byte-identical across the change that introduced it",
+            "H3-Utilite": "unreachable: this requires a consented human observation, and automated tests do not establish it; it is not approximated",
         },
         "coverage": {
             "total": STORIES.len(),
@@ -288,18 +288,18 @@ fn build_results() -> Value {
             "interpretation": "a line count is not human time, and a hand-designed suite is not a sample of a population",
         },
         "notTested": [
-            "H3-Transfert: no second domain, so no transfer cost and no claim of a useful abstraction",
-            "H3-Utilite: no consented observation, so human utility is not measured",
+            "H3-Transfert effort: the second domain measures frozen-core coverage and avoided work, not the time or the lines a person spends writing an adapter",
+            "H3-Utilite: unreachable rather than unmeasured, so no proxy for human utility is offered in its place",
+            "M3-08 assurance staleness: the impact engine holds no assurance channel, and granting it one would fold assurance into authority",
             "no R3, A3, B3 comparison: the equal-information comparison in the mandate is not run",
             "no IntentLane path: not inspected, so no capability is claimed there",
-            "no Kollio or Sarah scenario: the core has not frozen",
-            "no durable store of the engine's own, so crash and reopen is not covered",
-            "no time-triggered expiry, no conditional branch switching, no contradiction arbitration",
+            "no Kollio or Sarah scenario: the fixture stays invented, so no real domain is claimed",
+            "no durable store inside the engine: M3-22 is answered at an application-supplied store, and the engine's own persistence is still not measured",
         ],
         "continuation": {
             "note": "recorded per the mandate, and it is a recommendation rather than a decision",
             "statement": "capability demonstrated for C on a closed profile with an invented fixture; differential value not measured",
-            "towardM4": "not justified yet: the core has not frozen and a second domain has not been attempted",
+            "towardM4": "the reduction ADR-003 recommended on this result was reversed by ADR-004; M4 stands authorised to tranche 1 only, on the facet advantage measured elsewhere and not on anything recorded here",
         },
     })
 }

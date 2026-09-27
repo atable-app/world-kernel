@@ -13,7 +13,7 @@ reached the same observable result. The application avoided the same work as the
 On the seventh the core ran no evaluator where the application ran two, because a consumed facet is a
 narrower cache key than a whole value.
 
-That is one measured advantage, worth 2 evaluator runs, against 1542 lines of engine. Two of the three
+That is one measured advantage, worth 2 evaluator runs, against 1630 lines of engine. Two of the three
 pre-registered clauses were met and the third, "the core saves nothing the application could not already
 do", was false and recorded as false. The reduction was applied on the narrower ground that every other
 capability the core produced was unconsumed by the fixture, so the decision was not to keep paying for

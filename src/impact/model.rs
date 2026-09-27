@@ -316,6 +316,9 @@ pub struct EvaluationRecord {
     pub profile: Profile,
     pub reads: Vec<CapturedRead>,
     pub queries: Vec<QueryRead>,
+    /// The branches a conditional evaluation declared, in order. A read set
+    /// that switched sides is visible here and not only by diffing reads.
+    pub branches: Vec<String>,
     pub output: serde_json::Value,
     pub assurance_refs: Vec<String>,
     pub outcome: Outcome,

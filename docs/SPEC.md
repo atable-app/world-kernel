@@ -1,8 +1,9 @@
 # World Kernel specification
 
 Status: experimental, normative for this repository  
-Last verified: 2026-09-27, M3 measured and the reduction decided in
-[ADR-003](ADR-003-measure-before-building.md)  
+Last verified: 2026-09-27, M3 finished at 23 of 24 stories covered and 1 partial, and the reduction
+[ADR-003](ADR-003-measure-before-building.md) recommended on that result reversed by
+[ADR-004](ADR-004-the-facet-advantage-scales.md)  
 Active milestone: M5 tranche 1, transferable experience, pre-registered in
 [M5-PROTOCOL.md](M5-PROTOCOL.md). M4 tranche 1 is done and remains limited to the stories in
 [M4-PROTOCOL.md](M4-PROTOCOL.md).
@@ -554,7 +555,7 @@ This is the third continuation-gate outcome. It was decided on 2026-09-27 in
 portable continuity of work, rather than admission superiority. The M1 result above is preserved
 unchanged and is not restated in a more favourable form.
 
-## 8c. M3: incremental and explainable revision, since reduced away
+## 8c. M3: incremental and explainable revision
 
 This section describes the impact engine. It was reduced away by ADR-003 and restored by ADR-004 once the
 reversal case ADR-003 itself required fired. The consumer-side statement of the same rules is in
@@ -581,9 +582,14 @@ never recomputed: when its declared support moved, the engine produces a human-r
 changes nothing. Publication is a conservative compare-and-swap on the world revision, and finer validation
 is not assumed safe.
 
-M3 is not a platform. Graph termination, conditional branches, time-triggered expiry, contradiction
-arbitration and a durable store for the engine itself are not covered by the recorded run, and the transfer
-hypothesis to a second domain is not tested at all.
+M3 is not a platform. Its recorded run covers graph termination, conditional branches, time-triggered
+expiry and contradiction arbitration, and M3-24 applies the frozen core to a message-routing domain with
+`src/impact` byte-identical across the change. Three things stay outside it. Assurance staleness is
+unreachable here, because the engine holds no assurance channel and granting it one would fold assurance
+into authority. The engine's own durable store is unmeasured: M3-22 is answered at an application-supplied
+store, so the question of what the engine itself persists is still open. And H3-Utilite needs a consented
+human observation, which automated tests do not establish, so it is recorded as unreachable rather than
+approximated by a proxy.
 
 ## 8e. M4 tranche 1: branch convergence
 
@@ -788,8 +794,8 @@ that result.
 
 | Condition | Status | Evidence |
 |---|---|---|
-| a competent application transaction provides the same safety, replay and handoff value at lower total integration cost | **partly fired** | fired for admission safety: 80 of 80 cases agree, no decision-code disagreement, and the portable envelope prevented no error class the application did not also prevent. Fired again for incremental revision: 7 of 7 scenarios agree and the core bought 2 evaluator runs for 1542 lines. Replay and handoff value remain **unmeasured**, not disproved, because no consumer ever consumed a receipt. |
-| a second adapter requires domain rules inside the Kernel | not observed | one domain only. The Kollio adapter returns a reassessment frontier and no domain condition reaches `Kernel::submit`. A second domain was never attempted. |
+| a competent application transaction provides the same safety, replay and handoff value at lower total integration cost | **partly fired** | fired for admission safety: 80 of 80 cases agree, no decision-code disagreement, and the portable envelope prevented no error class the application did not also prevent. Fired again for incremental revision: 7 of 7 scenarios agree and the core bought 2 evaluator runs for 1630 lines. Replay and handoff value remain **unmeasured**, not disproved, because no consumer ever consumed a receipt. |
+| a second adapter requires domain rules inside the Kernel | not observed | the Kollio adapter returns a reassessment frontier and no domain condition reaches `Kernel::submit`, so that surface still has one domain. A second domain was attempted over the impact surface at M3-24 (`tests/m3_second_domain.rs`) and `src/impact` stayed byte-identical across the change that added it. |
 | exact subject binding cannot be kept through the real application path | not observed | the collector ran UNI's real CLI and bound an exact candidate digest, and the live contract test passes. |
 | an operation advertised as mediated remains writable through an equivalent unmediated path | untested | no mediated operation was advertised, so the condition was never reachable. |
 | users do not reuse receipts, reassessment frontiers or handoff records | untested | no human ran the system. This condition is not answerable in this repository at all. |

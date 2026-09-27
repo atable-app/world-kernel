@@ -83,12 +83,16 @@ build.
 | `no_evaluator_registered` | no evaluator exists for a node that needs one |
 | `no_evaluator_for_changed_consumer` | a changed consumer has no evaluator, so its consumers are affected |
 | `recorded_decision_support_moved` | a recorded decision's declared support moved, so a human must look |
+| `recorded_decision_support_replaced` | a recorded decision now names different support while its wording stayed the same, so a human must say what it rests on |
+| `recorded_authority_withdrawn` | the grant that allowed a recorded evaluation is no longer held, so the record cannot be carried forward |
 
 ### Obligations
 
 | Code | Work owed |
 |---|---|
 | `recorded_decision_support_moved` | `HumanReview` |
+| `recorded_decision_support_replaced` | `HumanReview` |
+| `recorded_authority_withdrawn` | `HumanReview` |
 | `no_recorded_evaluation` | `PureRecompute` |
 | `no_evaluator_for_changed_consumer` | `MissingReference` |
 

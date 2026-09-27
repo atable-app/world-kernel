@@ -25,6 +25,10 @@ pub mod harness;
 pub mod impact_fixture;
 #[path = "incumbent_comparison.rs"]
 pub mod incumbent_comparison;
+#[path = "m3_stories.rs"]
+pub mod m3_stories;
+#[path = "second_domain.rs"]
+pub mod second_domain;
 #[path = "system_c.rs"]
 pub mod system_c;
 #[path = "transfer_fixture.rs"]

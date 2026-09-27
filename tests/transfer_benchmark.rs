@@ -280,9 +280,8 @@ fn the_competent_baseline_ties_the_kernel_and_the_tie_is_recorded() {
             disagreements.push((case.name.clone(), plan.status, baseline.status));
         }
     }
-    assert_eq!(
+    assert!(
         disagreements.is_empty(),
-        true,
         "a competent baseline must not disagree, and a disagreement means one of them is wrong: {disagreements:?}"
     );
     assert_eq!(compared, 30, "30 closed cases across four families");

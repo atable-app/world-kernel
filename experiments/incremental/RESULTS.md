@@ -6,7 +6,7 @@ Protocol: `docs/M3-PROTOCOL.md`. Decision record: `docs/ADR-002-revisable-work.m
 
 ## Coverage
 
-15 of 24 pre-registered stories are covered, 4 partial, 5 not covered. A story that is not covered is listed, never dropped.
+23 of 24 pre-registered stories are covered, 1 partial, 0 not covered. A story that is not covered is listed, never dropped.
 
 | id | story | state | detail |
 |---|---|---|---|
@@ -17,23 +17,23 @@ Protocol: `docs/M3-PROTOCOL.md`. Decision record: `docs/ADR-002-revisable-work.m
 | "M3-05" | input changed, output identical | covered | tests/incremental_revision.rs |
 | "M3-06" | diamond with two affected parents | covered | tests/incremental_revision.rs |
 | "M3-07" | a presentation-only projection | covered | tests/incremental_revision.rs |
-| "M3-08" | same content, assurance turned stale | partial | assurance references are carried, not re-simulated |
-| "M3-09" | current authority withdrawn | partial | authority is reported per finding, no real revocation |
+| "M3-08" | same content, assurance turned stale | partial | the core carries no assurance channel; whether an assurance went stale is the Kernel's and the adapter's call, not the impact engine's |
+| "M3-09" | current authority withdrawn | covered | tests/m3_coverage.rs |
 | "M3-10" | evaluator or comparator version changed | covered | tests/incremental_revision.rs |
-| "M3-11" | conditional read switching from A to B | not_covered | no conditional evaluator in the fixture |
+| "M3-11" | conditional read switching from A to B | covered | tests/m3_coverage.rs |
 | "M3-12" | a collection gains a relevant member | covered | tests/m3_confirmation.rs |
 | "M3-13" | an observed absence becomes a value | covered | tests/incremental_revision.rs |
 | "M3-14" | a read entry is deleted | covered | tests/m3_confirmation.rs |
-| "M3-15" | an observation expires on explicit time | not_covered | no time-based evaluator, no documented trigger |
+| "M3-15" | an observation expires on explicit time | covered | tests/m3_coverage.rs |
 | "M3-16" | a value returns to an earlier one | covered | tests/incremental_revision.rs |
-| "M3-17" | support replaced, wording identical | partial | declared support honoured, same-wording swap not distinguished |
-| "M3-18" | a new contradiction in a collection | not_covered | an obligation only, no arbitration implemented |
+| "M3-17" | support replaced, wording identical | covered | tests/m3_coverage.rs |
+| "M3-18" | a new contradiction in a collection | covered | tests/m3_coverage.rs |
 | "M3-19" | partial or opaque declared reads | covered | tests/m3_confirmation.rs |
 | "M3-20" | executable cycle versus narrative cycle | covered | tests/m3_confirmation.rs |
 | "M3-21" | a concurrent change before publication | covered | tests/m3_confirmation.rs |
-| "M3-22" | crash then reopen and retry | not_covered | the engine holds no durable store of its own yet |
-| "M3-23" | export, import, local change | partial | the M2 path is exercised, the M3 pass over an imported snapshot is not |
-| "M3-24" | a second domain through an adapter | not_covered | the core has not frozen |
+| "M3-22" | crash then reopen and retry | covered | tests/m3_recovery.rs, over an application-supplied SQLite store |
+| "M3-23" | export, import, local change | covered | tests/m3_coverage.rs |
+| "M3-24" | a second domain through an adapter | covered | tests/m3_second_domain.rs, core frozen byte-for-byte |
 
 ## Hypotheses
 
@@ -41,8 +41,8 @@ Protocol: `docs/M3-PROTOCOL.md`. Decision record: `docs/ADR-002-revisable-work.m
 |---|---|
 | H3-Correction | tested under a stated closed profile; the oracle is a fixed-point recompute that receives no record |
 | H3-Selectivite | observed: evaluation is avoided where consumed facets hold, and the avoided count is reported |
-| H3-Transfert | not measured: the core has not frozen and no second adapter exists |
-| H3-Utilite | not measured: this requires a consented observation, and automated tests do not establish it |
+| H3-Transfert | measured: a message-routing domain over the same public surface, with src/impact byte-identical across the change that introduced it |
+| H3-Utilite | unreachable: this requires a consented human observation, and automated tests do not establish it; it is not approximated |
 
 ## The model
 
@@ -60,9 +60,9 @@ Interface: why(node), why_reused(node).
 
 M1 and M2 costs are historical and are not summed with M3
 
-Production: 1574 lines across src/impact/model.rs, src/impact/engine.rs, src/impact/mod.rs.
+Production: 1662 lines across src/impact/model.rs, src/impact/engine.rs, src/impact/mod.rs.
 
-Test evidence: 1773 lines across tests/incremental_revision.rs, tests/m3_confirmation.rs, tests/support/impact_fixture.rs.
+Test evidence: 1741 lines across tests/incremental_revision.rs, tests/m3_confirmation.rs, tests/support/impact_fixture.rs.
 
 Reproduce with:
 
@@ -75,13 +75,13 @@ a line count is not human time, and a hand-designed suite is not a sample of a p
 
 ## Not tested
 
-- H3-Transfert: no second domain, so no transfer cost and no claim of a useful abstraction
-- H3-Utilite: no consented observation, so human utility is not measured
+- H3-Transfert effort: the second domain measures frozen-core coverage and avoided work, not the time or the lines a person spends writing an adapter
+- H3-Utilite: unreachable rather than unmeasured, so no proxy for human utility is offered in its place
+- M3-08 assurance staleness: the impact engine holds no assurance channel, and granting it one would fold assurance into authority
 - no R3, A3, B3 comparison: the equal-information comparison in the mandate is not run
 - no IntentLane path: not inspected, so no capability is claimed there
-- no Kollio or Sarah scenario: the core has not frozen
-- no durable store of the engine's own, so crash and reopen is not covered
-- no time-triggered expiry, no conditional branch switching, no contradiction arbitration
+- no Kollio or Sarah scenario: the fixture stays invented, so no real domain is claimed
+- no durable store inside the engine: M3-22 is answered at an application-supplied store, and the engine's own persistence is still not measured
 
 ## Continuation
 
@@ -89,4 +89,4 @@ recorded per the mandate, and it is a recommendation rather than a decision
 
 capability demonstrated for C on a closed profile with an invented fixture; differential value not measured
 
-not justified yet: the core has not frozen and a second domain has not been attempted
+the reduction ADR-003 recommended on this result was reversed by ADR-004; M4 stands authorised to tranche 1 only, on the facet advantage measured elsewhere and not on anything recorded here

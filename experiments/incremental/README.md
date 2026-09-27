@@ -15,11 +15,15 @@ still be reused and on what basis, what is now necessary, and why each object is
 
 | Piece | Where |
 |---|---|
-| The model: nodes, versions, captured reads, query reads, the five dimensions, obligations, explanations | `tests/support/impact_core/model.rs` |
-| The engine: plan, re-evaluate, stop propagation, publish, plus the independent oracle | `tests/support/impact_core/engine.rs` |
+| The model: nodes, versions, captured reads, query reads, the five dimensions, obligations, explanations | `src/impact/model.rs` |
+| The engine: plan, re-evaluate, stop propagation, publish, plus the independent oracle | `src/impact/engine.rs` |
+| The public surface the fixtures are written against | `src/impact/mod.rs` |
 | The closed arithmetic fixture and its evaluators | `tests/support/impact_fixture.rs` |
 | The equivalence property and the arithmetic mutations | `tests/incremental_revision.rs` |
 | The confirmation matrix and the mutation checks | `tests/m3_confirmation.rs` |
+| Conditional reads, explicit expiry, contradiction, authority withdrawal, import | `tests/m3_coverage.rs` |
+| Crash, reopen and retry over an application-supplied store | `tests/m3_recovery.rs` |
+| A second domain through an adapter, and the frozen-core check | `tests/m3_second_domain.rs` |
 | The recorded result and its generated human view | `results.json`, `RESULTS.md` |
 
 ## Commands
@@ -29,6 +33,9 @@ cargo run --example m3_revision                    # record
 cargo run --example m3_revision -- --render-only   # RESULTS.md from results.json
 cargo test --test incremental_revision              # the property and the mutations
 cargo test --test m3_confirmation                  # the story matrix
+cargo test --test m3_coverage                      # the stories the first two miss
+cargo test --test m3_recovery                      # crash then reopen and retry
+cargo test --test m3_second_domain                 # the second domain and the frozen core
 ```
 
 ## The oracle is structurally independent
@@ -91,17 +98,21 @@ Evaluation counts are reported next to the reference full recompute, so an avoid
 merely re-ran everything are never confused. The ratio is never converted into tokens, euros or unobserved
 human time.
 
-## What this session did not establish
+## What this run did not establish
 
-- **H3-Transfert.** No second domain, so no transfer cost and no claim that the abstraction is useful.
-- **H3-Utilite.** No consented observation. Human utility is not measured, and automated tests do not
-  establish it.
-- **No R3, A3, B3 comparison.** The equal-information comparison the mandate asks for is not run, so
+- **H3-Transfert effort.** The second domain measures that `src/impact` stayed byte-identical and that a
+  pass over it agrees with a full recompute of it. It does not measure how long or how many lines a person
+  spends writing an adapter, so no claim about transfer cost follows.
+- **H3-Utilite.** Unreachable, not unmeasured: it needs a consented human observation, and automated tests
+  do not establish it. No proxy is offered in its place.
+- **Assurance staleness (M3-08), one story partial.** The impact engine carries no assurance channel, so
+  whether an assurance went stale stays with the Kernel and the adapter. Granting the engine that channel
+  would fold assurance into authority, which the contract forbids.
+- **The engine's own durable store.** M3-22 is answered at an application-supplied SQLite store. What the
+  engine itself persists across a crash is still unmeasured.
+- **No R3, A3, B3 comparison.** The equal-information comparison the mandate asks for is not run here, so
   differential value is unmeasured and the fixture cannot speak to it.
 - **No IntentLane path, no Kollio or Sarah scenario.** Not inspected, so no capability is claimed there.
-- **Five of twenty-four stories not covered and four partial**, listed in `RESULTS.md` with the reason. The
-  uncovered ones are a conditional branch, time-triggered expiry, contradiction arbitration, a durable store
-  for the engine itself, and the second domain.
 
 ## The fixture is not a product
 

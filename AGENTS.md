@@ -32,21 +32,23 @@ Kollio.
 - M2 is implemented and recorded at `bc29a22`: `docs/M2-PROTOCOL.md` and `experiments/continuation/`.
   All 24 pre-registered sequences are covered for C2, 4 of them for C2 only because A2 and B2 have no
   export of their own yet, so no M2 cost comparison exists.
-- M3 is recorded at `docs/M3-PROTOCOL.md` and `experiments/incremental/`. 15 of the 24 stories are
-  covered, 4 are partial and 5 are not covered. H3-Transfert and H3-Utilite are not measured.
+- M3 is recorded at `docs/M3-PROTOCOL.md` and `experiments/incremental/`. 23 of the 24 stories are
+  covered and 1 is partial: M3-08 stays partial because the impact engine carries no assurance channel
+  and granting it one would fold assurance into authority. H3-Transfert is measured at `tests/m3_second_domain.rs`
+  against a frozen `src/impact`; H3-Utilite is unreachable, because it needs a consented human observation.
 - The equal-information comparison ran on 2026-09-27 and is recorded in
   `experiments/incumbent-comparison/`, produced by `cargo run --example incumbent_comparison`. R3, A3, B3
   and C3 reached the same observable result on all 7 scenarios. A3 and B3 avoided the same work as C3 on
   6 of them; on the 7th the core ran 0 evaluators where the application ran 2, because a consumed facet is
   a narrower cache key than a whole value.
-- The reduce-or-stop decision is recorded in `docs/ADR-003-measure-before-building.md`. **There is no M4.**
-  Two of the three pre-registered clauses are met; the clause "the core saves nothing the application could
+- The reduce-or-stop decision is recorded in `docs/ADR-003-measure-before-building.md`, which recommends
+  that there be no M4. Two of the three pre-registered clauses are met; the clause "the core saves nothing the application could
   not already do" is false and stays recorded as false. The reduction is recommended on the narrower ground
   that every other capability the core produces is unconsumed by the fixture. Its reversal case is stated
   with it: on a graph of wide nodes the facet saving grows, and one example runner re-measures it.
 - The reduction decided in ADR-003 was applied and then **reversed** on 2026-09-27 by ADR-004, because the
   reversal case ADR-003 itself required fires: the consumed-facet advantage is linear in the number of
-  consumers and unbounded, 10 000 avoided evaluations at a fan-out of 10 000 against 1542 lines. One
+  consumers and unbounded, 10 000 avoided evaluations at a fan-out of 10 000 against 1630 lines. One
   unconsumed field is enough. `src/impact` is restored; the Kernel is admission, history, portable
   continuity, the impact engine and the adapters. The rules are in `docs/IMPACT-CONTRACT.md` and
   `the_contract_document_and_the_measured_codes_agree` still binds that document to the engine.

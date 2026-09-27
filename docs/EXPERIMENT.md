@@ -101,7 +101,7 @@ Then the comparison, in [ADR-003](ADR-003-measure-before-building.md). A full re
 application cache, the same application consuming UNI staleness, and the impact core were given the same
 seven scenarios. All four agreed on every observable result. The application avoided the same work as the
 core on six of the seven. On the seventh the core ran no evaluator where the application ran two, because
-a consumed facet is a narrower cache key than a whole value, and that cost 1542 lines. Result:
+a consumed facet is a narrower cache key than a whole value, and that cost 1630 lines. Result:
 [experiments/incumbent-comparison](experiments/incumbent-comparison/RESULTS.md).
 
 The reduction was applied. `src/impact` left the shipped surface, the rules it enforced were written down
@@ -120,14 +120,15 @@ recorded as false: the core does buy a consumed facet, worth 2 evaluator runs on
 fixture. The reduction rests on the narrower ground that every other capability the core produced was
 unconsumed by the fixture, so the decision was not to keep paying for capability nothing had measured.
 
-So there is no M4. This is the stopping point that M1, M2 and M3 did not have.
+That was the stopping point M1, M2 and M3 did not have. It did not hold: ADR-004 reversed the reduction
+on the same day, because the reversal case ADR-003 itself required fires, and M4 resumed at tranche 1 only.
 
 ## What would resume it
 
 Exactly one thing, and it is cheap. Re-run `cargo run --example incumbent_comparison` against a graph of
 wide nodes with many unconsumed fields. The consumed-facet advantage is the only measured advantage the
 removed engine had, and it grows with the number of unconsumed fields per node and with graph width. On
-this fixture it was 2 evaluator runs against 1542 lines. If a wider graph makes that saving scale past the
+this fixture it was 2 evaluator runs against 1630 lines. If a wider graph makes that saving scale past the
 line count, the reduction was wrong and the rules in `docs/IMPACT-CONTRACT.md` should be implemented
 properly rather than documented. Until that measurement exists, the reduction stands and the cost of being
 wrong is one example runner.
