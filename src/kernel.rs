@@ -5,11 +5,14 @@ use std::{
 
 use rusqlite::{Connection, OptionalExtension, TransactionBehavior, params};
 use serde::{Deserialize, Serialize};
-use sha2::{Digest, Sha256};
 
+use crate::continuation::{
+    AssuranceTransport, BodyStatus, ContinuationPackage, Head, Origin, RecordedAdmission,
+    RecordedTransition, ResourceRecord,
+};
 use crate::model::{
     EXPERIMENTAL_SCHEMA, GroundedChange, KernelError, ObjectState, Patch, Receipt, Rejection,
-    RejectionCode, SubmissionOutcome, WorldBootstrap, WorldSnapshot,
+    RejectionCode, SubmissionOutcome, WorldBootstrap, WorldSnapshot, digest_of_bytes,
 };
 
 pub trait AuthoritySource {
@@ -335,6 +338,20 @@ impl Kernel {
                 serde_json::to_string(&outcome)?
             ],
         )?;
+        // The declared change travels with its outcome, in the same transaction,
+        // so a continuation can answer what was admitted, under which rules and on
+        // which evidence. A recorded event alone cannot.
+        transaction.execute(
+            "INSERT INTO admissions(world_id, proposal_id, idempotency_key, change_json, outcome_json, event_sequence) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            params![
+                self.world,
+                change.proposal_id,
+                change.idempotency_key,
+                serde_json::to_string(change)?,
+                serde_json::to_string(&outcome)?,
+                event_sequence as i64,
+            ],
+        )?;
         transaction.commit()?;
 
         Ok(outcome)
@@ -372,6 +389,15 @@ impl Kernel {
     }
 
     pub fn replay(&self) -> Result<WorldSnapshot, KernelError> {
+        let transitions = self.recorded_history()?;
+        reduce_transitions(&transitions, &self.world).map_err(KernelError::CorruptState)
+    }
+
+    /// The recorded history, decoded into typed transitions.
+    ///
+    /// An unknown event type is a corrupt-state error, never an invitation to
+    /// guess at semantics.
+    fn recorded_history(&self) -> Result<Vec<RecordedTransition>, KernelError> {
         let mut statement = self.connection.prepare(
             "SELECT event_type, payload FROM events WHERE world_id = ?1 ORDER BY sequence",
         )?;
@@ -380,51 +406,188 @@ impl Kernel {
                 Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
             })?
             .collect::<Result<Vec<_>, _>>()?;
+        decode_history(&events)
+    }
 
-        let mut snapshot: Option<WorldSnapshot> = None;
-        for (event_type, payload) in events {
-            match event_type.as_str() {
-                "genesis" => {
-                    let genesis: GenesisEvent = serde_json::from_str(&payload)?;
-                    snapshot = Some(WorldSnapshot {
-                        world: genesis.world,
-                        revision: 0,
-                        objects: genesis.objects,
-                    });
-                }
-                "change_committed" => {
-                    let event: ChangeCommittedEvent = serde_json::from_str(&payload)?;
-                    let state = snapshot.as_mut().ok_or_else(|| {
-                        KernelError::CorruptState("change appears before genesis".into())
+    /// Writes a continuation package describing this World as recorded.
+    ///
+    /// The package is derived from the event log and the recorded admissions, so
+    /// two exports of an unchanged World are byte-identical. It carries no trust
+    /// configuration and no secret: a consumer receives its expected head over a
+    /// separate channel.
+    pub fn export_continuation(
+        &self,
+        path: impl AsRef<Path>,
+    ) -> Result<ContinuationPackage, KernelError> {
+        let path = path.as_ref();
+        let snapshot = self.snapshot()?;
+        let transitions = self.recorded_history()?;
+
+        let mut admissions_statement = self.connection.prepare(
+            "SELECT change_json, outcome_json FROM admissions WHERE world_id = ?1 ORDER BY proposal_id",
+        )?;
+        let admissions = admissions_statement
+            .query_map([&self.world], |row| {
+                let change: GroundedChange = serde_json::from_str(&row.get::<_, String>(0)?)
+                    .map_err(|error| {
+                        rusqlite::Error::FromSqlConversionFailure(
+                            0,
+                            rusqlite::types::Type::Text,
+                            Box::new(error),
+                        )
                     })?;
-                    state.revision += 1;
-                    for patch in event.patches {
-                        match patch {
-                            Patch::PutObject {
-                                reference,
-                                expected_revision,
-                                digest,
-                            } => {
-                                state.objects.insert(
-                                    reference,
-                                    ObjectState {
-                                        revision: expected_revision
-                                            .map_or(1, |revision| revision + 1),
-                                        digest,
-                                    },
-                                );
-                            }
-                        }
-                    }
-                }
-                other => {
-                    return Err(KernelError::CorruptState(format!(
-                        "unknown event type {other}"
-                    )));
-                }
-            }
+                let outcome: SubmissionOutcome = serde_json::from_str(&row.get::<_, String>(1)?)
+                    .map_err(|error| {
+                        rusqlite::Error::FromSqlConversionFailure(
+                            1,
+                            rusqlite::types::Type::Text,
+                            Box::new(error),
+                        )
+                    })?;
+                Ok(RecordedAdmission {
+                    proposal_id: change.proposal_id.clone(),
+                    idempotency_key: change.idempotency_key.clone(),
+                    actor: change.actor.clone(),
+                    base_revision: change.base_revision,
+                    intent: change.intent.clone(),
+                    candidate: change.candidate.clone(),
+                    reads: change.reads.clone(),
+                    coverage: change.coverage.clone(),
+                    assessments: change.assessments.clone(),
+                    patches: change.patches.clone(),
+                    outcome,
+                })
+            })?
+            .collect::<Result<Vec<_>, _>>()?;
+
+        let mut references: Vec<String> = admissions
+            .iter()
+            .flat_map(|admission| {
+                admission
+                    .assessments
+                    .iter()
+                    .map(|assessment| assessment.assessment_ref.clone())
+            })
+            .collect();
+        references.sort();
+        references.dedup();
+
+        let resources = snapshot
+            .objects
+            .iter()
+            .map(|(reference, state)| ResourceRecord {
+                reference: reference.clone(),
+                revision: state.revision,
+                digest: state.digest.clone(),
+                // The Kernel never stored object bytes, so a body is always
+                // declared absent rather than implied present.
+                body_status: BodyStatus::Absent,
+            })
+            .collect::<Vec<_>>();
+
+        let mut package = ContinuationPackage {
+            schema: crate::continuation::PACKAGE_SCHEMA.to_owned(),
+            reducer: crate::continuation::RECORDED_HISTORY_REDUCER.to_owned(),
+            world: self.world.clone(),
+            origin: Origin {
+                kind: "genesis".to_owned(),
+                world_revision: 0,
+                transition_count: transitions.len(),
+            },
+            head: Head {
+                world_revision: snapshot.revision,
+                event_sequence: transitions.len() as u64,
+                head_digest: String::new(),
+            },
+            transitions,
+            admissions,
+            resources,
+            assurance: AssuranceTransport {
+                kind: "uni-bundle-0.1".to_owned(),
+                verification: "reference-only".to_owned(),
+                bytes_available: false,
+                references,
+            },
+            declarations: vec![
+                "no trust configuration travels in this package; the expected head arrives out of band".to_owned(),
+                "object bodies are not included; a digest without accessible content does not reconstruct an artifact".to_owned(),
+                "assurance references are historical assertions by their issuer and are not re-verified here".to_owned(),
+            ],
+        };
+        package.head.head_digest = crate::continuation::head_digest(&package);
+
+        if let Some(parent) = path.parent()
+            && !parent.as_os_str().is_empty()
+        {
+            std::fs::create_dir_all(parent)?;
         }
-        snapshot.ok_or(KernelError::WorldNotFound)
+        std::fs::write(path, serde_json::to_vec(&package)?)?;
+        Ok(package)
+    }
+
+    /// Writes recorded transitions into this World, in order, in one transaction.
+    ///
+    /// This is historical reconstruction, not admission: no authority, no assurance
+    /// and no current context is consulted, because none of them were required for
+    /// the transitions to have been recorded. The projection is maintained by the
+    /// same reduction `replay` uses, so the two cannot drift, and the World's own
+    /// trusted provider set is left exactly as its owner configured it.
+    pub fn import_history(
+        &mut self,
+        transitions: &[RecordedTransition],
+    ) -> Result<(), KernelError> {
+        let projected =
+            reduce_transitions(transitions, &self.world).map_err(KernelError::CorruptState)?;
+        let transaction = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        // The trusted provider set belongs to whoever opened this World. A
+        // reconstruction advances its history and projection and touches nothing
+        // else: overwriting the trust configuration here would let a package
+        // influence who is believed.
+        transaction.execute(
+            "UPDATE worlds SET revision = ?2 WHERE world_id = ?1",
+            params![self.world, projected.revision],
+        )?;
+        transaction.execute("DELETE FROM events WHERE world_id = ?1", [&self.world])?;
+        transaction.execute("DELETE FROM objects WHERE world_id = ?1", [&self.world])?;
+        for (index, transition) in transitions.iter().enumerate() {
+            let (event_type, payload, revision) = match transition {
+                RecordedTransition::Genesis { world, objects } => (
+                    "genesis",
+                    serde_json::to_string(&GenesisEvent {
+                        world: world.clone(),
+                        objects: objects.clone(),
+                    })?,
+                    0u64,
+                ),
+                RecordedTransition::ChangeCommitted {
+                    proposal_id,
+                    candidate_digest,
+                    patches,
+                } => (
+                    "change_committed",
+                    serde_json::to_string(&ChangeCommittedEvent {
+                        proposal_id: proposal_id.clone(),
+                        candidate_digest: candidate_digest.clone(),
+                        patches: patches.clone(),
+                    })?,
+                    (index + 1) as u64,
+                ),
+            };
+            transaction.execute(
+                "INSERT INTO events(world_id, world_revision, event_type, payload) VALUES (?1, ?2, ?3, ?4)",
+                params![self.world, revision, event_type, payload],
+            )?;
+        }
+        for (reference, state) in &projected.objects {
+            transaction.execute(
+                "INSERT INTO objects(world_id, object_ref, revision, digest) VALUES (?1, ?2, ?3, ?4)",
+                params![self.world, reference, state.revision, state.digest],
+            )?;
+        }
+        transaction.commit()?;
+        Ok(())
     }
 
     fn prepare_schema(connection: &Connection) -> Result<(), KernelError> {
@@ -451,6 +614,16 @@ impl Kernel {
                payload TEXT NOT NULL,
                FOREIGN KEY(world_id) REFERENCES worlds(world_id)
              );
+             CREATE TABLE IF NOT EXISTS admissions (
+               world_id TEXT NOT NULL,
+               proposal_id TEXT NOT NULL,
+               idempotency_key TEXT NOT NULL,
+               change_json TEXT NOT NULL,
+               outcome_json TEXT NOT NULL,
+               event_sequence INTEGER NOT NULL,
+               PRIMARY KEY(world_id, proposal_id),
+               FOREIGN KEY(world_id) REFERENCES worlds(world_id)
+             );
              CREATE TABLE IF NOT EXISTS submissions (
                world_id TEXT NOT NULL,
                idempotency_key TEXT NOT NULL,
@@ -465,7 +638,49 @@ impl Kernel {
 }
 
 fn hex_digest(bytes: &[u8]) -> String {
-    format!("sha256:{:x}", Sha256::digest(bytes))
+    digest_of_bytes(bytes)
+}
+
+/// Decodes recorded event rows into typed transitions.
+///
+/// An unknown event type is a corrupt-state error. It is never an invitation to
+/// guess at semantics, and it is never skipped.
+fn decode_history(events: &[(String, String)]) -> Result<Vec<RecordedTransition>, KernelError> {
+    let mut transitions = Vec::with_capacity(events.len());
+    for (event_type, payload) in events {
+        match event_type.as_str() {
+            "genesis" => {
+                let genesis: GenesisEvent = serde_json::from_str(payload)?;
+                transitions.push(RecordedTransition::Genesis {
+                    world: genesis.world,
+                    objects: genesis.objects,
+                });
+            }
+            "change_committed" => {
+                let event: ChangeCommittedEvent = serde_json::from_str(payload)?;
+                transitions.push(RecordedTransition::ChangeCommitted {
+                    proposal_id: event.proposal_id,
+                    candidate_digest: event.candidate_digest,
+                    patches: event.patches,
+                });
+            }
+            other => {
+                return Err(KernelError::CorruptState(format!(
+                    "unknown event type {other}"
+                )));
+            }
+        }
+    }
+    Ok(transitions)
+}
+
+/// The single reduction used by both `replay` and a continuation reconstruction,
+/// so a rebuilt projection and a replayed one cannot drift apart.
+fn reduce_transitions(
+    transitions: &[RecordedTransition],
+    world: &str,
+) -> Result<WorldSnapshot, String> {
+    crate::continuation::reduce(transitions, world).map_err(|error| error.to_string())
 }
 
 fn rejected(code: RejectionCode, detail: String) -> SubmissionOutcome {

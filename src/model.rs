@@ -1,9 +1,19 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use thiserror::Error;
 
 pub const EXPERIMENTAL_SCHEMA: &str = "world-change/v0-experimental";
+
+/// The stable digest form used for every identifier in this protocol.
+pub fn digest_of_bytes(bytes: &[u8]) -> String {
+    format!("sha256:{:x}", Sha256::digest(bytes))
+}
+
+pub fn digest_of_str(text: &str) -> String {
+    digest_of_bytes(text.as_bytes())
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -152,4 +162,6 @@ pub enum KernelError {
     WorldNotFound,
     #[error("corrupt kernel state: {0}")]
     CorruptState(String),
+    #[error("export failed: {0}")]
+    Export(#[from] std::io::Error),
 }
