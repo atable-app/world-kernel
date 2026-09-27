@@ -1,8 +1,8 @@
 # World Kernel specification
 
 Status: experimental, normative for this repository  
-Last verified: 2026-09-27 at commit `5003e90`  
-Active milestone: M1 implemented and measured, continuation decision open
+Last verified: 2026-09-27 at commit `f686d9a`, M2 in progress  
+Active milestone: M2 portable continuity, decided in [ADR-001](ADR-001-portable-continuation.md)
 
 ## 1. Document contract
 
@@ -278,7 +278,7 @@ and user authority.
 | WK-11 | Proved for current schema and events | unknown schema and event type fail closed; the serialized envelope is asserted field by field against the checked-in schema |
 | WK-12 | Proved for current storage keys and admission | wrong World rejected and tables keyed by World; the corpus scope family runs a live sibling World |
 
-The standard suite has 56 passing tests and one ignored live UNI contract test. This count is
+The standard suite has 96 passing tests and one ignored live UNI contract test. This count is
 descriptive, not a product metric.
 
 ## 8. Active milestone M1: equal-information admission benchmark
@@ -546,8 +546,31 @@ for A, 55 for B over the same gate, and 730 for C, excluding the shared fixture 
 seam. This corpus never consumes a receipt, so the handoff and replay value of C is neither measured
 nor disproved.
 
-This is the third continuation-gate outcome, and choosing between reducing the project and funding M2
-is a human product decision, not an implementation step. The decision is open.
+This is the third continuation-gate outcome. It was decided on 2026-09-27 in
+[ADR-001](ADR-001-portable-continuation.md): M2 continues on a different and explicit hypothesis,
+portable continuity of work, rather than admission superiority. The M1 result above is preserved
+unchanged and is not restated in a more favourable form.
+
+## 8a. M2: portable continuity
+
+M2 asks whether a fresh consumer can reconstruct a work state and its justifications from exported
+data, then determine what can be resumed in its own current context, without depending on the
+producer's session, private database or paths. The matrix, the primary outcome and the criteria are
+pre-registered in [M2-PROTOCOL.md](M2-PROTOCOL.md), written before the first retained run. The recorded
+result is in [experiments/continuation](experiments/continuation/README.md).
+
+Two properties of the current implementation bound what any M2 claim may say:
+
+- The Kernel stores references, revisions and digests, never object bytes. A continuation package
+  reconstructs a projection and its history, and declares every resource body absent. A hash without
+  accessible content does not reconstruct an artifact.
+- The recorded event log did not carry what was declared, so a continuation could not have answered
+  under which rules and on which evidence a change was admitted. An `admissions` record now holds the
+  declared change beside its outcome, written in the same transaction, so the two cannot diverge.
+
+A continuation is never a self-authorization. The reconstructed World's trusted assurance providers
+are the consumer's own configuration, passed explicitly, and a reconstruction never writes them. Reading
+the past requires no trust; admitting anything new is a separate, explicit act.
 
 ## 9. Planned milestones after M1
 

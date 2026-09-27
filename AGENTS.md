@@ -6,7 +6,8 @@ Kollio.
 ## Read order
 
 1. Read `docs/SPEC.md` before planning or changing behavior. It is the normative product and protocol
-   specification, and it names the active milestone.
+   specification, and it names the active milestone. Read `docs/ADR-001-portable-continuation.md` and
+   `docs/M2-PROTOCOL.md` before working on continuation.
 2. Read `docs/BOUNDARIES.md` when work touches ownership, trust, UNI, Kollio or external state.
 3. Read `docs/EXPERIMENT.md` when work touches benchmarks, falsification or claims about value.
 4. Inspect the code and tests before relying on a document's description of current behavior. Running
@@ -20,9 +21,14 @@ Kollio.
   versioned corpus, three equal-information systems, three test-only input ablations, and a checked-in
   result in `experiments/admission-benchmark/`.
 - All ten M1 acceptance criteria pass. A, B and C reach the same decision in all 80 cases.
-- The M1 continuation decision is a human product decision and is open: the envelope bought no
-  admission correctness on this corpus, and whether the receipt, replay and handoff value justifies it
-  has not been decided.
+- The M1 continuation decision was taken on 2026-09-27 in `docs/ADR-001-portable-continuation.md`:
+  continue on portable continuity rather than on admission superiority. The M1 negative result stands
+  unchanged.
+- M2 is in progress at `docs/M2-PROTOCOL.md` and `experiments/continuation/`. 22 of the 24
+  pre-registered sequences are covered for C2; 4 of them need A2 and B2, which have no export of their
+  own yet, so no cost comparison exists.
+- Two current boundaries bound any M2 claim: the Kernel stores digests and never object bytes, and a
+  reconstruction cannot bootstrap its own trust.
 
 ## Working rules
 
@@ -32,7 +38,8 @@ Kollio.
   history mechanics only.
 - Preserve the distinction between impact and truth, assurance and authority, internal commit and
   external effect.
-- Add no external effect dispatcher before the M1 continuation gate passes.
+- Add no external effect dispatcher. The M1 gate was decided; M2 is an experiment, not a platform.
+- Never let a continuation package supply its own trust configuration or an expected head.
 - Use test-driven development for behavior changes. A failing contract test must precede the fix.
 - Update `docs/SPEC.md` when a durable requirement or milestone status changes. Update
   `docs/BOUNDARIES.md` when a proved guarantee or trust assumption changes. Do not create another
@@ -48,8 +55,13 @@ cargo test
 cargo clippy --all-targets --all-features -- -D warnings
 cargo fmt --check
 cargo run --example vertical_slice
+cargo run --example admission_benchmark
+cargo run --example m2_continuation
 jq empty schemas/world-change-v0.experimental.schema.json
 ```
+
+Record `UNI_BIN` as an absolute path when running the live UNI contract test. The runner executes the
+binary with the declared workspace as its working directory, so a relative path cannot resolve.
 
 When changing `ProcessUniRunner`, also build UNI and run the ignored live contract test as documented
 in `docs/SPEC.md`.

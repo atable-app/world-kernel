@@ -14,8 +14,8 @@ Corpus: 80 cases, 60 adverse, 20 benign, schema `"world-kernel-admission-case/v1
 - unjustified rejections among the benign cases: none
 - harness errors: none
 - unsupported cases by family: {"external_effect_uncertainty":2,"graph_termination":3,"negative_query_dependency":4}
-- timing: median 4621 us, p95 7307 us (descriptive only)
-- implementation: 392 lines across tests/support/baseline_a.rs
+- timing: median 6418 us, p95 14122 us (descriptive only)
+- implementation: 413 lines across tests/support/baseline_a.rs
 
 ### System B
 
@@ -24,7 +24,7 @@ Corpus: 80 cases, 60 adverse, 20 benign, schema `"world-kernel-admission-case/v1
 - unjustified rejections among the benign cases: none
 - harness errors: none
 - unsupported cases by family: {"external_effect_uncertainty":2,"graph_termination":3,"negative_query_dependency":4}
-- timing: median 4691 us, p95 8151 us (descriptive only)
+- timing: median 6659 us, p95 13583 us (descriptive only)
 - implementation: 55 lines across tests/support/baseline_b.rs
 
 ### System C
@@ -34,8 +34,8 @@ Corpus: 80 cases, 60 adverse, 20 benign, schema `"world-kernel-admission-case/v1
 - unjustified rejections among the benign cases: none
 - harness errors: none
 - unsupported cases by family: {"external_effect_uncertainty":2,"graph_termination":3,"negative_query_dependency":4}
-- timing: median 5916 us, p95 9291 us (descriptive only)
-- implementation: 730 lines across src/kernel.rs, src/model.rs, tests/support/system_c.rs
+- timing: median 9723 us, p95 19541 us (descriptive only)
+- implementation: 957 lines across src/kernel.rs, src/model.rs, tests/support/system_c.rs
 
 ## Decision-code disagreements between A, B and C
 
@@ -57,6 +57,6 @@ None. All 80 cases produced the expected decision in all three systems.
 
 All acceptance criteria pass: no system incorrectly admits an adverse case, no system has more than one unjustified rejection among the 20 benign cases, the 9 unsupported cases stay `unsupported`, and all three ablations weaken a decision.
 
-**Finding.** On this corpus the three systems reach the same decision in all 80 cases, with 0 code disagreements. C did not prevent a class of error that competent A and B do not also prevent: the portable envelope is not buying a correctness advantage here. The difference that remains is cost and reuse: C costs 730 lines, A 392 and B 55. The receipt, replay and handoff value of C is not exercised by this corpus, so it is neither measured nor disproved here.
+**Finding.** On this corpus the three systems reach the same decision in all 80 cases, with 0 code disagreements. C did not prevent a class of error that competent A and B do not also prevent: the portable envelope is not buying a correctness advantage here. The difference that remains is cost and reuse: C costs 957 lines, A 413 and B 55. The receipt, replay and handoff value of C is not exercised by this corpus, so it is neither measured nor disproved here.
 
 Under the M1 continuation gate this is the third outcome, not the first two. Before M2, decide deliberately whether the reusable receipt and replay are worth the envelope, because the corpus shows no admission-error reduction attributable to C. This result does not license a claim about human time; that metric needs repeated human tasks.

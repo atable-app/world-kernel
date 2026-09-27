@@ -1,0 +1,231 @@
+{
+  "cost": {
+    "interpretation": "a line count is not human time, and these suites are hand-designed rather than sampled from a population, so no reliability rate follows from them",
+    "note": "M1 historical cost and M2 new cost are separate and are never summed. Production cost and test cost are also separate: a test suite is evidence, not a product.",
+    "production": {
+      "deltaSinceM1": "git diff --numstat f686d9a..HEAD -- src/",
+      "extendedModules": [
+        "src/kernel.rs",
+        "src/model.rs",
+        "src/lib.rs"
+      ],
+      "newModule": "src/continuation.rs",
+      "newModuleLines": 597
+    },
+    "test": {
+      "deltaSinceM1": "git diff --numstat f686d9a..HEAD -- tests/",
+      "files": [
+        "tests/continuation_consumer.rs",
+        "tests/m2_sequences.rs",
+        "tests/crash_symmetry.rs"
+      ],
+      "lines": 2188
+    }
+  },
+  "coverage": {
+    "covered": 24,
+    "needsBaselines": [
+      {
+        "gap": "A2 and B2 have no export and no application-level resume",
+        "id": 3
+      },
+      {
+        "gap": "A2 and B2 have no own snapshot to declare resource bodies against",
+        "id": 4
+      },
+      {
+        "gap": "A2 and B2 have no own resume to progress through",
+        "id": 21
+      },
+      {
+        "gap": "A2 and B2 report no guarantee structure of their own yet",
+        "id": 24
+      }
+    ],
+    "notCovered": [],
+    "sequences": [
+      {
+        "covered": true,
+        "id": 1,
+        "label": "fresh consumer, unchanged context",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 2,
+        "label": "fresh consumer without capability",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 3,
+        "label": "producer workspace removed",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 4,
+        "label": "absent body declared",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 5,
+        "label": "crash and lost response",
+        "suite": "tests/crash_symmetry.rs"
+      },
+      {
+        "covered": true,
+        "id": 6,
+        "label": "crash after a write before commit",
+        "suite": "tests/crash_symmetry.rs"
+      },
+      {
+        "covered": true,
+        "id": 7,
+        "label": "moved declared dependency",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 8,
+        "label": "unrelated change, negative control",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 9,
+        "label": "substituted assurance reference",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 10,
+        "label": "history kept, applicability recomputed",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 11,
+        "label": "tampered resource digest",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 12,
+        "label": "truncated package",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 13,
+        "label": "reordered transitions",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 14,
+        "label": "unknown transition kind",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 15,
+        "label": "unknown package schema",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 16,
+        "label": "strict parse refusals",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 17,
+        "label": "unimplemented reducer",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 18,
+        "label": "path-shaped reference",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 19,
+        "label": "bounded sizes and counts",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 20,
+        "label": "no executable field in the package",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 21,
+        "label": "benign progression",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 22,
+        "label": "identity reuse refused",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 23,
+        "label": "anchor absent",
+        "suite": ""
+      },
+      {
+        "covered": true,
+        "id": 24,
+        "label": "guarantees reported separately",
+        "suite": ""
+      }
+    ],
+    "total": 24
+  },
+  "decisionRecord": "docs/ADR-001-portable-continuation.md",
+  "environment": {
+    "arch": "aarch64",
+    "debugAssertions": true,
+    "family": "unix",
+    "note": "this runner executes no sequence; coverage is read from the suites",
+    "os": "macos"
+  },
+  "generatedBy": "cargo run --example m2_continuation",
+  "guarantees": {
+    "authenticityRequires": "an expected head received out of band; a package never vouches for itself",
+    "neverClaimed": [
+      "completeness_beyond_scope"
+    ],
+    "note": "reported separately, never collapsed into one verdict",
+    "reported": [
+      "format_understood",
+      "resource_integrity",
+      "authenticity",
+      "completeness_within_scope",
+      "historical_reconstruction",
+      "completeness_beyond_scope"
+    ]
+  },
+  "notTested": [
+    "a fresh consumer outside this repository's language: the interoperability requirement is not met yet",
+    "a demonstration inside a real product path: not attempted, so no capability is claimed",
+    "A2 and B2 running the same matrix, so no cost comparison is available",
+    "an independent authority mechanism: only digest-relative integrity is claimed"
+  ],
+  "protocol": "docs/M2-PROTOCOL.md",
+  "schema": "world-kernel-continuation-results/v1",
+  "systems": {
+    "A2": "application SQLite gate; no export and no application-level resume yet",
+    "B2": "the same application; the UNI seam is exercised in M1, not yet in a resume path",
+    "C2": "UNI plus the World Kernel, with the continuation consumer"
+  }
+}
