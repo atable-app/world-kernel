@@ -87,12 +87,26 @@ fn a_condition_the_json_calls_unmet_is_rendered_as_unmet() {
         .expect("the gate carries its conditions")
     {
         let name = condition["condition"].as_str().unwrap_or_default();
-        if condition["met"] == Value::Bool(false) {
-            assert_eq!(
-                rendered_verdict(&human, name).as_deref(),
+        let rendered = rendered_verdict(&human, name);
+        match &condition["met"] {
+            // A condition nobody can reach is not a condition that failed, and the document has to keep
+            // the two apart: rendering both as no is how a blocked slice comes to look like a settled one.
+            Value::Bool(false) => assert_eq!(
+                rendered.as_deref(),
+                Some("**unreachable**"),
+                "{name} is unreachable, so RESULTS.md must not render it as a failure"
+            ),
+            Value::String(reason) if reason == "not_met" => assert_eq!(
+                rendered.as_deref(),
                 Some("**no**"),
                 "{name} is not met in results.json, so RESULTS.md must not claim it is"
-            );
+            ),
+            Value::String(reason) if reason == "undecidable" => assert_eq!(
+                rendered.as_deref(),
+                Some("**undecidable**"),
+                "{name} is undecidable, so RESULTS.md must not present it as settled either way"
+            ),
+            _ => {}
         }
     }
 }
@@ -133,5 +147,138 @@ fn the_table_and_the_summary_below_it_agree() {
     assert_eq!(
         rendered_yes, met,
         "the verdict line reports how many conditions are met, so the table above it must render that many as yes"
+    );
+}
+
+const COMPLEXITY_CONDITION: &str =
+    "the competent baseline does not give the same result at lower complexity";
+
+/// Condition 5 was recorded as `undecidable`, on the stated ground that a line count does not answer
+/// whether the baseline is lower complexity. The brief nominates the same thing twice over: `core_loc`
+/// is one of its own secondary metrics, and its own reduction trigger is a baseline reaching the same
+/// safety and reuse at materially lower complexity. Declining to score the trigger on the metric the
+/// trigger is written in is a gate that was written down and not executed, which is the third time this
+/// campaign has produced one.
+#[test]
+fn the_complexity_condition_is_scored_rather_than_declined() {
+    let recorded = recorded();
+
+    let condition = recorded["continuationGate"]["conditions"]
+        .as_array()
+        .expect("the gate carries its conditions")
+        .iter()
+        .find(|condition| condition["condition"].as_str() == Some(COMPLEXITY_CONDITION))
+        .expect("the complexity condition is one of the seven");
+
+    assert_ne!(
+        condition["met"],
+        Value::String("undecidable".to_owned()),
+        "the condition is decidable: the brief nominates core_loc as a metric and writes its reduction \
+         trigger in terms of complexity, so the recorded verdict may not be that it cannot be scored"
+    );
+}
+
+#[test]
+fn the_complexity_verdict_follows_from_the_recorded_numbers() {
+    let recorded = recorded();
+
+    let kernel = recorded["lineCounts"]["kernelSurface"]
+        .as_u64()
+        .expect("the Kernel surface is counted");
+    let baseline = recorded["lineCounts"]["baselineA"]
+        .as_u64()
+        .expect("the baseline surface is counted");
+    assert!(
+        baseline < kernel,
+        "fixture: the baseline is meant to be smaller"
+    );
+
+    let condition = recorded["continuationGate"]["conditions"]
+        .as_array()
+        .expect("the gate carries its conditions")
+        .iter()
+        .find(|condition| condition["condition"].as_str() == Some(COMPLEXITY_CONDITION))
+        .expect("the complexity condition is one of the seven");
+
+    // Same result, established by the tie recorded above the gate, and fewer lines. The brief's condition
+    // is that the baseline does **not** give the same result at lower complexity, so it is not met.
+    assert_eq!(
+        condition["met"],
+        Value::String("not_met".to_owned()),
+        "the baseline gives the same result in {baseline} lines against the Kernel's {kernel}, which is \
+         what the condition says must not happen"
+    );
+}
+
+#[test]
+fn the_complexity_verdict_names_the_ratio_and_survives_the_threshold() {
+    let recorded = recorded();
+    let detail = recorded["continuationGate"]["conditions"]
+        .as_array()
+        .expect("the gate carries its conditions")
+        .iter()
+        .find(|condition| condition["condition"].as_str() == Some(COMPLEXITY_CONDITION))
+        .expect("the complexity condition is one of the seven")["detail"]
+        .as_str()
+        .expect("the condition carries its reason")
+        .to_owned();
+
+    let kernel = recorded["lineCounts"]["kernelSurface"]
+        .as_u64()
+        .unwrap_or(0) as f64;
+    let baseline = recorded["lineCounts"]["baselineA"].as_u64().unwrap_or(1) as f64;
+    let ratio = kernel / baseline;
+
+    assert!(
+        detail.contains(&format!("{ratio:.2}")),
+        "the reason states the ratio it depends on, so a reader can check the arithmetic: {detail}"
+    );
+    assert!(
+        ratio < 2.0,
+        "the ratio is under two, so any threshold a reader might pick for 'clearly lower' is reached and \
+         the verdict does not depend on where the threshold is put"
+    );
+}
+
+#[test]
+fn the_verdict_line_counts_every_condition_rather_than_asserting_three() {
+    let recorded = recorded();
+    let verdict = recorded["continuationGate"]["verdict"]
+        .as_str()
+        .expect("the gate states its verdict")
+        .to_owned();
+
+    let conditions = recorded["continuationGate"]["conditions"]
+        .as_array()
+        .expect("the gate carries its conditions");
+    let met = conditions
+        .iter()
+        .filter(|condition| condition["met"] == Value::Bool(true))
+        .count();
+    let not_met = conditions
+        .iter()
+        .filter(|condition| condition["met"] == Value::String("not_met".to_owned()))
+        .count();
+    let unreachable = conditions
+        .iter()
+        .filter(|condition| condition["met"] == Value::Bool(false))
+        .count();
+
+    assert!(
+        verdict.contains(&format!("{met} met")),
+        "the verdict says how many are met and {met} are"
+    );
+    assert!(
+        verdict.contains(&format!("{not_met} not met")),
+        "the verdict says how many are not met and {not_met} are"
+    );
+    assert!(
+        verdict.contains(&format!("{unreachable} unreachable")),
+        "the verdict says how many are unreachable and {unreachable} are"
+    );
+    assert_eq!(
+        met + not_met + unreachable,
+        conditions.len(),
+        "and the three counts must cover every condition, or one is being left out of the arithmetic"
     );
 }

@@ -46,6 +46,45 @@ scored at all yet:
 The gate is therefore not passed, and the only honest reading is that M5 is funded **up to the benchmark**
 and no further. That is the scope of this tranche.
 
+### Amendment 1, 2026-09-27: condition 5 is scored on complexity
+
+The table above is left as it was written, because pre-registering a gate and then editing it after the
+run is the failure the pre-registration exists to prevent. This is an additive amendment and it changes
+the score of exactly one condition.
+
+**What was recorded.** The run scored condition 5 as `undecidable`, on the ground that *"the baseline ties
+on the corpus. Whether it is lower complexity is not answerable from a line count alone."*
+
+**Why that is not a reason to withhold the score.** The objection is a real one in general: a line count is
+a poor proxy for complexity, and a project can be short and incomprehensible. It does not apply here,
+because the brief nominates the same measure twice. `core_loc` is one of the brief's own secondary metrics
+in section 24, and the reduction trigger in section 2 is written in terms of complexity: the Kernel *"must
+be reduced accordingly"* if the competent baseline provides the same safety and reuse with materially lower
+complexity. The brief therefore supplies both the metric and the trigger, and both are in the same units.
+
+**The rule, stated before the numbers are applied to it.**
+
+> Condition 5 is not met when the recorded baseline reaches the same corpus decisions and the same safety
+> outcomes as the Kernel on **fewer** counted lines.
+
+Three clauses, each checkable against the artifact: the same decisions, which the recorded tie establishes;
+the same safety outcomes, which the metrics table establishes with `falseDirectTransfer` 0 = 0 and
+`falseIncompatibility` 0 = 0; and fewer counted lines.
+
+**On the word "materially".** The brief writes *materially* and this amendment does not define a threshold,
+because the measured ratio does not need one. `kernelSurface` is 1007 and `baselineA` is 515, a ratio of
+**1.96**. Any threshold at or below 1.96 makes the condition fail, and 1.96 is not a margin anyone would
+choose as *clearly* lower. The recorded note also says the baseline's count is *"an over-estimate"*, because
+it shares its fixture file with the oracle, which makes the real ratio larger and the conclusion stronger.
+A test asserts the ratio is under 2.0 so that the verdict cannot be made to depend on where a threshold is
+put.
+
+**What the amendment does not do.** It does not claim the baseline is better. On this corpus nothing
+separated the two systems on any measured outcome, which is the finding and not a footnote to it: **the
+corpus found no case in which the extra 492 lines bought anything.** The 6 `falseIncompatibility` belong to
+a different and deliberately weaker baseline, `baselineWithoutDeclaredParameters`, and not to A, which
+scores 0 like the Kernel.
+
 ## What this tranche is
 
 The smallest closed fixture where superficial similarity would cause an incorrect transfer, plus the strict

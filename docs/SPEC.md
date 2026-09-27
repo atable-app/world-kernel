@@ -640,6 +640,19 @@ brief's seventh continuation condition is unreachable from this workspace and is
 result is in [experiments/transfer-benchmark](experiments/transfer-benchmark/RESULTS.md), produced by
 `cargo run --example transfer_benchmark`.
 
+**The tie is smaller than the Kernel, and that is the recorded reduction trigger.** The fifth continuation
+condition is scored on complexity rather than left undecidable, under Amendment 1 in
+[M5-PROTOCOL.md](M5-PROTOCOL.md), which leaves the pre-registered table untouched. `kernelSurface` is 1007
+lines and `baselineA` is 515, a ratio of 1.96, and the recorded note calls the baseline's count an
+over-estimate, which makes the real ratio larger. The brief nominates the measure twice: `core_loc` is one
+of its own secondary metrics, and its reduction trigger is written in terms of complexity. The gate therefore
+reads **three met, two not met, two unreachable**, and the trigger fires: the competent baseline provides the
+same safety and reuse at materially lower complexity, so **M5 is to be reduced to the smallest useful
+portable experience representation.** Nothing measured on this corpus separated the two systems on any
+outcome, which is the finding and not a footnote to it: the corpus found no case in which the extra surface
+bought anything. Tranche 2 is not funded, and the two conditions recorded as unreachable stay unreachable
+rather than being folded into the failures, because a slice nobody could attempt is not a slice that failed.
+
 ## 8d. The comparison, and the reduction it decided
 
 M3 concluded the third consecutive "capability established, differential value not measured". The

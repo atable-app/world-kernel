@@ -43,7 +43,7 @@ Made: A and C are expected to tie on the closed corpus, because a competent base
 
 Held: **true**
 
-the safety metric is perfect on both sides, so it does not separate them, and the continuation gate's fifth condition cannot be scored from this. The tie means tranche 2's integration is not funded by anything in this artifact.
+the safety metric is perfect on both sides, so it does not separate them. The prediction named fewer lines, and the line count is what condition 5 is scored on: the tie plus a smaller baseline is the brief's reduction trigger, and it fires. Tranche 2 is not funded.
 
 ## Mutations
 
@@ -59,7 +59,7 @@ the safety metric is perfect on both sides, so it does not separate them, and th
 
 ## The continuation gate, scored
 
-the brief's seven conditions, scored honestly against this artifact
+the brief's seven conditions, scored against this artifact. Condition 5 is scored on complexity per Amendment 1 in docs/M5-PROTOCOL.md, and the verdict counts the conditions rather than asserting a number.
 
 | Condition | Met |
 |---|---|
@@ -67,11 +67,11 @@ the brief's seven conditions, scored honestly against this artifact
 | unknown target conditions are never silently promoted | yes |
 | source assurance is never silently promoted | yes |
 | one benchmark class safely avoids target work | **no** |
-| the competent baseline does not give the same result at lower complexity | **undecidable** |
-| one real IntentLane transfer demonstrates measurable reuse | **no** |
-| Kollio consumes the same core without reimplementing it | **no** |
+| the competent baseline does not give the same result at lower complexity | **no** |
+| one real IntentLane transfer demonstrates measurable reuse | **unreachable** |
+| Kollio consumes the same core without reimplementing it | **unreachable** |
 
-three met, one not met, one undecidable, two unreachable. M5 is funded up to the benchmark and no further, which is what the protocol said before the run.
+3 met, 2 not met, 2 unreachable. M5 is funded up to the benchmark and no further, which is what the protocol said before the run, and the brief's reduction trigger fires: the competent baseline gives the same safety and reuse at lower complexity, so the Kernel is to be reduced to the smallest useful portable experience representation.
 
 ## Not measured
 

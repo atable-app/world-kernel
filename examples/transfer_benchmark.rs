@@ -16,6 +16,25 @@ use serde_json::{Value, json};
 
 const EXPERIMENTS: &str = "experiments/transfer-benchmark";
 const RESULTS_SCHEMA: &str = "world-transfer-benchmark/v1";
+const COMPLEXITY_CONDITION: &str =
+    "the competent baseline does not give the same result at lower complexity";
+
+/// Baseline A shares its fixture file with the oracle, which is stated in the artifact and which makes
+/// its count an over-estimate. One name, so the gate and the line count cannot be counted over different
+/// files.
+const BASELINE_A_PATHS: &[&str] = &["tests/support/transfer_fixture.rs"];
+
+/// The three ways a gate condition can come out, so the verdict is computed from them rather than written
+/// beside them. `Unreachable` is kept apart from `NotMet` on purpose: a condition nobody can score is not a
+/// condition that failed, and collapsing the two is how a blocked slice starts looking like a passed one.
+/// `&'static str` where the reason is fixed, `String` where it is computed, so a computed reason does not
+/// have to be leaked to live for the length of the program.
+enum Gate {
+    Met,
+    NotMet(String),
+    Undecidable(String),
+    Unreachable(&'static str),
+}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let render_only = std::env::args().any(|argument| argument == "--render-only");
@@ -64,10 +83,95 @@ fn counted_lines(root: &Path, paths: &[&str]) -> usize {
 
 fn build_results(root: &Path) -> Value {
     let kernel = counted_lines(root, &["src/experience.rs", "src/transfer.rs"]);
-    let baseline_a = counted_lines(root, &["tests/support/transfer_fixture.rs"]);
+    let baseline_a = counted_lines(root, BASELINE_A_PATHS);
     let test = counted_lines(
         root,
         &["tests/transfer_plan.rs", "tests/transfer_benchmark.rs"],
+    );
+
+    // Condition 5 used to be asserted rather than scored, on the ground that a line count does not answer
+    // whether the baseline is lower complexity. The brief nominates that measure twice, so the condition
+    // is computed from the numbers the same artifact already reports. See "Amendment 1" in the protocol.
+    let kernel_surface = counted_lines(root, &["src/experience.rs", "src/transfer.rs"]) as f64;
+    let baseline_lines = counted_lines(root, BASELINE_A_PATHS) as f64;
+    let complexity_ratio = if baseline_lines > 0.0 {
+        kernel_surface / baseline_lines
+    } else {
+        f64::INFINITY
+    };
+    let lower_complexity = baseline_lines < kernel_surface;
+    let complexity_detail = format!(
+        "the baseline reaches the same corpus decisions and the same safety outcomes in {} lines against \
+         the Kernel's {} lines, a ratio of {complexity_ratio:.2}. The brief nominates core_loc as a metric \
+         and writes its reduction trigger in terms of complexity, so the condition is scored rather than \
+         declined. The ratio is under 2.0, so the verdict does not depend on where a threshold is put. The \
+         recorded note also calls the baseline's count an over-estimate, which makes the real ratio larger. \
+         Nothing on this corpus separated the two systems on any measured outcome, so the extra surface \
+         bought no case.",
+        baseline_lines as usize, kernel_surface as usize,
+    );
+
+    // The verdict counts the conditions rather than asserting a number, so re-scoring one cannot leave the
+    // summary describing a different gate from the table above it.
+    let conditions = [
+        ("closed-profile false direct transfers are zero", Gate::Met),
+        ("unknown target conditions are never silently promoted", Gate::Met),
+        ("source assurance is never silently promoted", Gate::Met),
+        (
+            "one benchmark class safely avoids target work",
+            Gate::NotMet("avoided work is counted as obligations, not as target work actually skipped, because no target execution path exists in tranche 1".to_string()),
+        ),
+        (
+            COMPLEXITY_CONDITION,
+            if lower_complexity {
+                Gate::NotMet(complexity_detail.clone())
+            } else {
+                Gate::Undecidable(
+                    "the baseline is not smaller by the recorded measure, so the reduction trigger does \
+                     not fire on complexity and nothing here funds tranche 2"
+                        .to_owned(),
+                )
+            },
+        ),
+        ("one real IntentLane transfer demonstrates measurable reuse", Gate::Unreachable("no reachable path")),
+        ("Kollio consumes the same core without reimplementing it", Gate::Unreachable("no reachable path")),
+    ];
+    let (mut met, mut not_met, mut unreachable) = (0usize, 0usize, 0usize);
+    let mut condition_values = Vec::new();
+    for (name, gate) in &conditions {
+        // Counted once, here, and the value written from the same match. Counting in a first pass and
+        // writing in a second is how a condition ends up counted twice, which the artifact test checks.
+        let (detail, value) = match gate {
+            Gate::Met => {
+                met += 1;
+                (None, json!(true))
+            }
+            Gate::NotMet(reason) => {
+                not_met += 1;
+                (Some(reason.clone()), json!("not_met"))
+            }
+            Gate::Undecidable(reason) => (Some(reason.clone()), json!("undecidable")),
+            Gate::Unreachable(reason) => {
+                unreachable += 1;
+                (Some((*reason).to_string()), json!(false))
+            }
+        };
+        condition_values.push(match detail {
+            Some(detail) => json!({"condition": name, "detail": detail, "met": value}),
+            None => json!({"condition": name, "met": value}),
+        });
+    }
+    let verdict = format!(
+        "{met} met, {not_met} not met, {} unreachable. {}",
+        unreachable,
+        if not_met > 0 {
+            "M5 is funded up to the benchmark and no further, which is what the protocol said before the \
+             run, and the brief's reduction trigger fires: the competent baseline gives the same safety and \
+             reuse at lower complexity, so the Kernel is to be reduced to the smallest useful portable \
+             experience representation."
+        } else {
+            "M5 is funded up to the benchmark and no further, which is what the protocol said before the run."
+        }
     );
 
     json!({
@@ -103,12 +207,12 @@ fn build_results(root: &Path) -> Value {
             "kernelSurface": kernel,
             "baselineA": baseline_a,
             "test": test,
-            "note": "physical lines including comments. Baseline A shares its fixture file with the oracle, so its line count includes the oracle and is an over-estimate in the Kernel's favour being unavailable here. The direction of the comparison is not favourable to the Kernel and it is not claimed to be either way."
+            "note": "physical lines including comments. Baseline A shares its fixture file with the oracle, so its line count includes the oracle and is an over-estimate, which makes the real ratio larger than the one recorded. The ratio is below 2.0, so the gate's verdict on complexity does not depend on where a threshold is put; see Amendment 1 in the protocol."
         },
         "prediction": {
             "made": "A and C are expected to tie on the closed corpus, because a competent baseline that compares the same declared conditions with the same unknown state does the same work in fewer lines.",
             "held": true,
-            "consequence": "the safety metric is perfect on both sides, so it does not separate them, and the continuation gate's fifth condition cannot be scored from this. The tie means tranche 2's integration is not funded by anything in this artifact."
+            "consequence": "the safety metric is perfect on both sides, so it does not separate them. The prediction named fewer lines, and the line count is what condition 5 is scored on: the tie plus a smaller baseline is the brief's reduction trigger, and it fires. Tranche 2 is not funded."
         },
         "mutations": [
             {"mutation": "promote an unknown fact to a satisfied value", "failed": true, "found": "the first attempt broke no test, which exposed that no case used an explicitly unknown fact. The case was added and the mutation now fails it."},
@@ -127,17 +231,12 @@ fn build_results(root: &Path) -> Value {
             "no real consumer: the corpus is closed invented arithmetic",
         ],
         "continuationGate": {
-            "note": "the brief's seven conditions, scored honestly against this artifact",
-            "conditions": [
-                {"condition": "closed-profile false direct transfers are zero", "met": true},
-                {"condition": "unknown target conditions are never silently promoted", "met": true},
-                {"condition": "source assurance is never silently promoted", "met": true},
-                {"condition": "one benchmark class safely avoids target work", "met": "not_met", "detail": "avoided work is counted as obligations, not as target work actually skipped, because no target execution path exists in tranche 1"},
-                {"condition": "the competent baseline does not give the same result at lower complexity", "met": "undecidable", "detail": "the baseline ties on the corpus. Whether it is lower complexity is not answerable from a line count alone."},
-                {"condition": "one real IntentLane transfer demonstrates measurable reuse", "met": false, "detail": "no reachable path"},
-                {"condition": "Kollio consumes the same core without reimplementing it", "met": false, "detail": "no reachable path"},
-            ],
-            "verdict": "three met, one not met, one undecidable, two unreachable. M5 is funded up to the benchmark and no further, which is what the protocol said before the run.",
+            "note": "the brief's seven conditions, scored against this artifact. Condition 5 is scored on \
+                     complexity per Amendment 1 in docs/M5-PROTOCOL.md, and the verdict counts the \
+                     conditions rather than asserting a number.",
+            "conditions": condition_values,
+            "verdict": verdict,
+            "complexityRatio": complexity_ratio,
         },
     })
 }
@@ -257,9 +356,10 @@ fn render_human(recorded: &Value) -> String {
         // checked-in result to be wrong in.
         let verdict = match &condition["met"] {
             Value::Bool(true) => "yes",
-            Value::Bool(false) => "**no**",
+            Value::Bool(false) => "**unreachable**",
             Value::String(reason) if reason == "undecidable" => "**undecidable**",
-            _ => "**no**",
+            Value::String(reason) if reason == "not_met" => "**no**",
+            _ => "**unscored**",
         };
         out.push_str(&format!(
             "| {} | {} |\n",

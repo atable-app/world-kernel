@@ -53,8 +53,18 @@ Kollio.
 - M5 tranche 1 is implemented in `src/experience.rs` and `src/transfer.rs`, with
   `tests/transfer_plan.rs`, `tests/transfer_benchmark.rs` and a checked-in
   `experiments/transfer-benchmark/` result. 30 closed cases, zero false direct transfers, and a **tie**
-  with a competent non-Kernel baseline. That tie is the recorded result and it does not fund tranche 2.
+  with a competent non-Kernel baseline.
   `schemas/experience-capsule-v0.experimental.schema.json` is strict and a test binds it to the types.
+- The M5 continuation gate is scored, not asserted. Condition 5 is scored on complexity under Amendment 1
+  in `docs/M5-PROTOCOL.md`, which leaves the pre-registered table untouched: `kernelSurface` is 1007 lines
+  and `baselineA` is 515, a ratio of 1.96, and the brief nominates that measure twice. The gate reads
+  **three met, two not met, two unreachable**, so **the brief's reduction trigger fires and M5 is to be
+  reduced to the smallest useful portable experience representation.** Tranche 2 is not funded. Nothing
+  measured on this corpus separated the Kernel from the baseline on any outcome.
+- `tests/transfer_artifact.rs` binds the rendered `RESULTS.md` to the recorded `results.json`: every
+  condition the JSON calls met is rendered as met, an unmet condition is never rendered as met,
+  unreachable is kept distinct from not met, and the verdict line's three counts must cover all seven
+  conditions. Run `cargo run --example transfer_benchmark -- --render-only` after changing the renderer.
 - M4 tranche 1 is implemented in `src/branch.rs` and `tests/branch_convergence.rs`. A combination of two
   individually valid branches is blocked by a constraint check on the reconstructed candidate, and a
   composition of exactly the limit is admissible. The oracle in `tests/support/branch_fixture.rs` is a
