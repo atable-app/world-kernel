@@ -32,6 +32,71 @@ use thiserror::Error;
 pub const PACKAGE_SCHEMA: &str = "world-continuation/v0-experimental";
 pub const RECORDED_HISTORY_REDUCER: &str = "world-kernel/recorded-history/0";
 
+/// Bounds applied to every import.
+///
+/// A package is untrusted input. Sizes and counts are bounded before any work is
+/// done, and no field of a package is ever used as a filesystem path: a reference
+/// is an opaque identifier, and the consumer only ever writes to the destination it
+/// was given.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Limits {
+    pub max_package_bytes: usize,
+    pub max_transitions: usize,
+    pub max_admissions: usize,
+    pub max_resources: usize,
+    pub max_identifier_bytes: usize,
+}
+
+impl Default for Limits {
+    fn default() -> Self {
+        Self {
+            max_package_bytes: 8 * 1024 * 1024,
+            max_transitions: 100_000,
+            max_admissions: 100_000,
+            max_resources: 100_000,
+            max_identifier_bytes: 4_096,
+        }
+    }
+}
+
+impl Limits {
+    fn check_identifier(&self, label: &'static str, value: &str) -> Result<(), Error> {
+        if value.len() > self.max_identifier_bytes {
+            return Err(Error::LimitExceeded {
+                limit: format!("{label} longer than {} bytes", self.max_identifier_bytes),
+            });
+        }
+        Ok(())
+    }
+
+    fn check_counts(&self, package: &ContinuationPackage) -> Result<(), Error> {
+        for (count, limit, label) in [
+            (
+                package.transitions.len(),
+                self.max_transitions,
+                "transition count",
+            ),
+            (
+                package.admissions.len(),
+                self.max_admissions,
+                "admission count",
+            ),
+            (
+                package.resources.len(),
+                self.max_resources,
+                "resource count",
+            ),
+        ] {
+            if count > limit {
+                return Err(Error::LimitExceeded {
+                    limit: format!("{label} above {limit}"),
+                });
+            }
+        }
+        Ok(())
+    }
+}
+
 /// One recorded transition, typed so an unknown kind fails closed rather than
 /// being guessed at.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -172,6 +237,7 @@ impl Guarantee {
 }
 
 /// A package that parsed and agreed with its anchor, before anything is written.
+#[derive(Debug, Clone)]
 pub struct Understood {
     world: String,
     head_digest: String,
@@ -222,6 +288,22 @@ impl Reconstruction {
 /// This writes nothing. Replay here is deterministic reduction over recorded
 /// payloads; it does not call a verifier, a model or an effect.
 pub fn reconstruct(package: &ContinuationPackage, anchor: &Anchor) -> Result<Understood, Error> {
+    reconstruct_within(package, anchor, Limits::default())
+}
+
+pub fn reconstruct_within(
+    package: &ContinuationPackage,
+    anchor: &Anchor,
+    limits: Limits,
+) -> Result<Understood, Error> {
+    limits.check_counts(package)?;
+    for (label, value) in [
+        ("world", package.world.as_str()),
+        ("schema", package.schema.as_str()),
+        ("reducer", package.reducer.as_str()),
+    ] {
+        limits.check_identifier(label, value)?;
+    }
     if package.schema != PACKAGE_SCHEMA {
         return Err(Error::UnsupportedSchema(package.schema.clone()));
     }
@@ -256,6 +338,14 @@ pub fn reconstruct(package: &ContinuationPackage, anchor: &Anchor) -> Result<Und
         }
         if !resource.digest.starts_with("sha256:") {
             return Err(Error::ResourceIntegrity {
+                reference: resource.reference.clone(),
+            });
+        }
+        // A body claim the consumer cannot check is not accepted on trust. This
+        // format carries no body bytes, so an `included` status is a declaration
+        // with nothing behind it and is refused rather than believed.
+        if resource.body_status == BodyStatus::Included {
+            return Err(Error::UnverifiableBodyClaim {
                 reference: resource.reference.clone(),
             });
         }
@@ -445,12 +535,33 @@ pub fn head_digest(package: &ContinuationPackage) -> String {
 
 /// Reads a package from disk with the same strictness as the change envelope: an
 /// unknown key, a missing key or an unknown variant is a refusal.
+/// Reads a package from disk, refusing an oversized file before parsing it.
 pub fn read_package(path: impl AsRef<Path>) -> Result<ContinuationPackage, Error> {
-    let text = fs::read_to_string(path.as_ref()).map_err(|error| Error::Io {
+    read_package_within(path, Limits::default())
+}
+
+pub fn read_package_within(
+    path: impl AsRef<Path>,
+    limits: Limits,
+) -> Result<ContinuationPackage, Error> {
+    let bytes = fs::read(path.as_ref()).map_err(|error| Error::Io {
         path: path.as_ref().display().to_string(),
         detail: error.to_string(),
     })?;
-    serde_json::from_str(&text).map_err(|error| Error::Parse(error.to_string()))
+    if bytes.len() > limits.max_package_bytes {
+        return Err(Error::LimitExceeded {
+            limit: format!(
+                "package of {} bytes above {}",
+                bytes.len(),
+                limits.max_package_bytes
+            ),
+        });
+    }
+    let text = String::from_utf8(bytes).map_err(|error| Error::Parse(error.to_string()))?;
+    let package: ContinuationPackage =
+        serde_json::from_str(&text).map_err(|error| Error::Parse(error.to_string()))?;
+    limits.check_counts(&package)?;
+    Ok(package)
 }
 
 #[derive(Debug, Error)]
@@ -475,6 +586,10 @@ pub enum Error {
     ReplayDiverged(String),
     #[error("package is not parsable: {0}")]
     Parse(String),
+    #[error("import refused: {limit}")]
+    LimitExceeded { limit: String },
+    #[error("resource {reference} claims a body this consumer cannot verify")]
+    UnverifiableBodyClaim { reference: String },
     #[error("cannot read {path}: {detail}")]
     Io { path: String, detail: String },
     #[error(transparent)]
