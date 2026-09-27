@@ -211,6 +211,11 @@ pub struct QueryRead {
     pub query: String,
     pub query_version: u64,
     pub scope: String,
+    /// The member set the query declared. A later check re-resolves this set,
+    /// so a member that appears is visible to the read. Re-resolving only the
+    /// members that happened to exist last time would make a new member
+    /// invisible, which is the failure this field exists to prevent.
+    pub declared_members: Vec<NodeId>,
     /// Fingerprint of the collection the query resolved against.
     pub collection: String,
     pub fingerprint: String,
@@ -218,6 +223,18 @@ pub struct QueryRead {
 }
 
 impl QueryRead {
+    /// Resolves a declared member set against a snapshot.
+    pub fn resolve(snapshot: &Snapshot, declared: &[NodeId]) -> Vec<(NodeId, u64)> {
+        declared
+            .iter()
+            .filter_map(|id| {
+                snapshot
+                    .live(id)
+                    .map(|version| (id.clone(), version.version))
+            })
+            .collect()
+    }
+
     /// The collection fingerprint of a member set. Order is irrelevant because
     /// a set is a set; a list whose order is semantic is not modelled as one.
     pub fn collection_fingerprint(members: &[(NodeId, u64)]) -> String {
@@ -357,6 +374,17 @@ pub enum Coverage {
 }
 
 impl Coverage {
+    /// A recomputation cannot promote a result to a guarantee the previous
+    /// record did not have captured. A guarantee is only regained by capturing
+    /// more, never by recomputing.
+    pub fn strongest_of(recorded: Profile, produced: Profile) -> Self {
+        Self::of(if recorded.rank() <= produced.rank() {
+            recorded
+        } else {
+            produced
+        })
+    }
+
     pub fn of(profile: Profile) -> Self {
         match profile {
             Profile::ClosedDeterministic => Self::ClosedProfile,

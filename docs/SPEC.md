@@ -278,7 +278,7 @@ and user authority.
 | WK-11 | Proved for current schema and events | unknown schema and event type fail closed; the serialized envelope is asserted field by field against the checked-in schema |
 | WK-12 | Proved for current storage keys and admission | wrong World rejected and tables keyed by World; the corpus scope family runs a live sibling World |
 
-The standard suite has 96 passing tests and one ignored live UNI contract test. This count is
+The standard suite has 130 passing tests and one ignored live UNI contract test. This count is
 descriptive, not a product metric.
 
 ## 8. Active milestone M1: equal-information admission benchmark
@@ -551,6 +551,33 @@ This is the third continuation-gate outcome. It was decided on 2026-09-27 in
 portable continuity of work, rather than admission superiority. The M1 result above is preserved
 unchanged and is not restated in a more favourable form.
 
+## 8c. M3: incremental and explainable revision
+
+M2 asked whether work survives its producer. M3 asks the next question: when the conditions change, is
+the work revisable without being rebuilt, and is the difference explainable? The decision and the real-state
+audit are in [ADR-002](ADR-002-revisable-work.md); the pre-registered matrix is in
+[M3-PROTOCOL.md](M3-PROTOCOL.md); the recorded result is in
+[experiments/incremental](experiments/incremental/README.md).
+
+Two contract requirements are new and normative:
+
+- **There is no global validity flag.** History, currency, business verdict, current authority and coverage
+  are five separate results. A result can be historically true and no longer usable without either being
+  false, and `recomputed_same` keeps whatever negative business verdict it had.
+- **A dependency is what a run consumed, not what somebody mentioned.** Provenance explains; only a consumed
+  dependency forces re-evaluation. A set read records its declared member set and re-resolves it, so a new
+  member is visible to the read.
+
+An evaluator may claim a weaker profile than the consumer grants, never a stronger one. A recompute never
+promotes a record's coverage. A data manifest cannot award itself the closed profile. A recorded decision is
+never recomputed: when its declared support moved, the engine produces a human-review obligation and
+changes nothing. Publication is a conservative compare-and-swap on the world revision, and finer validation
+is not assumed safe.
+
+M3 is not a platform. Graph termination, conditional branches, time-triggered expiry, contradiction
+arbitration and a durable store for the engine itself are not covered by the recorded run, and the transfer
+hypothesis to a second domain is not tested at all.
+
 ## 8a. M2: portable continuity
 
 M2 asks whether a fresh consumer can reconstruct a work state and its justifications from exported
@@ -572,9 +599,9 @@ A continuation is never a self-authorization. The reconstructed World's trusted 
 are the consumer's own configuration, passed explicitly, and a reconstruction never writes them. Reading
 the past requires no trust; admitting anything new is a separate, explicit act.
 
-## 9. Planned milestones after M1
+## 9. Milestones
 
-### M2 Sealed single-file subject profile
+### M2 as originally planned: sealed single-file subject profile
 
 Eliminate the current A-B-A window for a constrained single-file release artifact. The collector must
 verify and later publish bytes from one host-owned immutable staging object. General mutable workspace

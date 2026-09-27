@@ -50,6 +50,23 @@ error that a competent application transaction does not also prevent. Whether th
 envelope is an open product decision, recorded in
 [RESULTS.md](experiments/admission-benchmark/RESULTS.md).
 
+## M3 impact engine
+
+A fresh consumer is not enough: when the conditions change, recorded work has to become revisable without
+being rebuilt, and the difference has to be explainable. `src/impact` answers that. It keeps five results
+separate, history, currency, business verdict, current authority and coverage, because a result can be
+historically true and no longer usable without either being false.
+
+```bash
+cargo run --example m3_revision
+```
+
+The engine reports, per object, whether no change can reach it, whether a change reached it and its consumed
+values held, whether it was recomputed to the same value or a new one, and what is now necessary. A recorded
+human decision is never recomputed; when its declared support moves, the engine produces an obligation and
+changes nothing. The recorded result, its coverage and its limits are in
+[experiments/incremental](experiments/incremental/README.md).
+
 ## Verify
 
 ```bash
@@ -57,6 +74,9 @@ cargo test
 cargo clippy --all-targets --all-features -- -D warnings
 cargo fmt --check
 cargo run --example vertical_slice
+cargo run --example admission_benchmark
+cargo run --example m2_continuation
+cargo run --example m3_revision
 ```
 
 ## Scope limits

@@ -186,19 +186,12 @@ impl ReadJournal for SnapshotJournal<'_> {
     }
 
     fn read_query(&mut self, query: &Query) -> Result<Vec<(NodeId, u64)>, Error> {
-        let members: Vec<(NodeId, u64)> = query
-            .members
-            .iter()
-            .filter_map(|member| {
-                self.snapshot
-                    .live(member)
-                    .map(|version| (member.clone(), version.version))
-            })
-            .collect();
+        let members = QueryRead::resolve(self.snapshot, &query.members);
         self.queries.push(QueryRead {
             query: query.query.clone(),
             query_version: query.query_version,
             scope: query.scope.clone(),
+            declared_members: query.members.clone(),
             collection: QueryRead::collection_fingerprint(&members),
             fingerprint: QueryRead::collection_fingerprint(&members),
             comparator: super::model::FACET_COMPARATOR_VERSION.to_owned(),
@@ -356,15 +349,10 @@ fn check_query(read: &QueryRead, snapshot: &Snapshot) -> ReadOutcome {
     if read.comparator != super::model::FACET_COMPARATOR_VERSION {
         return ReadOutcome::DefinitionMoved;
     }
-    // A collection read is invalidated conservatively: the initial profile does
-    // not re-derive the query, it only notices that the set moved.
-    let members: Vec<(NodeId, u64)> = snapshot
-        .nodes
-        .iter()
-        .filter(|(_, version)| !version.removed)
-        .filter(|(id, _)| *id != &read.query)
-        .map(|(id, version)| (id.clone(), version.version))
-        .collect();
+    // The initial profile does not re-derive the query. It re-resolves the same
+    // declared member set and notices whether that set moved, which is the
+    // conservative behaviour the protocol allows.
+    let members = QueryRead::resolve(snapshot, &read.declared_members);
     let after = QueryRead::collection_fingerprint(&members);
     if after == read.collection {
         ReadOutcome::Unchanged
@@ -437,6 +425,13 @@ pub fn revise(
     let order = topological_order(recorded, requested)?;
 
     let frontier = impact_frontier(&order, recorded, target, trust, evaluators);
+
+    // A working view starts as the target snapshot and receives each recomputed
+    // value as it is produced, so a consumer reads the fresh value of the
+    // dependency it was just given. Reading the target snapshot directly would
+    // hand a chain the stale value of the node above it, and a chain could then
+    // never agree with a full recompute.
+    let mut working = target.clone();
 
     let mut findings: BTreeMap<NodeId, Finding> = BTreeMap::new();
     let mut obligations: Vec<Obligation> = Vec::new();
@@ -561,7 +556,7 @@ pub fn revise(
 
         let mut read_moved: Option<(String, ReadOutcome)> = None;
         for read in &previous.reads {
-            let outcome = check_read(read, target);
+            let outcome = check_read(read, &working);
             if outcome != ReadOutcome::Unchanged {
                 read_moved = Some((read.subject.clone(), outcome));
                 break;
@@ -570,7 +565,7 @@ pub fn revise(
         let mut query_moved: Option<(String, ReadOutcome)> = None;
         if read_moved.is_none() {
             for query in &previous.queries {
-                let outcome = check_query(query, target);
+                let outcome = check_query(query, &working);
                 if outcome != ReadOutcome::Unchanged {
                     query_moved = Some((query.query.clone(), outcome));
                     break;
@@ -665,7 +660,7 @@ pub fn revise(
         }
         evaluations += 1;
 
-        let evaluated = evaluate_one(target, id, evaluators, trust, limits)?;
+        let evaluated = evaluate_one(&working, id, evaluators, trust, limits)?;
         let same = evaluated.record.output_fingerprint() == previous.output_fingerprint();
         let trigger = if evaluator_moved {
             Some(format!(
@@ -718,6 +713,15 @@ pub fn revise(
             ));
         }
 
+        working.nodes.insert(
+            id.clone(),
+            NodeVersion::new(
+                evaluated.record.target_version,
+                &format!("derived/{}", evaluated.record.evaluator),
+                evaluated.value.clone(),
+                &evaluated.record.evaluator,
+            ),
+        );
         let mut record = evaluated.record.clone();
         record.executed = true;
         findings.insert(
@@ -734,7 +738,7 @@ pub fn revise(
                 },
                 business_verdict: previous.business_verdict(),
                 authority: Authority::Authorized,
-                coverage: Coverage::of(record.profile),
+                coverage: Coverage::strongest_of(previous.profile, record.profile),
                 disposition,
                 output: Some(evaluated.value.clone()),
                 explanation,
