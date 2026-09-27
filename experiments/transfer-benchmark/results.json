@@ -71,7 +71,7 @@
     "baselineA": 515,
     "kernelSurface": 1007,
     "note": "physical lines including comments. Baseline A shares its fixture file with the oracle, so its line count includes the oracle and is an over-estimate in the Kernel's favour being unavailable here. The direction of the comparison is not favourable to the Kernel and it is not claimed to be either way.",
-    "test": 1290
+    "test": 1294
   },
   "metrics": {
     "falseDirectTransfer": {

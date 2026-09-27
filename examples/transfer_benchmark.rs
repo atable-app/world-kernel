@@ -251,14 +251,20 @@ fn render_human(recorded: &Value) -> String {
     out.push_str(&format!("{}\n\n", gate["note"].as_str().unwrap_or("")));
     out.push_str("| Condition | Met |\n|---|---|\n");
     for condition in gate["conditions"].as_array().into_iter().flatten() {
+        // `met` is a boolean for the conditions the run settles and a string for the two it cannot, so
+        // matching on `as_str()` alone sent every met condition to the catch-all and printed it as not
+        // met. The JSON was right and this document was wrong, which is the worst direction for a
+        // checked-in result to be wrong in.
+        let verdict = match &condition["met"] {
+            Value::Bool(true) => "yes",
+            Value::Bool(false) => "**no**",
+            Value::String(reason) if reason == "undecidable" => "**undecidable**",
+            _ => "**no**",
+        };
         out.push_str(&format!(
             "| {} | {} |\n",
             condition["condition"].as_str().unwrap_or(""),
-            match condition["met"].as_str() {
-                Some("true") => "yes",
-                Some("undecidable") => "**undecidable**",
-                _ => "**no**",
-            },
+            verdict,
         ));
     }
     out.push_str(&format!("\n{}\n\n", gate["verdict"].as_str().unwrap_or("")));

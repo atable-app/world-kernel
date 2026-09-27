@@ -63,9 +63,9 @@ the brief's seven conditions, scored honestly against this artifact
 
 | Condition | Met |
 |---|---|
-| closed-profile false direct transfers are zero | **no** |
-| unknown target conditions are never silently promoted | **no** |
-| source assurance is never silently promoted | **no** |
+| closed-profile false direct transfers are zero | yes |
+| unknown target conditions are never silently promoted | yes |
+| source assurance is never silently promoted | yes |
 | one benchmark class safely avoids target work | **no** |
 | the competent baseline does not give the same result at lower complexity | **undecidable** |
 | one real IntentLane transfer demonstrates measurable reuse | **no** |
