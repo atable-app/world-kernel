@@ -3,8 +3,9 @@
 Status: experimental, normative for this repository  
 Last verified: 2026-09-27, M3 measured and the reduction decided in
 [ADR-003](ADR-003-measure-before-building.md)  
-Active milestone: none. The experiment has a stopping point, recorded in
-[ADR-003](ADR-003-measure-before-building.md). There is no M4.
+Active milestone: M4 tranche 1, branch convergence, pre-registered in
+[M4-PROTOCOL.md](M4-PROTOCOL.md) and authorised by
+[ADR-004](ADR-004-the-facet-advantage-scales.md)
 
 ## 1. Document contract
 
@@ -555,8 +556,8 @@ unchanged and is not restated in a more favourable form.
 
 ## 8c. M3: incremental and explainable revision, since reduced away
 
-This section describes a capability that is no longer part of the Kernel. It is kept because the
-measurement that removed it is the reason, and the contract that outlived it is in
+This section describes the impact engine. It was reduced away by ADR-003 and restored by ADR-004 once the
+reversal case ADR-003 itself required fired. The consumer-side statement of the same rules is in
 [IMPACT-CONTRACT.md](IMPACT-CONTRACT.md).
 
 M2 asked whether work survives its producer. M3 asks the next question: when the conditions change, is
@@ -584,6 +585,30 @@ M3 is not a platform. Graph termination, conditional branches, time-triggered ex
 arbitration and a durable store for the engine itself are not covered by the recorded run, and the transfer
 hypothesis to a second domain is not tested at all.
 
+## 8e. M4 tranche 1: branch convergence
+
+M4 explores alternatives and adopts a combination from one of them without losing the reasons. It is not
+the invention of branches, provenance or merges; Git, Dolt, LangGraph, W3C PROV and Skyframe all exist.
+Its contribution is a contract for carrying alternatives together with their hypotheses, justifications,
+obligations and adoption conditions.
+
+The scope authorised by [ADR-004](ADR-004-the-facet-advantage-scales.md) is tranche 1 only, pre-registered
+in [M4-PROTOCOL.md](M4-PROTOCOL.md): the Alpha/Beta fixture, an independent oracle, isolated snapshots,
+and the proof that a composition of 110 is blocked while a composition of exactly 100 is admissible after
+a decision. The 32-story matrix, portable branch export, and any IntentLane or Kollio path are not
+authorised and are not claimed.
+
+The design consequence that makes the tranche worth anything: Alpha and Beta change different fields, so
+there is no value conflict to detect. A system that only compared values would merge them and produce a
+target that breaks its own rule. So the gate is a **constraint check on the reconstructed candidate**, and
+a test that passes by blocking every adoption is explicitly not accepted. The signal to stop is also
+pre-registered: if the blocked composition can only be achieved by building a second impact engine,
+ADR-004 says reduce rather than proceed.
+
+What is deliberately absent in tranche 1: multi-parent merge, automatic re-grounding, a
+`safe_to_merge` boolean, any automatic merge, and any second impact engine. A target that moved since a
+proposal was prepared yields a stale proposal, not a silent rebase.
+
 ## 8d. The comparison, and the reduction it decided
 
 M3 concluded the third consecutive "capability established, differential value not measured". The
@@ -607,12 +632,14 @@ the decision is not to keep paying for capability nothing has measured. The reve
 with it: on a graph of wide nodes the facet saving would grow, and one example runner re-measures it.
 
 The reduction does not touch the dependency model, the read and facet contracts, the closed profile
-rules, the corpora or the explanation codes. It was applied on 2026-09-27: `src/impact` is no longer a
-module of this crate, nothing in `src/` depends on it, and it now lives in
-`tests/support/impact_core/` so the comparison and its reversal case stay re-runnable.
+rules, the corpora or the explanation codes. It was applied on 2026-09-27 and **reversed the same day** by
+[ADR-004](ADR-004-the-facet-advantage-scales.md), because the condition ADR-003 attached to the reduction
+was met: the consumed-facet advantage is linear in the number of consumers and unbounded, 10 000 avoided
+evaluations at a fan-out of 10 000, and one unconsumed field is enough to get it. `src/impact` is part of
+this crate again.
 
-What the engine enforced survives as rules a consumer can be held to, written down in
-[IMPACT-CONTRACT.md](IMPACT-CONTRACT.md): no global validity flag, a recompute cannot promote a record,
+What the engine enforces is also stated from the consumer's side in
+[IMPACT-CONTRACT.md](IMPACT-CONTRACT.md): no global validity flag, a recompute can never promote a record,
 profiles are granted by the consumer, a recorded human decision is never recomputed, a dependency is what
 a run consumed, publication is a conservative compare-and-swap, and nothing launches an external effect.
 The stable codes are listed there and `the_contract_document_and_the_measured_codes_agree` fails if the

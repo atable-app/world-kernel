@@ -126,13 +126,7 @@ fn build_results(root: &Path) -> Result<Value, Box<dyn std::error::Error>> {
     })
     .collect();
 
-    let production = counted_lines(
-        root,
-        &[
-            "tests/support/impact_core/model.rs",
-            "tests/support/impact_core/engine.rs",
-        ],
-    );
+    let production = counted_lines(root, &["src/impact/model.rs", "src/impact/engine.rs"]);
     let application = counted_lines(root, &["tests/support/application_incremental.rs"]);
     let test = counted_lines(
         root,
@@ -174,14 +168,14 @@ fn build_results(root: &Path) -> Result<Value, Box<dyn std::error::Error>> {
             },
             {
                 "id": "C3",
-                "name": "the impact engine",
-                "role": "the portable mechanism that was measured, no longer part of the Kernel",
+                "name": "the World Kernel impact core",
+                "role": "the portable mechanism under test, restored to the Kernel by ADR-004",
                 "lines": production,
             },
         ],
         "lineCounts": {
-            "note": "physical lines including comments, the count a team would pay for. The engine lines were removed from the Kernel's shipped surface; they are counted here to price what was removed",
-            "removedFromTheKernel": production,
+            "note": "physical lines including comments, the count a team would pay for",
+            "kernelSurface": production,
             "applicationMechanism": application,
             "tests": test,
         },
@@ -268,7 +262,7 @@ fn build_results(root: &Path) -> Result<Value, Box<dyn std::error::Error>> {
                 "the decision rule, because a cache would recompute a recorded human decision",
             ],
             "whatGoes": [
-                "src/impact, as a mechanism any consumer would build for itself, moved to tests/support/impact_core so the measurement can be repeated",
+                "nothing is removed from the Kernel on the strength of this comparison: ADR-004 reversed the reduction after the reversal case fired",
                 "M4, which would have added story to a scope with no measured value",
             ],
             "falsifier": "The reduction would be wrong if A3 had to grow a facet comparator, a disposition or an obligation to pass these scenarios. It did not have to. The one difference the core does buy, a consumed facet, is available to the application for a fraction of the lines, and on a graph with many unconsumed fields that advantage would grow rather than shrink, which is the case to re-measure before anyone rebuilds this.",

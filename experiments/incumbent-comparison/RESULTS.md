@@ -8,7 +8,7 @@ Pre-registered condition: A3 and B3 reach the same observable result as C3 on ev
 |---|---|---|
 | A3 and B3 reach the same observable result as C3 on every scenario | yes | all 7 scenarios agreed with the full recompute |
 | the core saves nothing the application could not already do | **no** | NOT MET. On 1 of 7 scenarios the core ran fewer evaluators than the application, by 2 runs in total, because a consumed facet is a narrower key than a whole value. |
-| at a comparable price | yes | the saving is 2 evaluator runs on a closed 3-evaluator fixture, bought with 1542 lines of engine against 247 lines of application |
+| at a comparable price | yes | the saving is 2 evaluator runs on a closed 3-evaluator fixture, bought with 1542 lines of engine against 252 lines of application |
 
 What the decision rests on: Two of the three pre-registered clauses are met outright. The third is not, and it is the only measured advantage the core has over a competent application. The reduction is therefore a decision not to pay for capability that nothing measured, on the strength of one small measured saving that a consumer could buy back for a fraction of the price. It is not a claim that the capability is worthless.
 
@@ -17,9 +17,9 @@ What the decision rests on: Two of the three pre-registered clauses are met outr
 | System | What it is | Role | Lines |
 |---|---|---|---|
 | R3 | full recompute | correction oracle, not a weak baseline, not a competitor | an oracle, not a price |
-| A3 | application cache on whole values | the competent application mechanism, not a strawman | 247 |
-| B3 | A3 consuming UNI staleness | the same application, told which assurance went stale | 247 |
-| C3 | the impact engine | the portable mechanism that was measured, no longer part of the Kernel | 1542 |
+| A3 | application cache on whole values | the competent application mechanism, not a strawman | 252 |
+| B3 | A3 consuming UNI staleness | the same application, told which assurance went stale | 252 |
+| C3 | the World Kernel impact core | the portable mechanism under test, restored to the Kernel by ADR-004 | 1542 |
 
 ## Scenarios
 
@@ -72,7 +72,7 @@ Not measured: no cost per evaluation, so no break-even fan-out and no money figu
 
 ## What goes
 
-- src/impact, as a mechanism any consumer would build for itself, moved to tests/support/impact_core so the measurement can be repeated
+- nothing is removed from the Kernel on the strength of this comparison: ADR-004 reversed the reduction after the reversal case fired
 - M4, which would have added story to a scope with no measured value
 
 ## What would have made this decision wrong

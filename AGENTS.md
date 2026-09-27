@@ -8,8 +8,11 @@ Kollio.
 1. Read `docs/SPEC.md` before planning or changing behavior. It is the normative product and protocol
    specification, and it names the active milestone. Read `docs/ADR-001-portable-continuation.md` and
    `docs/M2-PROTOCOL.md` before working on continuation, and `docs/ADR-002-revisable-work.md` and
-   `docs/M3-PROTOCOL.md` before working on impact, and `docs/ADR-003-measure-before-building.md` before
-   adding any capability, because it records the reduce-or-stop decision and there is no M4.
+   `docs/M3-PROTOCOL.md` before working on impact, and `docs/ADR-003-measure-before-building.md` plus
+   `docs/ADR-004-the-facet-advantage-scales.md` before adding any capability, because the reduce-or-stop
+   decision was reversed and M4 is authorised to tranche 1. `docs/M4-PROTOCOL.md` is pre-registered and
+   must be read before working on branches. The impact rules are also written down in
+   `docs/IMPACT-CONTRACT.md`.
 2. Read `docs/BOUNDARIES.md` when work touches ownership, trust, UNI, Kollio or external state.
 3. Read `docs/EXPERIMENT.md` when work touches benchmarks, falsification or claims about value.
 4. Inspect the code and tests before relying on a document's description of current behavior. Running
@@ -41,11 +44,16 @@ Kollio.
   not already do" is false and stays recorded as false. The reduction is recommended on the narrower ground
   that every other capability the core produces is unconsumed by the fixture. Its reversal case is stated
   with it: on a graph of wide nodes the facet saving grows, and one example runner re-measures it.
-- The reduction was applied on 2026-09-27. `src/impact` is not a module of this crate and nothing in
-  `src/` depends on it; the engine lives in `tests/support/impact_core/` so the comparison stays
-  re-runnable. The rules it enforced are in `docs/IMPACT-CONTRACT.md`, and
-  `the_contract_document_and_the_measured_codes_agree` fails if that document and the measured engine
-  name different codes. The Kernel is now admission, history, portable continuity and adapters.
+- The reduction decided in ADR-003 was applied and then **reversed** on 2026-09-27 by ADR-004, because the
+  reversal case ADR-003 itself required fires: the consumed-facet advantage is linear in the number of
+  consumers and unbounded, 10 000 avoided evaluations at a fan-out of 10 000 against 1542 lines. One
+  unconsumed field is enough. `src/impact` is restored; the Kernel is admission, history, portable
+  continuity, the impact engine and the adapters. The rules are in `docs/IMPACT-CONTRACT.md` and
+  `the_contract_document_and_the_measured_codes_agree` still binds that document to the engine.
+- M4 tranche 1 is implemented in `src/branch.rs` and `tests/branch_convergence.rs`. A combination of two
+  individually valid branches is blocked by a constraint check on the reconstructed candidate, and a
+  composition of exactly the limit is admissible. The oracle in `tests/support/branch_fixture.rs` is a
+  separate program over integers that reads no expected value.
 - Boundaries that survive: the Kernel stores digests and never object bytes, a reconstruction cannot
   bootstrap its own trust, and no validity flag exists anywhere in the M3 model.
 
@@ -58,8 +66,11 @@ Kollio.
 - Preserve the distinction between impact and truth, assurance and authority, internal commit and
   external effect.
 - Add no external effect dispatcher. The M1 gate was decided; M2 is an experiment, not a platform.
-- Add no fourth capability. The reduce-or-stop decision is recorded, and starting M4 contradicts it. If the
-  comparison is to be re-run, re-run it; do not build past it.
+- M4 is authorised to tranche 1 only, and only the stories in `docs/M4-PROTOCOL.md`. Tranches 2 to 8 and
+  the 32-story matrix are not authorised. If the blocked composition ever needs a second impact engine,
+  reduce rather than proceed; that is the pre-registered stop signal.
+- Never let a branch absorb the whole source when only part was selected, and never write a source head
+  in as an ancestor of a partial adoption.
 - Never let a continuation package supply its own trust configuration or an expected head.
 - Never collapse history, currency, business verdict, authority and coverage into one validity flag, and
   never let a manifest or an evaluator award itself a stronger trust profile than the configuration grants.
@@ -83,6 +94,7 @@ cargo run --example admission_benchmark
 cargo run --example m2_continuation
 cargo run --example m3_revision
 cargo run --example incumbent_comparison
+cargo run --example m4_branch
 jq empty schemas/world-change-v0.experimental.schema.json
 ```
 

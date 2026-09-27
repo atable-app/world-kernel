@@ -3,22 +3,25 @@
 Status: normative for any consumer of revised work  
 Last verified: 2026-09-27
 
-The impact engine was measured against a competent application and left the Kernel's shipped surface, as
-decided in [ADR-003](ADR-003-measure-before-building.md). What was removed was the mechanism. What
-survives is the set of rules the mechanism happened to enforce, written down here so that a consumer can
-be held to them without depending on the Kernel.
+The impact engine was measured against a competent application and reduced away by
+[ADR-003](ADR-003-measure-before-building.md), then restored by
+[ADR-004](ADR-004-the-facet-advantage-scales.md) once the reduction's own reversal case fired. The engine
+is in `src/impact` and it is part of the Kernel again.
 
-This document is the source of truth. The engine in `tests/support/impact_core/` is the implementation
-that was measured, kept only so the comparison can be repeated.
-`the_contract_document_and_the_measured_codes_agree` in `tests/m3_comparison.rs` reads both and fails if
-they part company, so a rule cannot be dropped or renamed here without the measurement disagreeing.
+This document states the same rules from the consumer's side, for a consumer that implements its own
+revision rather than depending on this one. Where the two disagree, the engine and its tests are what the
+Kernel actually does, and this document is the claim about what a consumer may rely on.
+
+`the_contract_document_and_the_measured_codes_agree` in `tests/m3_comparison.rs` reads this document and
+the engine's source and fails if either names a code the other does not, so a rule cannot be dropped or
+renamed here without the implementation disagreeing.
 
 ## What this is not
 
 It is not an interface. There is no trait to implement and no type to construct. A consumer that decides
-to follow these rules follows them; one that does not, does not, and the document does not stop it. The
-enforcement that used to exist in the Kernel is gone, and saying otherwise would be false. What this buys
-is that the rules are written down somewhere other than in a module that was measured and discarded.
+to follow these rules follows them; one that does not, does not, and the document does not stop it. What
+this buys is that the rules are written down somewhere a consumer can read them without reading the
+engine.
 
 ## Rule 1: there is no validity flag
 
@@ -89,10 +92,13 @@ build.
 | `no_recorded_evaluation` | `PureRecompute` |
 | `no_evaluator_for_changed_consumer` | `MissingReference` |
 
-## The reversal case, restated once
+## Rule 5 is the one that earned the engine back
 
-The comparison found exactly one measured advantage for the removed mechanism: a consumed facet is a
-narrower cache key than a whole value, worth 2 evaluator runs on a closed 3-evaluator fixture. On a graph
-of wide nodes that advantage would grow. Rule 5 is why that is true, and a consumer that wants it should
-implement the facet and re-measure rather than restore the engine. The runner is
-`cargo run --example incumbent_comparison`.
+A consumed facet is a narrower cache key than a whole value. On a node carrying fields nobody reads, a
+whole-value key re-runs every consumer and a facet key re-runs none. Measured across fan-out widths: 3
+consumers avoids 3 evaluations, 1 000 avoids 1 000, 10 000 avoids 10 000, and padding the node from one
+unconsumed field to eight changes nothing.
+
+That single mechanic is why the engine is back. A consumer implementing Rule 5 has to implement it: once
+a run has declared which part of a node it consumed, a whole-value key is the wrong key. The runner is
+`cargo run --example incumbent_comparison`, and the measurement is `the_facet_advantage_scales_with_the_number_of_consumers`.

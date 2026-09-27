@@ -21,7 +21,7 @@ use support::{
     impact_fixture as fixture, incumbent_comparison,
 };
 
-use support::impact_core::{
+use world_kernel::impact::{
     Disposition, EvaluationRecord, Limits, NodeId, Profile, TrustConfiguration, full_recompute,
     revise,
 };
@@ -345,8 +345,8 @@ fn the_limits_are_reported_the_same_way() {
 /// What the application mechanism can say about a consumer it kept: the value,
 /// and nothing else.
 fn stale_support(
-    base: &support::impact_core::Snapshot,
-    target: &support::impact_core::Snapshot,
+    base: &world_kernel::impact::Snapshot,
+    target: &world_kernel::impact::Snapshot,
 ) -> Option<Value> {
     let mut cache = AppCache::new();
     revise_app(
@@ -533,8 +533,7 @@ fn the_contract_document_and_the_measured_codes_agree() {
     )
     .expect("the contract is checked in");
     let engine = std::fs::read_to_string(
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("tests/support/impact_core/engine.rs"),
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/impact/engine.rs"),
     )
     .expect("the measured engine is checked in");
 

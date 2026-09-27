@@ -276,16 +276,8 @@ fn build_results() -> Value {
         "cost": {
             "note": "M1 and M2 costs are historical and are not summed with M3",
             "production": {
-                "files": [
-                    "tests/support/impact_core/model.rs",
-                    "tests/support/impact_core/engine.rs",
-                    "tests/support/impact_core/mod.rs"
-                ],
-                "lines": counted_lines(&[
-                    "tests/support/impact_core/model.rs",
-                    "tests/support/impact_core/engine.rs",
-                    "tests/support/impact_core/mod.rs"
-                ]),
+                "files": ["src/impact/model.rs", "src/impact/engine.rs", "src/impact/mod.rs"],
+                "lines": counted_lines(&["src/impact/model.rs", "src/impact/engine.rs", "src/impact/mod.rs"]),
                 "delta": "git diff --numstat bc29a22..HEAD -- src/",
             },
             "test": {

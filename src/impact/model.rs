@@ -16,7 +16,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use world_kernel::digest_of_bytes;
+use crate::model::digest_of_bytes;
 
 /// The identity of a logical object inside one world and scope.
 pub type NodeId = String;
@@ -586,5 +586,5 @@ pub enum Error {
     #[error("limit reached: {0}")]
     LimitReached(String),
     #[error(transparent)]
-    Kernel(#[from] world_kernel::KernelError),
+    Kernel(#[from] crate::KernelError),
 }

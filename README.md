@@ -50,21 +50,42 @@ error that a competent application transaction does not also prevent. Whether th
 envelope is an open product decision, recorded in
 [RESULTS.md](experiments/admission-benchmark/RESULTS.md).
 
-## The impact rules, without the engine
+## Branch convergence
+
+Two alternatives, one adoption. Alpha and Beta each look fine on their own, and combining them breaks a
+rule neither broke. That is the case a value-comparison merge passes and a real gate must not.
+
+```bash
+cargo run --example m4_branch
+```
+
+`src/branch.rs` forks from an immutable base, prepares a proposal against pinned source and target,
+reconstructs the candidate, and checks the **target's own rules on that candidate** before anything moves.
+A refusal names the rule and the versions it looked at, the target does not change, and both branch
+histories stay readable. A revised branch that composes to exactly the limit is admissible, because a test
+that blocks every adoption is not a test.
+
+Scope is tranche 1 only, pre-registered in [M4-PROTOCOL.md](docs/M4-PROTOCOL.md) and authorised by
+[ADR-004](docs/ADR-004-the-facet-advantage-scales.md). No multi-parent merge, no automatic re-grounding, no
+automatic merge of any kind, and no second impact engine. The recorded result is in
+[experiments/branch-convergence](experiments/branch-convergence/RESULTS.md).
+
+## The impact engine
 
 When the conditions change, recorded work has to become revisable without being rebuilt, and the difference
-has to be explainable. An engine for that was built and measured. It is no longer part of the Kernel: a
-competent application produces the same answers without it, and it cost 1542 lines.
+has to be explainable. The engine for that was built, measured, reduced away, and then restored, because
+the measurement that justified the reduction turned out not to hold on a real shape of payload. Details in
+[ADR-003](docs/ADR-003-measure-before-building.md) and
+[ADR-004](docs/ADR-004-the-facet-advantage-scales.md).
 
-What survived is the set of rules it happened to enforce, written down so a consumer can be held to them
-without depending on the Kernel: five separate results instead of one validity flag, a recompute that
+What the engine enforces is also written down as rules a consumer can be held to: five separate results
+instead of one validity flag, a recompute that
 cannot promote a record, profiles granted by the consumer, a recorded human decision that is never
 recomputed, a dependency that is what a run actually consumed, a publication that is a conservative
 compare-and-swap, and nothing that launches an external effect. See
 [IMPACT-CONTRACT.md](docs/IMPACT-CONTRACT.md).
 
-The engine itself is in `tests/support/impact_core/`, kept only so the comparison and its reversal case
-stay re-runnable:
+It is in `src/impact`, and the comparison that judges it stays re-runnable:
 
 ```bash
 cargo run --example m3_revision
@@ -82,6 +103,7 @@ same information. So the last run is a comparison, not a milestone.
 
 ```bash
 cargo run --example incumbent_comparison
+cargo run --example m4_branch
 ```
 
 R3 is a full recompute, A3 is a competent application cache on whole values, B3 is the same application
@@ -126,7 +148,9 @@ See [docs/BOUNDARIES.md](docs/BOUNDARIES.md) and [docs/EXPERIMENT.md](docs/EXPER
 
 - [docs/SPEC.md](docs/SPEC.md) is the normative contract and active implementation milestone.
 - [docs/BOUNDARIES.md](docs/BOUNDARIES.md) records state ownership, trust and current proof limits.
-- [docs/IMPACT-CONTRACT.md](docs/IMPACT-CONTRACT.md) is what survived the removed impact engine: the rules
-  a consumer can be held to, and the stable codes.
+- [docs/IMPACT-CONTRACT.md](docs/IMPACT-CONTRACT.md) states the impact rules a consumer can be held to, and
+  the stable codes, bound to the engine by a test.
+- [docs/M4-PROTOCOL.md](docs/M4-PROTOCOL.md) is the pre-registered scope of the branch tranche, and
+  [ADR-004](docs/ADR-004-the-facet-advantage-scales.md) is the reversal of the reduction and the M4 decision.
 - [docs/EXPERIMENT.md](docs/EXPERIMENT.md) records the experimental question and falsification gates.
 - [AGENTS.md](AGENTS.md) is the short entry point for OpenCode and other coding agents.

@@ -13,12 +13,12 @@ mod support;
 use std::collections::BTreeMap;
 
 use serde_json::{Value, json};
-use support::impact_core::{
+use support::impact_fixture as fixture;
+use world_kernel::impact::{
     Disposition, Error, EvaluationRecord, Evaluator, Facet, Limits, NodeId, NodeNature,
     NodeVersion, Outcome, Profile, Query, ReadJournal, Revised, Snapshot, TrustConfiguration,
     WorkType, assert_publishable, full_recompute, revise,
 };
-use support::impact_fixture as fixture;
 
 // ------------------------------------------------------------------ M3-04, M3-12
 
@@ -368,7 +368,7 @@ fn m3_19_a_declared_partial_record_carries_its_reservation() {
 
     assert_eq!(
         revised.findings["stage_one"].coverage,
-        support::impact_core::Coverage::DeclaredPartial,
+        world_kernel::impact::Coverage::DeclaredPartial,
         "a partial record is not promoted when the node is recomputed either"
     );
 }
@@ -382,12 +382,12 @@ fn m3_20_an_executable_cycle_is_refused_rather_than_broken() {
 
     // Make the two comparisons depend on each other, which no execution order can
     // satisfy.
-    let other = |subject: &str| support::impact_core::CapturedRead {
+    let other = |subject: &str| world_kernel::impact::CapturedRead {
         subject: subject.to_owned(),
-        binding: support::impact_core::ReadBinding::Current,
+        binding: world_kernel::impact::ReadBinding::Current,
         facet: Facet::Whole,
         fingerprint: "sha256:0".to_owned(),
-        comparator: support::impact_core::model::FACET_COMPARATOR_VERSION.to_owned(),
+        comparator: world_kernel::impact::model::FACET_COMPARATOR_VERSION.to_owned(),
         present: true,
     };
     records.get_mut("eligible_a").unwrap().reads = vec![other("eligible_b")];
@@ -570,7 +570,7 @@ fn m3_21_a_stale_plan_is_refused_and_replanning_is_required() {
 #[test]
 fn an_obligation_identity_survives_a_repeated_plan_and_a_new_context_does_not() {
     let repeated = WorkType::HumanReview;
-    let first = support::impact_core::Obligation::new(
+    let first = world_kernel::impact::Obligation::new(
         "decision",
         1,
         "recorded_decision_support_moved",
@@ -578,7 +578,7 @@ fn an_obligation_identity_survives_a_repeated_plan_and_a_new_context_does_not() 
         Profile::ClosedDeterministic,
         "a human decides again",
     );
-    let same = support::impact_core::Obligation::new(
+    let same = world_kernel::impact::Obligation::new(
         "decision",
         2,
         "recorded_decision_support_moved",
@@ -591,7 +591,7 @@ fn an_obligation_identity_survives_a_repeated_plan_and_a_new_context_does_not() 
         "the world revision is not part of the task's identity, so repeating a plan does not duplicate it"
     );
 
-    let different_profile = support::impact_core::Obligation::new(
+    let different_profile = world_kernel::impact::Obligation::new(
         "decision",
         1,
         "recorded_decision_support_moved",
@@ -604,7 +604,7 @@ fn an_obligation_identity_survives_a_repeated_plan_and_a_new_context_does_not() 
         "an incompatible context does not reuse the old identity"
     );
 
-    let different_work = support::impact_core::Obligation::new(
+    let different_work = world_kernel::impact::Obligation::new(
         "decision",
         1,
         "recorded_decision_support_moved",
@@ -735,7 +735,7 @@ fn mutation_accepting_a_self_declared_coverage_is_caught() {
 /// "done" is not evidence.
 #[test]
 fn mutation_closing_an_obligation_without_assurance_is_caught() {
-    let obligation = support::impact_core::Obligation::new(
+    let obligation = world_kernel::impact::Obligation::new(
         "artifact",
         1,
         "needs_new_verification",

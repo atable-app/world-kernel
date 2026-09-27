@@ -10,11 +10,11 @@
 //! object consumes both booleans and nothing else. `label` exists only so that a
 //! presentation change can be shown not to disturb the arithmetic.
 
-use super::impact_core::{
+use std::collections::BTreeMap;
+use world_kernel::impact::{
     Evaluator, Facet, Limits, NodeId, NodeNature, NodeVersion, Profile, Query, ReadJournal,
     Snapshot, TrustConfiguration,
 };
-use std::collections::BTreeMap;
 
 use serde_json::{Value, json};
 
@@ -44,7 +44,7 @@ impl Compare {
     fn run(
         &self,
         journal: &mut dyn ReadJournal,
-    ) -> Result<Option<Value>, super::impact_core::Error> {
+    ) -> Result<Option<Value>, world_kernel::impact::Error> {
         journal.read(self.subject, Facet::Field(self.field.to_owned()))
     }
 }
@@ -69,14 +69,14 @@ impl Evaluator for Eligibility {
         &self,
         _input: &Value,
         journal: &mut dyn ReadJournal,
-    ) -> Result<(Value, Profile), super::impact_core::Error> {
+    ) -> Result<(Value, Profile), world_kernel::impact::Error> {
         let limit = Compare::new(LIMIT, "value").run(journal)?;
         let cost = Compare::new(self.cost, "value").run(journal)?;
         let limit_present = limit.is_some();
         let verdict = match (limit, cost) {
             (Some(limit), Some(cost)) => {
                 let (Some(limit), Some(cost)) = (limit.as_f64(), cost.as_f64()) else {
-                    return Err(super::impact_core::Error::LimitReached(
+                    return Err(world_kernel::impact::Error::LimitReached(
                         "non numeric fixture value".into(),
                     ));
                 };
@@ -110,7 +110,7 @@ impl Evaluator for SupportEvaluator {
         &self,
         _input: &Value,
         journal: &mut dyn ReadJournal,
-    ) -> Result<(Value, Profile), super::impact_core::Error> {
+    ) -> Result<(Value, Profile), world_kernel::impact::Error> {
         let a = Compare::new(ELIGIBLE_A, "eligible").run(journal)?;
         let b = Compare::new(ELIGIBLE_B, "eligible").run(journal)?;
         // The support set is a set. Its order is not semantic and is normalised.
@@ -261,10 +261,10 @@ pub fn oracle(
     snapshot: &Snapshot,
     targets: &[String],
 ) -> Result<
-    std::collections::BTreeMap<NodeId, super::impact_core::engine::Evaluated>,
-    super::impact_core::Error,
+    std::collections::BTreeMap<NodeId, world_kernel::impact::engine::Evaluated>,
+    world_kernel::impact::Error,
 > {
-    super::impact_core::full_recompute(snapshot, targets, &evaluators(), &trust(), limits())
+    world_kernel::impact::full_recompute(snapshot, targets, &evaluators(), &trust(), limits())
 }
 
 /// The set-level read this fixture's support evaluator could make, exposed so a
@@ -307,7 +307,7 @@ impl Evaluator for FacetConsumer {
         &self,
         _input: &Value,
         journal: &mut dyn ReadJournal,
-    ) -> Result<(Value, Profile), super::impact_core::Error> {
+    ) -> Result<(Value, Profile), world_kernel::impact::Error> {
         let value = journal.read(&self.subject, Facet::Field(self.field.clone()))?;
         Ok((value.unwrap_or(Value::Null), Profile::ClosedDeterministic))
     }

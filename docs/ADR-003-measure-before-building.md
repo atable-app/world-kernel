@@ -1,7 +1,10 @@
 # ADR 003: the next increment is a comparison, not a fourth capability
 
 Date: 2026-09-27
-Status: accepted
+Status: accepted, then reversed on its own reversal case by
+[ADR-004](ADR-004-the-facet-advantage-scales.md). The reduction below was applied and then undone. The
+decision to measure rather than to build M4 is the part of this ADR that held: it is what produced the
+measurement that refuted its own conclusion.
 Supersedes: nothing
 Relates to: [ADR-001](ADR-001-portable-continuation.md), [ADR-002](ADR-002-revisable-work.md), [M3-PROTOCOL.md](M3-PROTOCOL.md)
 
