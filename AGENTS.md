@@ -12,7 +12,9 @@ Kollio.
    `docs/ADR-004-the-facet-advantage-scales.md` before adding any capability, because the reduce-or-stop
    decision was reversed and M4 is authorised to tranche 1. `docs/M4-PROTOCOL.md` is pre-registered and
    must be read before working on branches. `docs/M5-PROTOCOL.md` is pre-registered and must be read
-   before working on transfer. The impact rules are also written down in `docs/IMPACT-CONTRACT.md`.
+   before working on transfer, together with `docs/ADR-005-reduce-to-the-representation.md`, which moved
+   the planner out of the crate. The impact rules are written down in `docs/IMPACT-CONTRACT.md` and the
+   transfer rules in `docs/TRANSFER-CONTRACT.md`.
 2. Read `docs/BOUNDARIES.md` when work touches ownership, trust, UNI, Kollio or external state.
 3. Read `docs/EXPERIMENT.md` when work touches benchmarks, falsification or claims about value.
 4. Inspect the code and tests before relying on a document's description of current behavior. Running
@@ -52,8 +54,8 @@ Kollio.
   unconsumed field is enough. `src/impact` is restored; the Kernel is admission, history, portable
   continuity, the impact engine and the adapters. The rules are in `docs/IMPACT-CONTRACT.md` and
   `the_contract_document_and_the_measured_codes_agree` still binds that document to the engine.
-- M5 tranche 1 is implemented in `src/experience.rs` and `src/transfer.rs`, with
-  `tests/transfer_plan.rs`, `tests/transfer_benchmark.rs` and a checked-in
+- M5 tranche 1 is implemented in `src/experience.rs`, with `tests/transfer_plan.rs`,
+  `tests/transfer_benchmark.rs`, `tests/transfer_contract.rs` and a checked-in
   `experiments/transfer-benchmark/` result. 30 closed cases, zero false direct transfers, and a **tie**
   with a competent non-Kernel baseline.
   `schemas/experience-capsule-v0.experimental.schema.json` is strict and a test binds it to the types.
@@ -63,6 +65,12 @@ Kollio.
   **three met, two not met, two unreachable**, so **the brief's reduction trigger fires and M5 is to be
   reduced to the smallest useful portable experience representation.** Tranche 2 is not funded. Nothing
   measured on this corpus separated the Kernel from the baseline on any outcome.
+- That reduction is applied by `docs/ADR-005-reduce-to-the-representation.md`: the planner moved from
+  `src/transfer.rs` to `tests/support/transfer_core.rs`, `pub mod transfer` is gone, and the shipped M5
+  surface is `src/experience.rs` alone at 323 lines. The moved file was not rewritten, so the recorded
+  artifact still reproduces 1007 and no score was re-run. `docs/TRANSFER-CONTRACT.md` carries the rules a
+  consumer would otherwise have to read 684 lines of test support for, and
+  `the_transfer_contract_and_the_moved_implementation_agree` binds it to both enums it describes.
 - `tests/transfer_artifact.rs` binds the rendered `RESULTS.md` to the recorded `results.json`: every
   condition the JSON calls met is rendered as met, an unmet condition is never rendered as met,
   unreachable is kept distinct from not met, and the verdict line's three counts must cover all seven

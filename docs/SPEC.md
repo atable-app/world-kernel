@@ -1,12 +1,12 @@
 # World Kernel specification
 
 Status: experimental, normative for this repository  
-Last verified: 2026-09-27, M3 finished at 23 of 24 stories covered and 1 partial, and the reduction
+Last verified: 2026-09-27, M3 finished at 23 of 24 stories covered and 1 partial, the reduction
 [ADR-003](ADR-003-measure-before-building.md) recommended on that result reversed by
-[ADR-004](ADR-004-the-facet-advantage-scales.md)  
-Active milestone: M5 tranche 1, transferable experience, pre-registered in
-[M5-PROTOCOL.md](M5-PROTOCOL.md). M4 tranche 1 is done and remains limited to the stories in
-[M4-PROTOCOL.md](M4-PROTOCOL.md).
+[ADR-004](ADR-004-the-facet-advantage-scales.md), and the reduction the M5 gate ordered applied by
+[ADR-005](ADR-005-reduce-to-the-representation.md)  
+Active milestone: none further pre-registered. M5 tranche 1 closed on its own gate and was then reduced;
+M4 tranche 1 is done and remains limited to the stories in [M4-PROTOCOL.md](M4-PROTOCOL.md).
 
 ## 1. Document contract
 
@@ -658,6 +658,19 @@ portable experience representation.** Nothing measured on this corpus separated 
 outcome, which is the finding and not a footnote to it: the corpus found no case in which the extra surface
 bought anything. Tranche 2 is not funded, and the two conditions recorded as unreachable stay unreachable
 rather than being folded into the failures, because a slice nobody could attempt is not a slice that failed.
+
+**The reduction is applied by
+[ADR-005](ADR-005-reduce-to-the-representation.md), Amendment 2 of the protocol records it, and the
+recorded score is not re-run.** The planner leaves `src/transfer.rs` for `tests/support/transfer_core.rs`
+and `pub mod transfer` leaves `src/lib.rs`, so the shipped M5 surface is `src/experience.rs` alone at 323
+lines against the 1007 that were measured. The moved file was not rewritten, so
+`cargo run --example transfer_benchmark` still reproduces 1007 and 515 and condition 5 still reads not met:
+a score belongs to the run that produced it, and a reduction does not get to rescore the gate that ordered
+it. What a consumer would otherwise have to read 684 lines of test support to learn is written down in
+[TRANSFER-CONTRACT.md](TRANSFER-CONTRACT.md), and
+`the_transfer_contract_and_the_moved_implementation_agree` in `tests/transfer_contract.rs` binds that
+document to both implementations it describes. Tranche 2 stays unfunded: moving code into test support is
+not integration.
 
 ## 8d. The comparison, and the reduction it decided
 

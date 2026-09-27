@@ -85,6 +85,36 @@ corpus found no case in which the extra 492 lines bought anything.** The 6 `fals
 a different and deliberately weaker baseline, `baselineWithoutDeclaredParameters`, and not to A, which
 scores 0 like the Kernel.
 
+### Amendment 2, 2026-09-27: the reduction the trigger called for is applied
+
+Amendment 1's condition 5 came out not met, so the brief's reduction fired.
+[ADR-005](ADR-005-reduce-to-the-representation.md) applies it: `src/transfer.rs` moves to
+`tests/support/transfer_core.rs` and `pub mod transfer` leaves `src/lib.rs`. The shipped M5 surface is
+`src/experience.rs` alone, 323 lines, against a recorded `kernelSurface` of 1007 and a `baselineA` of 515.
+The representation ships and the decision procedure does not, because the measurement was about the
+procedure.
+
+**Where this document's path now points.** Below, "How each is decided" says the oracle calls nothing in
+`world_kernel::transfer`. That text is left as written, because it records what was true when the protocol
+was pre-registered and when the corpus ran. The module is now `tests/support/transfer_core.rs`, and the
+claim underneath it is unchanged: `tests/support/transfer_fixture.rs` calls nothing in `transfer_core`
+when it computes an expectation, so a bug in the planner and a matching bug in the expectation still
+cannot cancel out.
+
+**The recorded score is not re-run.** `experiments/transfer-benchmark/` is untouched by the reduction.
+`kernelSurface` still reads 1007 because the example counts the mechanism where it now lives rather than
+where it used to live, `baselineA` still reads 515, the ratio is still 1.96, and condition 5 is still not
+met. A recorded score belongs to the run that produced it, and a reduction does not get to rescore the gate
+that ordered it.
+
+**What is still not funded.** Tranche 2, the 32-story matrix, the IntentLane transfer and Kollio consuming
+the same core. Moving code into test support is not integration.
+
+**The reversal case** is stated with its commands in ADR-005: a consumer outside `tests/` that reads a
+capsule and reaches a wrong decision where the planner reached the right one, or a wider corpus that
+separates A from C. Neither is deferred behind a milestone, because ADR-003 wrote a reversal case, called
+it cheap, and then deferred it.
+
 ## What this tranche is
 
 The smallest closed fixture where superficial similarity would cause an incorrect transfer, plus the strict

@@ -74,16 +74,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn counted_lines(root: &Path, paths: &[&str]) -> usize {
+    // A path that has moved must fail the run rather than count as zero, because a zero here would be
+    // written into the artifact as a measurement. The planner left `src/transfer.rs` for
+    // `tests/support/transfer_core.rs` in docs/ADR-005; the count follows the code and does not
+    // silently shrink.
     paths
         .iter()
-        .filter_map(|path| std::fs::read_to_string(root.join(path)).ok())
+        .map(|path| {
+            std::fs::read_to_string(root.join(path))
+                .unwrap_or_else(|_| panic!("{path} must exist to be counted"))
+        })
         .map(|text| text.lines().count())
         .sum()
 }
 
 fn build_results(root: &Path) -> Value {
-    let kernel = counted_lines(root, &["src/experience.rs", "src/transfer.rs"]);
+    // `kernelSurface` is the mechanism that was compared against the baseline, counted wherever it now
+    // lives. It is not the current shipped surface: `docs/ADR-005-reduce-to-the-representation.md` moved
+    // the planner out of the crate after this number was recorded, and a recorded score is not re-run.
+    let kernel = counted_lines(
+        root,
+        &["src/experience.rs", "tests/support/transfer_core.rs"],
+    );
     let baseline_a = counted_lines(root, BASELINE_A_PATHS);
+    // The two tranche-1 measurement files, by name. `tests/transfer_contract.rs` is deliberately not
+    // counted: it binds a document to the code and measures nothing, so adding it would rewrite a
+    // recorded line count for no measurement.
     let test = counted_lines(
         root,
         &["tests/transfer_plan.rs", "tests/transfer_benchmark.rs"],
@@ -92,7 +108,10 @@ fn build_results(root: &Path) -> Value {
     // Condition 5 used to be asserted rather than scored, on the ground that a line count does not answer
     // whether the baseline is lower complexity. The brief nominates that measure twice, so the condition
     // is computed from the numbers the same artifact already reports. See "Amendment 1" in the protocol.
-    let kernel_surface = counted_lines(root, &["src/experience.rs", "src/transfer.rs"]) as f64;
+    let kernel_surface = counted_lines(
+        root,
+        &["src/experience.rs", "tests/support/transfer_core.rs"],
+    ) as f64;
     let baseline_lines = counted_lines(root, BASELINE_A_PATHS) as f64;
     let complexity_ratio = if baseline_lines > 0.0 {
         kernel_surface / baseline_lines

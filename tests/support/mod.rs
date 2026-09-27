@@ -31,5 +31,11 @@ pub mod m3_stories;
 pub mod second_domain;
 #[path = "system_c.rs"]
 pub mod system_c;
+// The transfer planner. It was `src/transfer.rs` until docs/ADR-005-reduce-to-the-representation.md moved
+// it here: the measured result said a competent application gate reaches the same decisions in fewer
+// lines, so the procedure is not shipped. It is kept rather than deleted because the reversal case is a
+// measurement. The rules are written down for a consumer in docs/TRANSFER-CONTRACT.md.
+#[path = "transfer_core.rs"]
+pub mod transfer_core;
 #[path = "transfer_fixture.rs"]
 pub mod transfer_fixture;

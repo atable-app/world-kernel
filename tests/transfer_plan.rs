@@ -6,12 +6,12 @@
 
 mod support;
 
-use support::transfer_fixture as fixture;
-use world_kernel::experience::ApplicabilityCoverage;
-use world_kernel::transfer::{
+use support::transfer_core::{
     ContextDelta, DeclaredAdaptation, TransferStatus, instantiate_transfer, plan_is_current,
     plan_transfer,
 };
+use support::transfer_fixture as fixture;
+use world_kernel::experience::ApplicabilityCoverage;
 
 /// The primary red test from the protocol's section 16.
 ///
@@ -285,7 +285,7 @@ fn a_fact_the_target_calls_unknown_is_never_treated_as_known() {
     assert_ne!(plan.status, TransferStatus::DirectlyReusable);
     assert_eq!(
         plan.delta.unknown[0].reason,
-        world_kernel::transfer::UnknownReason::FactUnknown
+        support::transfer_core::UnknownReason::FactUnknown
     );
     assert!(
         plan.delta
@@ -352,7 +352,7 @@ fn a_key_the_target_never_declared_is_unknown_rather_than_absent() {
     assert_eq!(plan.status, TransferStatus::AdditionalEvidenceRequired);
     assert_eq!(
         plan.delta.unknown[0].reason,
-        world_kernel::transfer::UnknownReason::KeyAbsentFromDeclaration
+        support::transfer_core::UnknownReason::KeyAbsentFromDeclaration
     );
     assert!(
         plan.delta.different.is_empty(),
@@ -428,7 +428,7 @@ fn a_plan_goes_stale_when_either_revision_moves() {
         .expect_err("a stale plan must not instantiate");
     assert_eq!(
         refusal,
-        world_kernel::transfer::InstantiationError::StalePlan
+        support::transfer_core::InstantiationError::StalePlan
     );
 }
 
@@ -468,7 +468,7 @@ fn an_incompatible_plan_refuses_to_produce_a_candidate() {
         .expect_err("an incompatible plan must not instantiate");
     assert_eq!(
         refusal,
-        world_kernel::transfer::InstantiationError::StatusRefusesCandidate(
+        support::transfer_core::InstantiationError::StatusRefusesCandidate(
             TransferStatus::Incompatible
         )
     );
@@ -812,6 +812,10 @@ fn the_capsule_schema_and_the_types_reject_the_same_things() {
                 .iter()
                 .any(|name| name == required),
             "{required} is required by the schema"
+        );
+        assert!(
+            properties.contains_key(required),
+            "{required} is also a declared property"
         );
     }
 

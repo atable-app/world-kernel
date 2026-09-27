@@ -12,12 +12,12 @@ mod support;
 use std::collections::BTreeMap;
 
 use serde_json::json;
+use support::transfer_core::{DeclaredAdaptation, TransferStatus, plan_transfer};
 use support::transfer_fixture as fixture;
 use world_kernel::experience::{
     ApplicabilityCondition, ApplicabilityCoverage, CapabilityState, ConditionKind, ContextSnapshot,
     ExperienceCapsule, ExperienceOutcome, Fact, ProvenanceRecord,
 };
-use world_kernel::transfer::{DeclaredAdaptation, TransferStatus, plan_transfer};
 
 /// One closed case. The expectation is derived from the case's declared shape, never read from the
 /// system under test.

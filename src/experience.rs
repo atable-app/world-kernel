@@ -100,8 +100,8 @@ impl ContextSnapshot {
 ///
 /// A capsule grants this to itself for its own conditions, which is exactly the move the impact engine
 /// refuses: a producer never awards itself a stronger trust profile than the consumer grants. So a
-/// capsule's coverage is read as a claim, and [`world_kernel::transfer::plan_transfer`] only honours
-/// `ClosedDeclared` when the target's own context declares the same.
+/// capsule's coverage is read as a claim, and the planner honours `ClosedDeclared` only when the
+/// target's own context declares the same.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum ApplicabilityCoverage {

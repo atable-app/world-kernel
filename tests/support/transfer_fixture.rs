@@ -5,8 +5,8 @@
 //! - The fixture builds the closed worlds the protocol fixes. It is invented arithmetic: not Sarah, not
 //!   IntentLane, not a real budget.
 //! - The oracle is a separate program over plain values that computes the expected status directly. It
-//!   calls nothing in `world_kernel::transfer`, so a bug in the planner and a matching bug in the
-//!   expectation cannot cancel out.
+//!   calls nothing in `transfer_core`, so a bug in the planner and a matching bug in the expectation
+//!   cannot cancel out.
 //! - Baseline A is a competent retrieval-plus-gate with no Kernel dependency. It is not a strawman: it
 //!   does metadata filtering, deterministic comparison and has its own explicit unknown state, because
 //!   the M1 lesson was that a strawman invalidates the experiment.
@@ -343,8 +343,8 @@ pub fn oracle(
 
 /// Extract the planner's answer into the oracle's vocabulary, for a comparison that is about values and
 /// not about types.
-pub fn to_oracle(status: world_kernel::transfer::TransferStatus) -> OracleStatus {
-    use world_kernel::transfer::TransferStatus;
+pub fn to_oracle(status: super::transfer_core::TransferStatus) -> OracleStatus {
+    use super::transfer_core::TransferStatus;
     match status {
         TransferStatus::DirectlyReusable => OracleStatus::DirectlyReusable,
         TransferStatus::AdaptationRequired => OracleStatus::AdaptationRequired,

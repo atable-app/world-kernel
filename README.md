@@ -61,9 +61,12 @@ cargo run --example transfer_benchmark
 ```
 
 `src/experience.rs` refuses to collapse four states that look alike: a fact that is unknown, a fact that is
-absent, a capability that was never checked, and a key nobody declared. `src/transfer.rs` compares the
+absent, a capability that was never checked, and a key nobody declared. The planner that compares the
 capsule's declared conditions against a target and returns one of five statuses with the obligations the
-status implies. Four of those requirements are construction sites rather than rules to remember: an
+status implies was moved out of the crate to `tests/support/transfer_core.rs` by
+[ADR-005](docs/ADR-005-reduce-to-the-representation.md): the measurement said an application gate reaches
+the same decisions in fewer lines, so the representation ships and the procedure does not. Four of those
+requirements are construction sites rather than rules to remember: an
 instantiated target candidate is built with an empty assurance list, adaptability is a declared boolean
 defaulting to false, a recurrent prior failure is an obligation rather than a sentence, and a plan bound to
 a revision that has since moved refuses to instantiate.
@@ -138,11 +141,12 @@ than a whole value.
 
 Everything else the core produces, the five dimensions, the obligation, the disposition, the explanation,
 the granted profile and the protection of a recorded decision, is not consumed by the fixture. The result
-is a reduction, not a victory: reduce the Kernel to UNI plus adapters, and do not start M4. The Kernel
-is now admission, history, portable continuity and adapters. The clause
-"the core saves nothing the application could not already do" is false and is recorded as false. The
-decision and its reversal case are in
-[ADR-003](docs/ADR-003-measure-before-building.md), the numbers in
+was a reduction, not a victory, and the decision read "reduce the Kernel to UNI plus adapters, and do not
+start M4". The clause "the core saves nothing the application could not already do" is false and is
+recorded as false. ADR-003 required a reversal case with the decision, measured it, and the case fired:
+a consumed facet is a narrower cache key than a whole value, so the saving grows with fan-out and does not
+stop. [ADR-004](docs/ADR-004-the-facet-advantage-scales.md) reverses the reduction and restores the engine,
+[ADR-003](docs/ADR-003-measure-before-building.md) keeps the recommendation it gave, and the numbers are in
 [RESULTS.md](experiments/incumbent-comparison/RESULTS.md).
 
 ## Verify
@@ -155,6 +159,11 @@ cargo run --example vertical_slice
 cargo run --example admission_benchmark
 cargo run --example m2_continuation
 cargo run --example m3_revision
+cargo run --example incumbent_comparison
+cargo run --example m4_branch
+cargo run --example transfer_benchmark
+jq empty schemas/world-change-v0.experimental.schema.json
+jq empty schemas/experience-capsule-v0.experimental.schema.json
 ```
 
 ## Scope limits
@@ -174,8 +183,11 @@ See [docs/BOUNDARIES.md](docs/BOUNDARIES.md) and [docs/EXPERIMENT.md](docs/EXPER
 - [docs/BOUNDARIES.md](docs/BOUNDARIES.md) records state ownership, trust and current proof limits.
 - [docs/IMPACT-CONTRACT.md](docs/IMPACT-CONTRACT.md) states the impact rules a consumer can be held to, and
   the stable codes, bound to the engine by a test.
+- [docs/TRANSFER-CONTRACT.md](docs/TRANSFER-CONTRACT.md) states the transfer rules a consumer can be held
+  to now that the planner is not shipped, bound to the moved implementation by a test.
 - [docs/M4-PROTOCOL.md](docs/M4-PROTOCOL.md) and [docs/M5-PROTOCOL.md](docs/M5-PROTOCOL.md) are the
   pre-registered scopes of the branch and transfer tranches.
   [ADR-004](docs/ADR-004-the-facet-advantage-scales.md) is the reversal of the reduction and the M4 decision.
+  [ADR-005](docs/ADR-005-reduce-to-the-representation.md) applies the reduction the M5 gate called for.
 - [docs/EXPERIMENT.md](docs/EXPERIMENT.md) records the experimental question and falsification gates.
 - [AGENTS.md](AGENTS.md) is the short entry point for OpenCode and other coding agents.

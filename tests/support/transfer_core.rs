@@ -23,7 +23,7 @@
 //! plan is stale and must be replanned; [`plan_is_current`] is how that is checked, and
 //! [`instantiate_transfer`] refuses a stale plan.
 
-use crate::experience::{
+use world_kernel::experience::{
     ApplicabilityCondition, ApplicabilityCoverage, CapabilityState, ConditionKind,
     ExperienceCapsule, Fact, FailureObservation, ProvenanceRecord,
 };
@@ -176,7 +176,7 @@ pub struct TransferPlan {
 /// domain has not declared is not available, however obvious it looks.
 pub fn plan_transfer(
     capsule: &ExperienceCapsule,
-    target: &crate::experience::ContextSnapshot,
+    target: &world_kernel::experience::ContextSnapshot,
     adaptations: &[DeclaredAdaptation],
 ) -> TransferPlan {
     let mut delta = ContextDelta::default();
@@ -383,7 +383,7 @@ enum Outcome {
 
 fn evaluate(
     condition: &ApplicabilityCondition,
-    target: &crate::experience::ContextSnapshot,
+    target: &world_kernel::experience::ContextSnapshot,
 ) -> Outcome {
     // A predicate reference is unevaluable regardless of whether the key is present, so it is answered
     // before any lookup. It is not a violation and it is not a match.
@@ -477,7 +477,7 @@ fn numeric(value: &serde_json::Value) -> Option<i64> {
 /// relevant because the experience looks similar.
 fn relevant_failures(
     capsule: &ExperienceCapsule,
-    target: &crate::experience::ContextSnapshot,
+    target: &world_kernel::experience::ContextSnapshot,
 ) -> Vec<FailureObservation> {
     capsule
         .known_failures
@@ -495,7 +495,7 @@ fn relevant_failures(
 #[allow(clippy::too_many_arguments)]
 fn explain(
     capsule: &ExperienceCapsule,
-    target: &crate::experience::ContextSnapshot,
+    target: &world_kernel::experience::ContextSnapshot,
     delta: &ContextDelta,
     status: TransferStatus,
     covered: &[String],
@@ -585,7 +585,7 @@ fn explain(
 pub fn plan_is_current(
     plan: &TransferPlan,
     capsule: &ExperienceCapsule,
-    target: &crate::experience::ContextSnapshot,
+    target: &world_kernel::experience::ContextSnapshot,
 ) -> bool {
     plan.source_revision == capsule.revision && plan.target_context_revision == target.revision
 }
@@ -615,7 +615,7 @@ pub struct InstantiatedTransfer {
 pub fn instantiate_transfer(
     plan: &TransferPlan,
     capsule: &ExperienceCapsule,
-    target: &crate::experience::ContextSnapshot,
+    target: &world_kernel::experience::ContextSnapshot,
 ) -> Result<InstantiatedTransfer, InstantiationError> {
     if !plan_is_current(plan, capsule, target) {
         return Err(InstantiationError::StalePlan);
