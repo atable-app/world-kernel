@@ -312,3 +312,79 @@ pub fn stale_declaration_cost() -> (usize, usize, bool, bool) {
         clean.executions < stale.executions,
     )
 }
+
+/// What the consumed facet buys as the number of consumers grows.
+///
+/// ADR-003 recorded that the reduction would be wrong if the facet advantage scaled past the line count
+/// on a graph of wide nodes, and named one command to find out. This is that command. The three-node
+/// arithmetic fixture could only measure 2 avoided evaluator runs, so the fan-out is a parameter here.
+///
+/// The measurement is deliberately the most favourable honest case for the removed engine: one observed
+/// input carrying unconsumed fields, `consumers` readers of the single field they actually use, and a
+/// change that touches only an unconsumed field. Nothing here is a claim about cost per evaluation.
+pub struct ScaleRow {
+    pub consumers: usize,
+    pub unconsumed_fields: usize,
+    pub a3_executions: usize,
+    pub c3_executions: usize,
+}
+
+pub fn scaling(consumers: usize, unconsumed_fields: usize) -> Result<ScaleRow, String> {
+    let (base, evaluators, targets) =
+        fixture::fanout_world(0, consumers, unconsumed_fields, "first");
+    let (target, _, _) = fixture::fanout_world(1, consumers, unconsumed_fields, "second");
+    let trust = fixture::fanout_trust(&targets);
+
+    // A3, the whole-value cache.
+    let mut cache = AppCache::new();
+    super::application_incremental::revise_app(
+        &base,
+        &targets,
+        &mut cache,
+        &evaluators,
+        &trust,
+        fixture::limits(),
+    )
+    .map_err(|error| format!("A3 warm-up failed: {error}"))?;
+    let a3 = super::application_incremental::revise_app(
+        &target,
+        &targets,
+        &mut cache,
+        &evaluators,
+        &trust,
+        fixture::limits(),
+    )
+    .map_err(|error| format!("A3 failed: {error}"))?;
+
+    // C3, the facet cache. The records come from the same base and the same evaluators.
+    let recorded: BTreeMap<NodeId, EvaluationRecord> =
+        full_recompute(&base, &targets, &evaluators, &trust, fixture::limits())
+            .map_err(|error| format!("C3 base failed: {error}"))?
+            .into_iter()
+            .map(|(id, evaluated)| (id, evaluated.record))
+            .collect();
+    let c3 = revise(
+        &base,
+        &target,
+        &recorded,
+        &targets,
+        &evaluators,
+        &trust,
+        fixture::limits(),
+    )
+    .map_err(|error| format!("C3 failed: {error}"))?;
+
+    Ok(ScaleRow {
+        consumers,
+        unconsumed_fields,
+        a3_executions: a3.executions,
+        c3_executions: c3.evaluations,
+    })
+}
+
+impl ScaleRow {
+    /// Evaluator runs the facet cache avoided. This is a count, never a currency.
+    pub fn avoided(&self) -> i64 {
+        self.a3_executions as i64 - self.c3_executions as i64
+    }
+}

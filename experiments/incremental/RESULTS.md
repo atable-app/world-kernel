@@ -62,7 +62,7 @@ M1 and M2 costs are historical and are not summed with M3
 
 Production: 1574 lines across tests/support/impact_core/model.rs, tests/support/impact_core/engine.rs, tests/support/impact_core/mod.rs.
 
-Test evidence: 1676 lines across tests/incremental_revision.rs, tests/m3_confirmation.rs, tests/support/impact_fixture.rs.
+Test evidence: 1773 lines across tests/incremental_revision.rs, tests/m3_confirmation.rs, tests/support/impact_fixture.rs.
 
 Reproduce with:
 

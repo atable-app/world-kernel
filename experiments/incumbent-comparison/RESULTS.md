@@ -33,6 +33,25 @@ What the decision rests on: Two of the three pre-registered clauses are met outr
 | unconsumed_field_change | 3 | 2 | 2 | 0 | true |
 | mutation_7_unchanged_world | 3 | 0 | 0 | 0 | true |
 
+## The reversal case ADR-003 required
+
+does the consumed-facet advantage grow past the line count on a graph of wide nodes, as ADR-003 required before the reduction could stand?
+
+Method: one observed input carrying unconsumed fields, N readers of the single field they actually use, and a change that touches only an unconsumed field. The most favourable honest case for the engine: a whole-value cache cannot see which part of a node was consumed.
+
+| Consumers | Unconsumed fields | A3 runs | C3 runs | Avoided |
+|---|---|---|---|---|
+| 3 | 1 | 3 | 0 | 3 |
+| 10 | 1 | 10 | 0 | 10 |
+| 100 | 1 | 100 | 0 | 100 |
+| 1000 | 1 | 1000 | 0 | 1000 |
+| 10000 | 1 | 10000 | 0 | 10000 |
+| 1000 | 8 | 1000 | 0 | 1000 |
+
+Verdict: the advantage scales linearly with the number of consumers and is unbounded within any graph size worth building. One unconsumed field is enough; more of them change nothing.
+
+Not measured: no cost per evaluation, so no break-even fan-out and no money figure. The avoided runs are a count and nothing else.
+
 ## Findings
 
 - Same observable result everywhere: **true**

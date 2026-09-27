@@ -584,3 +584,74 @@ fn the_contract_document_and_the_measured_codes_agree() {
     );
     assert!(emitted.len() >= 8, "the code list did not shrink unnoticed");
 }
+
+/// The reversal case is a measurement, not an argument, so it is asserted rather than described.
+///
+/// ADR-003 made the reduction conditional on this: if the consumed-facet advantage grows past the line
+/// count on a graph of wide nodes, the reduction was wrong. This is the test that decides it, and it is
+/// the reason the recorded artifact cannot quietly keep claiming "reduce".
+#[test]
+fn the_facet_advantage_scales_with_the_number_of_consumers() {
+    let small = incumbent_comparison::scaling(3, 1).expect("small fan-out runs");
+    let large = incumbent_comparison::scaling(1000, 1).expect("wide fan-out runs");
+
+    // The whole-value cache re-runs every consumer because it cannot see that the consumed field held.
+    assert_eq!(small.a3_executions, small.consumers);
+    assert_eq!(large.a3_executions, large.consumers);
+
+    // The facet cache runs none, at any width.
+    assert_eq!(small.c3_executions, 0);
+    assert_eq!(large.c3_executions, 0);
+
+    // So the advantage is exactly the fan-out, and it grows without bound.
+    assert_eq!(small.avoided(), 3);
+    assert_eq!(large.avoided(), 1000);
+    assert!(large.avoided() > small.avoided());
+
+    // One unconsumed field is enough. Padding the node further changes nothing, which is the point: the
+    // whole-value cache never looks at how much of the node was consumed, only whether it moved at all.
+    let padded = incumbent_comparison::scaling(1000, 8).expect("padded fan-out runs");
+    assert_eq!(padded.avoided(), large.avoided());
+}
+
+/// The recorded reversal case must match a fresh measurement, for the same reason the scenarios do.
+#[test]
+fn the_recorded_reversal_case_matches_a_fresh_measurement() {
+    let recorded: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("experiments/incumbent-comparison/results.json"),
+        )
+        .expect("results.json is checked in"),
+    )
+    .expect("results.json is valid JSON");
+
+    let rows = recorded["reversalCase"]["rows"]
+        .as_array()
+        .expect("the reversal case is recorded");
+    assert!(
+        !rows.is_empty(),
+        "the reversal case must be measured, not asserted"
+    );
+
+    for row in rows {
+        let consumers = row["consumers"].as_u64().expect("consumers") as usize;
+        let pads = row["unconsumedFields"].as_u64().expect("unconsumed fields") as usize;
+        let fresh = incumbent_comparison::scaling(consumers, pads).expect("re-measured");
+        assert_eq!(
+            row["a3Executions"].as_u64(),
+            Some(fresh.a3_executions as u64),
+            "{consumers} consumers"
+        );
+        assert_eq!(
+            row["c3Executions"].as_u64(),
+            Some(fresh.c3_executions as u64),
+            "{consumers} consumers"
+        );
+        assert_eq!(
+            row["evaluationsAvoidedByTheFacetCache"].as_i64(),
+            Some(fresh.avoided()),
+            "{consumers} consumers"
+        );
+    }
+}

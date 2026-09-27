@@ -30,7 +30,7 @@
     "applicationMechanism": 247,
     "note": "physical lines including comments, the count a team would pay for. The engine lines were removed from the Kernel's shipped surface; they are counted here to price what was removed",
     "removedFromTheKernel": 1542,
-    "tests": 1391
+    "tests": 1462
   },
   "notMeasured": [
     "no IntentLane path: the application mechanism was not run against a real consumer",
@@ -76,6 +76,56 @@
       "consumer-granted profiles, because a cache decides its own competence",
       "the decision rule, because a cache would recompute a recorded human decision"
     ]
+  },
+  "reversalCase": {
+    "method": "one observed input carrying unconsumed fields, N readers of the single field they actually use, and a change that touches only an unconsumed field. The most favourable honest case for the engine: a whole-value cache cannot see which part of a node was consumed.",
+    "notMeasured": "no cost per evaluation, so no break-even fan-out and no money figure. The avoided runs are a count and nothing else.",
+    "question": "does the consumed-facet advantage grow past the line count on a graph of wide nodes, as ADR-003 required before the reduction could stand?",
+    "rows": [
+      {
+        "a3Executions": 3,
+        "c3Executions": 0,
+        "consumers": 3,
+        "evaluationsAvoidedByTheFacetCache": 3,
+        "unconsumedFields": 1
+      },
+      {
+        "a3Executions": 10,
+        "c3Executions": 0,
+        "consumers": 10,
+        "evaluationsAvoidedByTheFacetCache": 10,
+        "unconsumedFields": 1
+      },
+      {
+        "a3Executions": 100,
+        "c3Executions": 0,
+        "consumers": 100,
+        "evaluationsAvoidedByTheFacetCache": 100,
+        "unconsumedFields": 1
+      },
+      {
+        "a3Executions": 1000,
+        "c3Executions": 0,
+        "consumers": 1000,
+        "evaluationsAvoidedByTheFacetCache": 1000,
+        "unconsumedFields": 1
+      },
+      {
+        "a3Executions": 10000,
+        "c3Executions": 0,
+        "consumers": 10000,
+        "evaluationsAvoidedByTheFacetCache": 10000,
+        "unconsumedFields": 1
+      },
+      {
+        "a3Executions": 1000,
+        "c3Executions": 0,
+        "consumers": 1000,
+        "evaluationsAvoidedByTheFacetCache": 1000,
+        "unconsumedFields": 8
+      }
+    ],
+    "verdict": "the advantage scales linearly with the number of consumers and is unbounded within any graph size worth building. One unconsumed field is enough; more of them change nothing."
   },
   "scenarios": [
     {

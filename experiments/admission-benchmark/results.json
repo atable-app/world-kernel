@@ -58,9 +58,9 @@
         "incorrectAdmissions": [],
         "system": "A",
         "timingMicros": {
-          "median": 4585,
+          "median": 4138,
           "note": "descriptive only, measured on the recorded environment",
-          "p95": 9131
+          "p95": 7167
         },
         "unjustifiedRejections": [],
         "unsupportedByFamily": {
@@ -82,9 +82,9 @@
         "incorrectAdmissions": [],
         "system": "B",
         "timingMicros": {
-          "median": 4568,
+          "median": 4380,
           "note": "descriptive only, measured on the recorded environment",
-          "p95": 10570
+          "p95": 6850
         },
         "unjustifiedRejections": [],
         "unsupportedByFamily": {
@@ -108,9 +108,9 @@
         "incorrectAdmissions": [],
         "system": "C",
         "timingMicros": {
-          "median": 7009,
+          "median": 6275,
           "note": "descriptive only, measured on the recorded environment",
-          "p95": 18221
+          "p95": 9840
         },
         "unjustifiedRejections": [],
         "unsupportedByFamily": {
@@ -129,7 +129,7 @@
       },
       "caseId": "candidate.reference.001",
       "correct": true,
-      "durationMicros": 5324,
+      "durationMicros": 7264,
       "expected": {
         "code": "ASSESSMENT_MISMATCH",
         "status": "rejected"
@@ -143,7 +143,7 @@
       },
       "caseId": "candidate.reference.001",
       "correct": true,
-      "durationMicros": 3724,
+      "durationMicros": 5331,
       "expected": {
         "code": "ASSESSMENT_MISMATCH",
         "status": "rejected"
@@ -157,7 +157,7 @@
       },
       "caseId": "candidate.reference.001",
       "correct": true,
-      "durationMicros": 5066,
+      "durationMicros": 7158,
       "expected": {
         "code": "ASSESSMENT_MISMATCH",
         "status": "rejected"
@@ -171,7 +171,7 @@
       },
       "caseId": "candidate.digest.002",
       "correct": true,
-      "durationMicros": 3094,
+      "durationMicros": 4390,
       "expected": {
         "code": "ASSESSMENT_MISMATCH",
         "status": "rejected"
@@ -185,7 +185,7 @@
       },
       "caseId": "candidate.digest.002",
       "correct": true,
-      "durationMicros": 3436,
+      "durationMicros": 4517,
       "expected": {
         "code": "ASSESSMENT_MISMATCH",
         "status": "rejected"
@@ -198,191 +198,191 @@
         "status": "rejected"
       },
       "caseId": "candidate.digest.002",
+      "correct": true,
+      "durationMicros": 6189,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.changed.003",
+      "correct": true,
+      "durationMicros": 5104,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.changed.003",
+      "correct": true,
+      "durationMicros": 4888,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.changed.003",
+      "correct": true,
+      "durationMicros": 5475,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.two.004",
+      "correct": true,
+      "durationMicros": 4530,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.two.004",
+      "correct": true,
+      "durationMicros": 4417,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.two.004",
+      "correct": true,
+      "durationMicros": 6570,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.patch-digest.005",
+      "correct": true,
+      "durationMicros": 4423,
+      "expected": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.patch-digest.005",
+      "correct": true,
+      "durationMicros": 4346,
+      "expected": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.patch-digest.005",
+      "correct": true,
+      "durationMicros": 6044,
+      "expected": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.intent-target.006",
+      "correct": true,
+      "durationMicros": 4160,
+      "expected": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.intent-target.006",
+      "correct": true,
+      "durationMicros": 4367,
+      "expected": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "candidate.intent-target.006",
+      "correct": true,
+      "durationMicros": 6589,
+      "expected": {
+        "code": "CANDIDATE_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "candidate.exact.101",
       "correct": true,
       "durationMicros": 5885,
       "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.changed.003",
-      "correct": true,
-      "durationMicros": 3222,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.changed.003",
-      "correct": true,
-      "durationMicros": 6915,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.changed.003",
-      "correct": true,
-      "durationMicros": 4827,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.two.004",
-      "correct": true,
-      "durationMicros": 3198,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.two.004",
-      "correct": true,
-      "durationMicros": 7650,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.two.004",
-      "correct": true,
-      "durationMicros": 5574,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.patch-digest.005",
-      "correct": true,
-      "durationMicros": 3345,
-      "expected": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.patch-digest.005",
-      "correct": true,
-      "durationMicros": 3496,
-      "expected": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.patch-digest.005",
-      "correct": true,
-      "durationMicros": 6893,
-      "expected": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.intent-target.006",
-      "correct": true,
-      "durationMicros": 3327,
-      "expected": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.intent-target.006",
-      "correct": true,
-      "durationMicros": 3562,
-      "expected": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "candidate.intent-target.006",
-      "correct": true,
-      "durationMicros": 7064,
-      "expected": {
-        "code": "CANDIDATE_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "candidate.exact.101",
-      "correct": true,
-      "durationMicros": 5285,
-      "expected": {
         "code": null,
         "status": "committed"
       },
@@ -395,7 +395,7 @@
       },
       "caseId": "candidate.exact.101",
       "correct": true,
-      "durationMicros": 7735,
+      "durationMicros": 5398,
       "expected": {
         "code": null,
         "status": "committed"
@@ -409,7 +409,7 @@
       },
       "caseId": "candidate.exact.101",
       "correct": true,
-      "durationMicros": 7882,
+      "durationMicros": 8544,
       "expected": {
         "code": null,
         "status": "committed"
@@ -423,7 +423,7 @@
       },
       "caseId": "candidate.publish.102",
       "correct": true,
-      "durationMicros": 4817,
+      "durationMicros": 5844,
       "expected": {
         "code": null,
         "status": "committed"
@@ -437,7 +437,7 @@
       },
       "caseId": "candidate.publish.102",
       "correct": true,
-      "durationMicros": 5413,
+      "durationMicros": 6741,
       "expected": {
         "code": null,
         "status": "committed"
@@ -451,7 +451,7 @@
       },
       "caseId": "candidate.publish.102",
       "correct": true,
-      "durationMicros": 7956,
+      "durationMicros": 9207,
       "expected": {
         "code": null,
         "status": "committed"
@@ -465,7 +465,7 @@
       },
       "caseId": "authority.missing.001",
       "correct": true,
-      "durationMicros": 3336,
+      "durationMicros": 3860,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -479,7 +479,7 @@
       },
       "caseId": "authority.missing.001",
       "correct": true,
-      "durationMicros": 3445,
+      "durationMicros": 4682,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -493,7 +493,7 @@
       },
       "caseId": "authority.missing.001",
       "correct": true,
-      "durationMicros": 5134,
+      "durationMicros": 6389,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -507,7 +507,7 @@
       },
       "caseId": "authority.revoked.002",
       "correct": true,
-      "durationMicros": 3777,
+      "durationMicros": 6031,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -521,7 +521,7 @@
       },
       "caseId": "authority.revoked.002",
       "correct": true,
-      "durationMicros": 4451,
+      "durationMicros": 6214,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -535,7 +535,7 @@
       },
       "caseId": "authority.revoked.002",
       "correct": true,
-      "durationMicros": 6467,
+      "durationMicros": 9053,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -549,7 +549,7 @@
       },
       "caseId": "authority.unrelated.003",
       "correct": true,
-      "durationMicros": 4896,
+      "durationMicros": 4941,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -563,7 +563,7 @@
       },
       "caseId": "authority.unrelated.003",
       "correct": true,
-      "durationMicros": 4922,
+      "durationMicros": 5151,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -577,7 +577,7 @@
       },
       "caseId": "authority.unrelated.003",
       "correct": true,
-      "durationMicros": 6418,
+      "durationMicros": 7472,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -591,7 +591,7 @@
       },
       "caseId": "authority.other-actor.004",
       "correct": true,
-      "durationMicros": 3375,
+      "durationMicros": 5926,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -604,219 +604,219 @@
         "status": "rejected"
       },
       "caseId": "authority.other-actor.004",
+      "correct": true,
+      "durationMicros": 4929,
+      "expected": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "caseId": "authority.other-actor.004",
+      "correct": true,
+      "durationMicros": 7871,
+      "expected": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "caseId": "authority.similar-name.005",
+      "correct": true,
+      "durationMicros": 7051,
+      "expected": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "caseId": "authority.similar-name.005",
+      "correct": true,
+      "durationMicros": 6821,
+      "expected": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "caseId": "authority.similar-name.005",
+      "correct": true,
+      "durationMicros": 9317,
+      "expected": {
+        "code": "UNAUTHORIZED",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "authority.granted.101",
+      "correct": true,
+      "durationMicros": 9339,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "authority.granted.101",
+      "correct": true,
+      "durationMicros": 9111,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "authority.granted.101",
+      "correct": true,
+      "durationMicros": 13511,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "authority.renewed.102",
+      "correct": true,
+      "durationMicros": 7167,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "authority.renewed.102",
+      "correct": true,
+      "durationMicros": 6542,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "authority.renewed.102",
+      "correct": true,
+      "durationMicros": 10254,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "STALE_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "concurrency.stale-world.001",
+      "correct": true,
+      "durationMicros": 5017,
+      "expected": {
+        "code": "STALE_WORLD",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "STALE_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "concurrency.stale-world.001",
+      "correct": true,
+      "durationMicros": 5623,
+      "expected": {
+        "code": "STALE_WORLD",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "STALE_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "concurrency.stale-world.001",
+      "correct": true,
+      "durationMicros": 7498,
+      "expected": {
+        "code": "STALE_WORLD",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "STALE_DEPENDENCY",
+        "status": "rejected"
+      },
+      "caseId": "concurrency.stale-read.002",
+      "correct": true,
+      "durationMicros": 3743,
+      "expected": {
+        "code": "STALE_DEPENDENCY",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "STALE_DEPENDENCY",
+        "status": "rejected"
+      },
+      "caseId": "concurrency.stale-read.002",
       "correct": true,
       "durationMicros": 3736,
       "expected": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "caseId": "authority.other-actor.004",
-      "correct": true,
-      "durationMicros": 5500,
-      "expected": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "caseId": "authority.similar-name.005",
-      "correct": true,
-      "durationMicros": 5147,
-      "expected": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "caseId": "authority.similar-name.005",
-      "correct": true,
-      "durationMicros": 3609,
-      "expected": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "caseId": "authority.similar-name.005",
-      "correct": true,
-      "durationMicros": 5474,
-      "expected": {
-        "code": "UNAUTHORIZED",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "authority.granted.101",
-      "correct": true,
-      "durationMicros": 4942,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "authority.granted.101",
-      "correct": true,
-      "durationMicros": 5726,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "authority.granted.101",
-      "correct": true,
-      "durationMicros": 8466,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "authority.renewed.102",
-      "correct": true,
-      "durationMicros": 4585,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "authority.renewed.102",
-      "correct": true,
-      "durationMicros": 5008,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "authority.renewed.102",
-      "correct": true,
-      "durationMicros": 6861,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "STALE_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "concurrency.stale-world.001",
-      "correct": true,
-      "durationMicros": 5523,
-      "expected": {
-        "code": "STALE_WORLD",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "STALE_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "concurrency.stale-world.001",
-      "correct": true,
-      "durationMicros": 6067,
-      "expected": {
-        "code": "STALE_WORLD",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "STALE_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "concurrency.stale-world.001",
-      "correct": true,
-      "durationMicros": 7009,
-      "expected": {
-        "code": "STALE_WORLD",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "STALE_DEPENDENCY",
-        "status": "rejected"
-      },
-      "caseId": "concurrency.stale-read.002",
-      "correct": true,
-      "durationMicros": 3180,
-      "expected": {
-        "code": "STALE_DEPENDENCY",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "STALE_DEPENDENCY",
-        "status": "rejected"
-      },
-      "caseId": "concurrency.stale-read.002",
-      "correct": true,
-      "durationMicros": 3458,
-      "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
       },
@@ -829,7 +829,7 @@
       },
       "caseId": "concurrency.stale-read.002",
       "correct": true,
-      "durationMicros": 5210,
+      "durationMicros": 6857,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -843,7 +843,7 @@
       },
       "caseId": "concurrency.patch-conflict.003",
       "correct": true,
-      "durationMicros": 3176,
+      "durationMicros": 4133,
       "expected": {
         "code": "PATCH_CONFLICT",
         "status": "rejected"
@@ -857,7 +857,7 @@
       },
       "caseId": "concurrency.patch-conflict.003",
       "correct": true,
-      "durationMicros": 4215,
+      "durationMicros": 3852,
       "expected": {
         "code": "PATCH_CONFLICT",
         "status": "rejected"
@@ -871,7 +871,7 @@
       },
       "caseId": "concurrency.patch-conflict.003",
       "correct": true,
-      "durationMicros": 6473,
+      "durationMicros": 6131,
       "expected": {
         "code": "PATCH_CONFLICT",
         "status": "rejected"
@@ -885,7 +885,7 @@
       },
       "caseId": "concurrency.read-digest.004",
       "correct": true,
-      "durationMicros": 2971,
+      "durationMicros": 4138,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -899,7 +899,7 @@
       },
       "caseId": "concurrency.read-digest.004",
       "correct": true,
-      "durationMicros": 3414,
+      "durationMicros": 4375,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -913,7 +913,7 @@
       },
       "caseId": "concurrency.read-digest.004",
       "correct": true,
-      "durationMicros": 5377,
+      "durationMicros": 5777,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -927,7 +927,7 @@
       },
       "caseId": "concurrency.read-absent.005",
       "correct": true,
-      "durationMicros": 3952,
+      "durationMicros": 3740,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -941,7 +941,7 @@
       },
       "caseId": "concurrency.read-absent.005",
       "correct": true,
-      "durationMicros": 3645,
+      "durationMicros": 4320,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -955,7 +955,7 @@
       },
       "caseId": "concurrency.read-absent.005",
       "correct": true,
-      "durationMicros": 4644,
+      "durationMicros": 6572,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -969,7 +969,7 @@
       },
       "caseId": "concurrency.world-ahead.006",
       "correct": true,
-      "durationMicros": 5055,
+      "durationMicros": 5553,
       "expected": {
         "code": "STALE_WORLD",
         "status": "rejected"
@@ -983,7 +983,7 @@
       },
       "caseId": "concurrency.world-ahead.006",
       "correct": true,
-      "durationMicros": 5159,
+      "durationMicros": 5752,
       "expected": {
         "code": "STALE_WORLD",
         "status": "rejected"
@@ -997,7 +997,7 @@
       },
       "caseId": "concurrency.world-ahead.006",
       "correct": true,
-      "durationMicros": 7382,
+      "durationMicros": 8367,
       "expected": {
         "code": "STALE_WORLD",
         "status": "rejected"
@@ -1011,7 +1011,7 @@
       },
       "caseId": "concurrency.partial-patch.007",
       "correct": true,
-      "durationMicros": 3064,
+      "durationMicros": 3844,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -1025,7 +1025,7 @@
       },
       "caseId": "concurrency.partial-patch.007",
       "correct": true,
-      "durationMicros": 3677,
+      "durationMicros": 4527,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -1039,7 +1039,7 @@
       },
       "caseId": "concurrency.partial-patch.007",
       "correct": true,
-      "durationMicros": 4792,
+      "durationMicros": 6464,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -1053,7 +1053,7 @@
       },
       "caseId": "concurrency.independent.101",
       "correct": true,
-      "durationMicros": 4841,
+      "durationMicros": 5423,
       "expected": {
         "code": null,
         "status": "committed"
@@ -1067,7 +1067,7 @@
       },
       "caseId": "concurrency.independent.101",
       "correct": true,
-      "durationMicros": 4999,
+      "durationMicros": 6545,
       "expected": {
         "code": null,
         "status": "committed"
@@ -1081,7 +1081,7 @@
       },
       "caseId": "concurrency.independent.101",
       "correct": true,
-      "durationMicros": 7385,
+      "durationMicros": 7767,
       "expected": {
         "code": null,
         "status": "committed"
@@ -1095,7 +1095,7 @@
       },
       "caseId": "concurrency.patch-advance.102",
       "correct": true,
-      "durationMicros": 5329,
+      "durationMicros": 4693,
       "expected": {
         "code": null,
         "status": "committed"
@@ -1109,7 +1109,7 @@
       },
       "caseId": "concurrency.patch-advance.102",
       "correct": true,
-      "durationMicros": 5846,
+      "durationMicros": 5216,
       "expected": {
         "code": null,
         "status": "committed"
@@ -1123,7 +1123,7 @@
       },
       "caseId": "concurrency.patch-advance.102",
       "correct": true,
-      "durationMicros": 7534,
+      "durationMicros": 7824,
       "expected": {
         "code": null,
         "status": "committed"
@@ -1137,7 +1137,7 @@
       },
       "caseId": "idempotency.conflict.001",
       "correct": true,
-      "durationMicros": 4553,
+      "durationMicros": 3965,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1151,7 +1151,7 @@
       },
       "caseId": "idempotency.conflict.001",
       "correct": true,
-      "durationMicros": 4568,
+      "durationMicros": 4724,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1165,7 +1165,7 @@
       },
       "caseId": "idempotency.conflict.001",
       "correct": true,
-      "durationMicros": 9012,
+      "durationMicros": 6500,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1179,7 +1179,7 @@
       },
       "caseId": "idempotency.conflict-digest.002",
       "correct": true,
-      "durationMicros": 4757,
+      "durationMicros": 3982,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1193,7 +1193,7 @@
       },
       "caseId": "idempotency.conflict-digest.002",
       "correct": true,
-      "durationMicros": 4801,
+      "durationMicros": 4667,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1207,7 +1207,7 @@
       },
       "caseId": "idempotency.conflict-digest.002",
       "correct": true,
-      "durationMicros": 9096,
+      "durationMicros": 6762,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1221,7 +1221,7 @@
       },
       "caseId": "idempotency.conflict-base.003",
       "correct": true,
-      "durationMicros": 4803,
+      "durationMicros": 4839,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1235,7 +1235,7 @@
       },
       "caseId": "idempotency.conflict-base.003",
       "correct": true,
-      "durationMicros": 4844,
+      "durationMicros": 4606,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1249,7 +1249,7 @@
       },
       "caseId": "idempotency.conflict-base.003",
       "correct": true,
-      "durationMicros": 6937,
+      "durationMicros": 6600,
       "expected": {
         "code": "IDEMPOTENCY_CONFLICT",
         "status": "rejected"
@@ -1262,1381 +1262,1381 @@
         "status": "rejected"
       },
       "caseId": "idempotency.conflict-actor.004",
-      "correct": true,
-      "durationMicros": 5105,
-      "expected": {
-        "code": "IDEMPOTENCY_CONFLICT",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "IDEMPOTENCY_CONFLICT",
-        "status": "rejected"
-      },
-      "caseId": "idempotency.conflict-actor.004",
-      "correct": true,
-      "durationMicros": 4405,
-      "expected": {
-        "code": "IDEMPOTENCY_CONFLICT",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "IDEMPOTENCY_CONFLICT",
-        "status": "rejected"
-      },
-      "caseId": "idempotency.conflict-actor.004",
-      "correct": true,
-      "durationMicros": 8335,
-      "expected": {
-        "code": "IDEMPOTENCY_CONFLICT",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.independent.005",
-      "correct": true,
-      "durationMicros": 7384,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.independent.005",
-      "correct": true,
-      "durationMicros": 6508,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.independent.005",
-      "correct": true,
-      "durationMicros": 6616,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.retry.101",
-      "correct": true,
-      "durationMicros": 4305,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.retry.101",
-      "correct": true,
-      "durationMicros": 5750,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.retry.101",
-      "correct": true,
-      "durationMicros": 7016,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.reopened.102",
-      "correct": true,
-      "durationMicros": 9131,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.reopened.102",
-      "correct": true,
-      "durationMicros": 6917,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.reopened.102",
-      "correct": true,
-      "durationMicros": 8927,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.lost-response.103",
-      "correct": true,
-      "durationMicros": 6780,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.lost-response.103",
-      "correct": true,
-      "durationMicros": 5908,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "idempotency.lost-response.103",
-      "correct": true,
-      "durationMicros": 9407,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.truncated.001",
-      "correct": true,
-      "durationMicros": 5380,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.truncated.001",
-      "correct": true,
-      "durationMicros": 4657,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.truncated.001",
-      "correct": true,
-      "durationMicros": 7318,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.missing-intent.002",
-      "correct": true,
-      "durationMicros": 4123,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.missing-intent.002",
-      "correct": true,
-      "durationMicros": 3495,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.missing-intent.002",
-      "correct": true,
-      "durationMicros": 6136,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.other-intent.003",
-      "correct": true,
-      "durationMicros": 6371,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.other-intent.003",
-      "correct": true,
-      "durationMicros": 3949,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.other-intent.003",
-      "correct": true,
-      "durationMicros": 5732,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.truncated-complete.004",
-      "correct": true,
-      "durationMicros": 4469,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.truncated-complete.004",
-      "correct": true,
-      "durationMicros": 3578,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "caseId": "coverage.truncated-complete.004",
-      "correct": true,
-      "durationMicros": 4681,
-      "expected": {
-        "code": "INCOMPLETE_VIEW",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "coverage.complete-empty.101",
-      "correct": true,
-      "durationMicros": 4979,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "coverage.complete-empty.101",
-      "correct": true,
-      "durationMicros": 5836,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "coverage.complete-empty.101",
-      "correct": true,
-      "durationMicros": 7331,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "coverage.complete-full.102",
-      "correct": true,
-      "durationMicros": 5341,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "coverage.complete-full.102",
-      "correct": true,
-      "durationMicros": 6817,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "coverage.complete-full.102",
-      "correct": true,
-      "durationMicros": 9706,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
-        "status": "rejected"
-      },
-      "caseId": "assurance.untrusted-provider.001",
-      "correct": true,
-      "durationMicros": 4354,
-      "expected": {
-        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
-        "status": "rejected"
-      },
-      "caseId": "assurance.untrusted-provider.001",
-      "correct": true,
-      "durationMicros": 3893,
-      "expected": {
-        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
-        "status": "rejected"
-      },
-      "caseId": "assurance.untrusted-provider.001",
-      "correct": true,
-      "durationMicros": 7223,
-      "expected": {
-        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNI_NOT_ACCEPTED",
-        "status": "rejected"
-      },
-      "caseId": "assurance.not-accepted.002",
-      "correct": true,
-      "durationMicros": 3364,
-      "expected": {
-        "code": "UNI_NOT_ACCEPTED",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNI_NOT_ACCEPTED",
-        "status": "rejected"
-      },
-      "caseId": "assurance.not-accepted.002",
-      "correct": true,
-      "durationMicros": 3464,
-      "expected": {
-        "code": "UNI_NOT_ACCEPTED",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNI_NOT_ACCEPTED",
-        "status": "rejected"
-      },
-      "caseId": "assurance.not-accepted.002",
-      "correct": true,
-      "durationMicros": 7615,
-      "expected": {
-        "code": "UNI_NOT_ACCEPTED",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNI_BUNDLE_INVALID",
-        "status": "rejected"
-      },
-      "caseId": "assurance.invalid-bundle.003",
-      "correct": true,
-      "durationMicros": 3181,
-      "expected": {
-        "code": "UNI_BUNDLE_INVALID",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNI_BUNDLE_INVALID",
-        "status": "rejected"
-      },
-      "caseId": "assurance.invalid-bundle.003",
-      "correct": true,
-      "durationMicros": 3458,
-      "expected": {
-        "code": "UNI_BUNDLE_INVALID",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNI_BUNDLE_INVALID",
-        "status": "rejected"
-      },
-      "caseId": "assurance.invalid-bundle.003",
-      "correct": true,
-      "durationMicros": 5439,
-      "expected": {
-        "code": "UNI_BUNDLE_INVALID",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "assurance.no-assessment.004",
-      "correct": true,
-      "durationMicros": 3431,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "assurance.no-assessment.004",
-      "correct": true,
-      "durationMicros": 3576,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "caseId": "assurance.no-assessment.004",
-      "correct": true,
-      "durationMicros": 5825,
-      "expected": {
-        "code": "ASSESSMENT_MISMATCH",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
-        "status": "rejected"
-      },
-      "caseId": "assurance.evidence-required.005",
-      "correct": true,
-      "durationMicros": 3236,
-      "expected": {
-        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
-        "status": "rejected"
-      },
-      "caseId": "assurance.evidence-required.005",
-      "correct": true,
-      "durationMicros": 3677,
-      "expected": {
-        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
-        "status": "rejected"
-      },
-      "caseId": "assurance.evidence-required.005",
-      "correct": true,
-      "durationMicros": 7551,
-      "expected": {
-        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "assurance.valid.101",
-      "correct": true,
-      "durationMicros": 6761,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "assurance.valid.101",
-      "correct": true,
-      "durationMicros": 5717,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "assurance.valid.101",
-      "correct": true,
-      "durationMicros": 7787,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "assurance.secondary.102",
-      "correct": true,
-      "durationMicros": 4912,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "assurance.secondary.102",
-      "correct": true,
-      "durationMicros": 5049,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "assurance.secondary.102",
-      "correct": true,
-      "durationMicros": 8333,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "caseId": "scope.unknown-schema.001",
-      "correct": true,
-      "durationMicros": 3483,
-      "expected": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "caseId": "scope.unknown-schema.001",
-      "correct": true,
-      "durationMicros": 3274,
-      "expected": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "caseId": "scope.unknown-schema.001",
-      "correct": true,
-      "durationMicros": 5158,
-      "expected": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "caseId": "scope.padded-schema.002",
-      "correct": true,
-      "durationMicros": 4697,
-      "expected": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "caseId": "scope.padded-schema.002",
-      "correct": true,
-      "durationMicros": 4784,
-      "expected": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "caseId": "scope.padded-schema.002",
-      "correct": true,
-      "durationMicros": 9376,
-      "expected": {
-        "code": "UNSUPPORTED_SCHEMA",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "scope.wrong-world.003",
-      "correct": true,
-      "durationMicros": 9768,
-      "expected": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "scope.wrong-world.003",
-      "correct": true,
-      "durationMicros": 10570,
-      "expected": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "scope.wrong-world.003",
-      "correct": true,
-      "durationMicros": 8043,
-      "expected": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "scope.similar-world.004",
-      "correct": true,
-      "durationMicros": 4895,
-      "expected": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "scope.similar-world.004",
-      "correct": true,
-      "durationMicros": 4760,
-      "expected": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "caseId": "scope.similar-world.004",
-      "correct": true,
-      "durationMicros": 8034,
-      "expected": {
-        "code": "WRONG_WORLD",
-        "status": "rejected"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "scope.exact.101",
-      "correct": true,
-      "durationMicros": 5567,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "scope.exact.101",
-      "correct": true,
-      "durationMicros": 5401,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "scope.exact.101",
-      "correct": true,
-      "durationMicros": 27690,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "scope.sibling-live.102",
-      "correct": true,
-      "durationMicros": 19935,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "scope.sibling-live.102",
-      "correct": true,
-      "durationMicros": 10903,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "scope.sibling-live.102",
-      "correct": true,
-      "durationMicros": 14554,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.object-write.001",
-      "correct": true,
-      "durationMicros": 8007,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.object-write.001",
-      "correct": true,
-      "durationMicros": 10152,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.object-write.001",
-      "correct": true,
-      "durationMicros": 8653,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.world-revision.002",
-      "correct": true,
-      "durationMicros": 6831,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.world-revision.002",
-      "correct": true,
-      "durationMicros": 9093,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.world-revision.002",
-      "correct": true,
-      "durationMicros": 9787,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.event-append.003",
-      "correct": true,
-      "durationMicros": 7323,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.event-append.003",
-      "correct": true,
-      "durationMicros": 6839,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.event-append.003",
-      "correct": true,
-      "durationMicros": 9958,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.submission-record.004",
-      "correct": true,
-      "durationMicros": 6644,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.submission-record.004",
-      "correct": true,
-      "durationMicros": 6859,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.submission-record.004",
-      "correct": true,
-      "durationMicros": 9028,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.second-patch.005",
-      "correct": true,
-      "durationMicros": 7695,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.second-patch.005",
-      "correct": true,
-      "durationMicros": 6237,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.second-patch.005",
-      "correct": true,
-      "durationMicros": 9923,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.clean.101",
-      "correct": true,
-      "durationMicros": 6204,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.clean.101",
-      "correct": true,
-      "durationMicros": 5985,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": null,
-        "status": "committed"
-      },
-      "caseId": "commit.clean.101",
-      "correct": true,
-      "durationMicros": 8538,
-      "expected": {
-        "code": null,
-        "status": "committed"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.object.001",
-      "correct": true,
-      "durationMicros": 3712,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.object.001",
-      "correct": true,
-      "durationMicros": 3629,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.object.001",
-      "correct": true,
-      "durationMicros": 6551,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.permission.002",
-      "correct": true,
-      "durationMicros": 3534,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.permission.002",
-      "correct": true,
-      "durationMicros": 3606,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.permission.002",
-      "correct": true,
-      "durationMicros": 5615,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "C"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.file.003",
-      "correct": true,
-      "durationMicros": 3705,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "A"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.file.003",
-      "correct": true,
-      "durationMicros": 3184,
-      "expected": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "system": "B"
-    },
-    {
-      "actual": {
-        "code": "UNSUPPORTED",
-        "status": "unsupported"
-      },
-      "caseId": "negative.file.003",
       "correct": true,
       "durationMicros": 4302,
       "expected": {
+        "code": "IDEMPOTENCY_CONFLICT",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "IDEMPOTENCY_CONFLICT",
+        "status": "rejected"
+      },
+      "caseId": "idempotency.conflict-actor.004",
+      "correct": true,
+      "durationMicros": 4380,
+      "expected": {
+        "code": "IDEMPOTENCY_CONFLICT",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "IDEMPOTENCY_CONFLICT",
+        "status": "rejected"
+      },
+      "caseId": "idempotency.conflict-actor.004",
+      "correct": true,
+      "durationMicros": 6898,
+      "expected": {
+        "code": "IDEMPOTENCY_CONFLICT",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.independent.005",
+      "correct": true,
+      "durationMicros": 5017,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.independent.005",
+      "correct": true,
+      "durationMicros": 5142,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.independent.005",
+      "correct": true,
+      "durationMicros": 7471,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.retry.101",
+      "correct": true,
+      "durationMicros": 4821,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.retry.101",
+      "correct": true,
+      "durationMicros": 4386,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.retry.101",
+      "correct": true,
+      "durationMicros": 6314,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.reopened.102",
+      "correct": true,
+      "durationMicros": 4750,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.reopened.102",
+      "correct": true,
+      "durationMicros": 4360,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.reopened.102",
+      "correct": true,
+      "durationMicros": 6366,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.lost-response.103",
+      "correct": true,
+      "durationMicros": 4966,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.lost-response.103",
+      "correct": true,
+      "durationMicros": 5313,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "idempotency.lost-response.103",
+      "correct": true,
+      "durationMicros": 7446,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.truncated.001",
+      "correct": true,
+      "durationMicros": 3456,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.truncated.001",
+      "correct": true,
+      "durationMicros": 3110,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.truncated.001",
+      "correct": true,
+      "durationMicros": 4515,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.missing-intent.002",
+      "correct": true,
+      "durationMicros": 2663,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.missing-intent.002",
+      "correct": true,
+      "durationMicros": 3140,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.missing-intent.002",
+      "correct": true,
+      "durationMicros": 4534,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.other-intent.003",
+      "correct": true,
+      "durationMicros": 2997,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.other-intent.003",
+      "correct": true,
+      "durationMicros": 2969,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.other-intent.003",
+      "correct": true,
+      "durationMicros": 4611,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.truncated-complete.004",
+      "correct": true,
+      "durationMicros": 2725,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.truncated-complete.004",
+      "correct": true,
+      "durationMicros": 3193,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "caseId": "coverage.truncated-complete.004",
+      "correct": true,
+      "durationMicros": 4513,
+      "expected": {
+        "code": "INCOMPLETE_VIEW",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "coverage.complete-empty.101",
+      "correct": true,
+      "durationMicros": 3896,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "coverage.complete-empty.101",
+      "correct": true,
+      "durationMicros": 4224,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "coverage.complete-empty.101",
+      "correct": true,
+      "durationMicros": 6197,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "coverage.complete-full.102",
+      "correct": true,
+      "durationMicros": 4005,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "coverage.complete-full.102",
+      "correct": true,
+      "durationMicros": 4392,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "coverage.complete-full.102",
+      "correct": true,
+      "durationMicros": 6008,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
+        "status": "rejected"
+      },
+      "caseId": "assurance.untrusted-provider.001",
+      "correct": true,
+      "durationMicros": 3046,
+      "expected": {
+        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
+        "status": "rejected"
+      },
+      "caseId": "assurance.untrusted-provider.001",
+      "correct": true,
+      "durationMicros": 3847,
+      "expected": {
+        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
+        "status": "rejected"
+      },
+      "caseId": "assurance.untrusted-provider.001",
+      "correct": true,
+      "durationMicros": 4547,
+      "expected": {
+        "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNI_NOT_ACCEPTED",
+        "status": "rejected"
+      },
+      "caseId": "assurance.not-accepted.002",
+      "correct": true,
+      "durationMicros": 2608,
+      "expected": {
+        "code": "UNI_NOT_ACCEPTED",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNI_NOT_ACCEPTED",
+        "status": "rejected"
+      },
+      "caseId": "assurance.not-accepted.002",
+      "correct": true,
+      "durationMicros": 2953,
+      "expected": {
+        "code": "UNI_NOT_ACCEPTED",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNI_NOT_ACCEPTED",
+        "status": "rejected"
+      },
+      "caseId": "assurance.not-accepted.002",
+      "correct": true,
+      "durationMicros": 3683,
+      "expected": {
+        "code": "UNI_NOT_ACCEPTED",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNI_BUNDLE_INVALID",
+        "status": "rejected"
+      },
+      "caseId": "assurance.invalid-bundle.003",
+      "correct": true,
+      "durationMicros": 2439,
+      "expected": {
+        "code": "UNI_BUNDLE_INVALID",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNI_BUNDLE_INVALID",
+        "status": "rejected"
+      },
+      "caseId": "assurance.invalid-bundle.003",
+      "correct": true,
+      "durationMicros": 2475,
+      "expected": {
+        "code": "UNI_BUNDLE_INVALID",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNI_BUNDLE_INVALID",
+        "status": "rejected"
+      },
+      "caseId": "assurance.invalid-bundle.003",
+      "correct": true,
+      "durationMicros": 4081,
+      "expected": {
+        "code": "UNI_BUNDLE_INVALID",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "assurance.no-assessment.004",
+      "correct": true,
+      "durationMicros": 2957,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "assurance.no-assessment.004",
+      "correct": true,
+      "durationMicros": 3132,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "caseId": "assurance.no-assessment.004",
+      "correct": true,
+      "durationMicros": 4461,
+      "expected": {
+        "code": "ASSESSMENT_MISMATCH",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
+        "status": "rejected"
+      },
+      "caseId": "assurance.evidence-required.005",
+      "correct": true,
+      "durationMicros": 2540,
+      "expected": {
+        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
+        "status": "rejected"
+      },
+      "caseId": "assurance.evidence-required.005",
+      "correct": true,
+      "durationMicros": 2966,
+      "expected": {
+        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
+        "status": "rejected"
+      },
+      "caseId": "assurance.evidence-required.005",
+      "correct": true,
+      "durationMicros": 4136,
+      "expected": {
+        "code": "CANDIDATE_NOT_COVERED_BY_UNI",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "assurance.valid.101",
+      "correct": true,
+      "durationMicros": 4495,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "assurance.valid.101",
+      "correct": true,
+      "durationMicros": 4395,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "assurance.valid.101",
+      "correct": true,
+      "durationMicros": 5789,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "assurance.secondary.102",
+      "correct": true,
+      "durationMicros": 4362,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "assurance.secondary.102",
+      "correct": true,
+      "durationMicros": 5824,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "assurance.secondary.102",
+      "correct": true,
+      "durationMicros": 6275,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "caseId": "scope.unknown-schema.001",
+      "correct": true,
+      "durationMicros": 3127,
+      "expected": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "caseId": "scope.unknown-schema.001",
+      "correct": true,
+      "durationMicros": 3132,
+      "expected": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "caseId": "scope.unknown-schema.001",
+      "correct": true,
+      "durationMicros": 4583,
+      "expected": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "caseId": "scope.padded-schema.002",
+      "correct": true,
+      "durationMicros": 2861,
+      "expected": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "caseId": "scope.padded-schema.002",
+      "correct": true,
+      "durationMicros": 3389,
+      "expected": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "caseId": "scope.padded-schema.002",
+      "correct": true,
+      "durationMicros": 4947,
+      "expected": {
+        "code": "UNSUPPORTED_SCHEMA",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "scope.wrong-world.003",
+      "correct": true,
+      "durationMicros": 3226,
+      "expected": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "scope.wrong-world.003",
+      "correct": true,
+      "durationMicros": 3785,
+      "expected": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "scope.wrong-world.003",
+      "correct": true,
+      "durationMicros": 5594,
+      "expected": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "scope.similar-world.004",
+      "correct": true,
+      "durationMicros": 2854,
+      "expected": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "scope.similar-world.004",
+      "correct": true,
+      "durationMicros": 3360,
+      "expected": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "caseId": "scope.similar-world.004",
+      "correct": true,
+      "durationMicros": 4731,
+      "expected": {
+        "code": "WRONG_WORLD",
+        "status": "rejected"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "scope.exact.101",
+      "correct": true,
+      "durationMicros": 4994,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "scope.exact.101",
+      "correct": true,
+      "durationMicros": 5019,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "scope.exact.101",
+      "correct": true,
+      "durationMicros": 6371,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "scope.sibling-live.102",
+      "correct": true,
+      "durationMicros": 5254,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "scope.sibling-live.102",
+      "correct": true,
+      "durationMicros": 4624,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "scope.sibling-live.102",
+      "correct": true,
+      "durationMicros": 6541,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.object-write.001",
+      "correct": true,
+      "durationMicros": 5793,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.object-write.001",
+      "correct": true,
+      "durationMicros": 6850,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.object-write.001",
+      "correct": true,
+      "durationMicros": 8282,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.world-revision.002",
+      "correct": true,
+      "durationMicros": 6778,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.world-revision.002",
+      "correct": true,
+      "durationMicros": 6645,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.world-revision.002",
+      "correct": true,
+      "durationMicros": 9399,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.event-append.003",
+      "correct": true,
+      "durationMicros": 7469,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.event-append.003",
+      "correct": true,
+      "durationMicros": 6431,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.event-append.003",
+      "correct": true,
+      "durationMicros": 9307,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.submission-record.004",
+      "correct": true,
+      "durationMicros": 6848,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.submission-record.004",
+      "correct": true,
+      "durationMicros": 7638,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.submission-record.004",
+      "correct": true,
+      "durationMicros": 11599,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.second-patch.005",
+      "correct": true,
+      "durationMicros": 6822,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.second-patch.005",
+      "correct": true,
+      "durationMicros": 7594,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.second-patch.005",
+      "correct": true,
+      "durationMicros": 8715,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.clean.101",
+      "correct": true,
+      "durationMicros": 5436,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.clean.101",
+      "correct": true,
+      "durationMicros": 5010,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": null,
+        "status": "committed"
+      },
+      "caseId": "commit.clean.101",
+      "correct": true,
+      "durationMicros": 7942,
+      "expected": {
+        "code": null,
+        "status": "committed"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.object.001",
+      "correct": true,
+      "durationMicros": 3994,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.object.001",
+      "correct": true,
+      "durationMicros": 3814,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.object.001",
+      "correct": true,
+      "durationMicros": 5580,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.permission.002",
+      "correct": true,
+      "durationMicros": 3868,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.permission.002",
+      "correct": true,
+      "durationMicros": 3939,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.permission.002",
+      "correct": true,
+      "durationMicros": 5289,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "C"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.file.003",
+      "correct": true,
+      "durationMicros": 2815,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "A"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.file.003",
+      "correct": true,
+      "durationMicros": 3443,
+      "expected": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "system": "B"
+    },
+    {
+      "actual": {
+        "code": "UNSUPPORTED",
+        "status": "unsupported"
+      },
+      "caseId": "negative.file.003",
+      "correct": true,
+      "durationMicros": 5127,
+      "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
       },
@@ -2649,7 +2649,7 @@
       },
       "caseId": "negative.tag.004",
       "correct": true,
-      "durationMicros": 3433,
+      "durationMicros": 4112,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -2663,7 +2663,7 @@
       },
       "caseId": "negative.tag.004",
       "correct": true,
-      "durationMicros": 3410,
+      "durationMicros": 3306,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -2677,7 +2677,7 @@
       },
       "caseId": "negative.tag.004",
       "correct": true,
-      "durationMicros": 5492,
+      "durationMicros": 4432,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -2691,7 +2691,7 @@
       },
       "caseId": "uni.missing-engine.001",
       "correct": true,
-      "durationMicros": 4862,
+      "durationMicros": 2568,
       "expected": {
         "code": "UNI_COMMAND_FAILED",
         "status": "rejected"
@@ -2705,7 +2705,7 @@
       },
       "caseId": "uni.missing-engine.001",
       "correct": true,
-      "durationMicros": 4130,
+      "durationMicros": 3452,
       "expected": {
         "code": "UNI_COMMAND_FAILED",
         "status": "rejected"
@@ -2719,7 +2719,7 @@
       },
       "caseId": "uni.missing-engine.001",
       "correct": true,
-      "durationMicros": 4401,
+      "durationMicros": 5249,
       "expected": {
         "code": "UNI_COMMAND_FAILED",
         "status": "rejected"
@@ -2733,7 +2733,7 @@
       },
       "caseId": "uni.registry-drift.002",
       "correct": true,
-      "durationMicros": 4003,
+      "durationMicros": 4385,
       "expected": {
         "code": "UNI_NOT_ACCEPTED",
         "status": "rejected"
@@ -2747,7 +2747,7 @@
       },
       "caseId": "uni.registry-drift.002",
       "correct": true,
-      "durationMicros": 3726,
+      "durationMicros": 3212,
       "expected": {
         "code": "UNI_NOT_ACCEPTED",
         "status": "rejected"
@@ -2761,7 +2761,7 @@
       },
       "caseId": "uni.registry-drift.002",
       "correct": true,
-      "durationMicros": 5502,
+      "durationMicros": 5598,
       "expected": {
         "code": "UNI_NOT_ACCEPTED",
         "status": "rejected"
@@ -2775,7 +2775,7 @@
       },
       "caseId": "uni.watched-drift.003",
       "correct": true,
-      "durationMicros": 3241,
+      "durationMicros": 3245,
       "expected": {
         "code": "CANDIDATE_CHANGED_DURING_VERIFICATION",
         "status": "rejected"
@@ -2789,7 +2789,7 @@
       },
       "caseId": "uni.watched-drift.003",
       "correct": true,
-      "durationMicros": 5029,
+      "durationMicros": 4080,
       "expected": {
         "code": "CANDIDATE_CHANGED_DURING_VERIFICATION",
         "status": "rejected"
@@ -2803,7 +2803,7 @@
       },
       "caseId": "uni.watched-drift.003",
       "correct": true,
-      "durationMicros": 4928,
+      "durationMicros": 5401,
       "expected": {
         "code": "CANDIDATE_CHANGED_DURING_VERIFICATION",
         "status": "rejected"
@@ -2817,7 +2817,7 @@
       },
       "caseId": "uni.bundle-version.004",
       "correct": true,
-      "durationMicros": 2727,
+      "durationMicros": 3159,
       "expected": {
         "code": "UNI_BUNDLE_UNSUPPORTED",
         "status": "rejected"
@@ -2831,7 +2831,7 @@
       },
       "caseId": "uni.bundle-version.004",
       "correct": true,
-      "durationMicros": 3071,
+      "durationMicros": 3701,
       "expected": {
         "code": "UNI_BUNDLE_UNSUPPORTED",
         "status": "rejected"
@@ -2845,7 +2845,7 @@
       },
       "caseId": "uni.bundle-version.004",
       "correct": true,
-      "durationMicros": 3796,
+      "durationMicros": 4426,
       "expected": {
         "code": "UNI_BUNDLE_UNSUPPORTED",
         "status": "rejected"
@@ -2859,7 +2859,7 @@
       },
       "caseId": "uni.clean.101",
       "correct": true,
-      "durationMicros": 4276,
+      "durationMicros": 4561,
       "expected": {
         "code": null,
         "status": "committed"
@@ -2873,7 +2873,7 @@
       },
       "caseId": "uni.clean.101",
       "correct": true,
-      "durationMicros": 4433,
+      "durationMicros": 5138,
       "expected": {
         "code": null,
         "status": "committed"
@@ -2887,7 +2887,7 @@
       },
       "caseId": "uni.clean.101",
       "correct": true,
-      "durationMicros": 6967,
+      "durationMicros": 6803,
       "expected": {
         "code": null,
         "status": "committed"
@@ -2901,7 +2901,7 @@
       },
       "caseId": "reassessment.document.001",
       "correct": true,
-      "durationMicros": 3119,
+      "durationMicros": 3912,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -2915,7 +2915,7 @@
       },
       "caseId": "reassessment.document.001",
       "correct": true,
-      "durationMicros": 3419,
+      "durationMicros": 3312,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -2929,7 +2929,7 @@
       },
       "caseId": "reassessment.document.001",
       "correct": true,
-      "durationMicros": 4734,
+      "durationMicros": 5378,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -2943,7 +2943,7 @@
       },
       "caseId": "reassessment.source.002",
       "correct": true,
-      "durationMicros": 3005,
+      "durationMicros": 3484,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -2957,7 +2957,7 @@
       },
       "caseId": "reassessment.source.002",
       "correct": true,
-      "durationMicros": 2960,
+      "durationMicros": 4090,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -2971,7 +2971,7 @@
       },
       "caseId": "reassessment.source.002",
       "correct": true,
-      "durationMicros": 4433,
+      "durationMicros": 4488,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -2985,7 +2985,7 @@
       },
       "caseId": "reassessment.citation.003",
       "correct": true,
-      "durationMicros": 2778,
+      "durationMicros": 3472,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -2999,7 +2999,7 @@
       },
       "caseId": "reassessment.citation.003",
       "correct": true,
-      "durationMicros": 3445,
+      "durationMicros": 3151,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -3013,7 +3013,7 @@
       },
       "caseId": "reassessment.citation.003",
       "correct": true,
-      "durationMicros": 4396,
+      "durationMicros": 5366,
       "expected": {
         "code": "STALE_DEPENDENCY",
         "status": "rejected"
@@ -3027,7 +3027,7 @@
       },
       "caseId": "reassessment.unaffected.101",
       "correct": true,
-      "durationMicros": 3303,
+      "durationMicros": 3434,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3041,7 +3041,7 @@
       },
       "caseId": "reassessment.unaffected.101",
       "correct": true,
-      "durationMicros": 3783,
+      "durationMicros": 3904,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3055,7 +3055,7 @@
       },
       "caseId": "reassessment.unaffected.101",
       "correct": true,
-      "durationMicros": 5061,
+      "durationMicros": 5994,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3069,7 +3069,7 @@
       },
       "caseId": "adversarial.allowlist-text.001",
       "correct": true,
-      "durationMicros": 2817,
+      "durationMicros": 3249,
       "expected": {
         "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
         "status": "rejected"
@@ -3083,7 +3083,7 @@
       },
       "caseId": "adversarial.allowlist-text.001",
       "correct": true,
-      "durationMicros": 3244,
+      "durationMicros": 3057,
       "expected": {
         "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
         "status": "rejected"
@@ -3097,7 +3097,7 @@
       },
       "caseId": "adversarial.allowlist-text.001",
       "correct": true,
-      "durationMicros": 4659,
+      "durationMicros": 4251,
       "expected": {
         "code": "UNTRUSTED_ASSESSMENT_PROVIDER",
         "status": "rejected"
@@ -3111,7 +3111,7 @@
       },
       "caseId": "adversarial.authority-text.002",
       "correct": true,
-      "durationMicros": 3594,
+      "durationMicros": 2627,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -3125,7 +3125,7 @@
       },
       "caseId": "adversarial.authority-text.002",
       "correct": true,
-      "durationMicros": 3668,
+      "durationMicros": 3006,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -3139,7 +3139,7 @@
       },
       "caseId": "adversarial.authority-text.002",
       "correct": true,
-      "durationMicros": 4602,
+      "durationMicros": 6149,
       "expected": {
         "code": "UNAUTHORIZED",
         "status": "rejected"
@@ -3153,7 +3153,7 @@
       },
       "caseId": "adversarial.verdict-text.003",
       "correct": true,
-      "durationMicros": 2629,
+      "durationMicros": 4975,
       "expected": {
         "code": "UNI_NOT_ACCEPTED",
         "status": "rejected"
@@ -3167,7 +3167,7 @@
       },
       "caseId": "adversarial.verdict-text.003",
       "correct": true,
-      "durationMicros": 3010,
+      "durationMicros": 4416,
       "expected": {
         "code": "UNI_NOT_ACCEPTED",
         "status": "rejected"
@@ -3181,7 +3181,7 @@
       },
       "caseId": "adversarial.verdict-text.003",
       "correct": true,
-      "durationMicros": 5665,
+      "durationMicros": 9594,
       "expected": {
         "code": "UNI_NOT_ACCEPTED",
         "status": "rejected"
@@ -3195,7 +3195,7 @@
       },
       "caseId": "adversarial.prose.101",
       "correct": true,
-      "durationMicros": 4222,
+      "durationMicros": 6086,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3209,7 +3209,7 @@
       },
       "caseId": "adversarial.prose.101",
       "correct": true,
-      "durationMicros": 4776,
+      "durationMicros": 5179,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3223,7 +3223,7 @@
       },
       "caseId": "adversarial.prose.101",
       "correct": true,
-      "durationMicros": 7267,
+      "durationMicros": 9840,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3237,7 +3237,7 @@
       },
       "caseId": "graph.cycle.001",
       "correct": true,
-      "durationMicros": 3862,
+      "durationMicros": 3498,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3251,7 +3251,7 @@
       },
       "caseId": "graph.cycle.001",
       "correct": true,
-      "durationMicros": 3591,
+      "durationMicros": 3616,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3265,7 +3265,7 @@
       },
       "caseId": "graph.cycle.001",
       "correct": true,
-      "durationMicros": 77847,
+      "durationMicros": 4952,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3279,7 +3279,7 @@
       },
       "caseId": "graph.budget.002",
       "correct": true,
-      "durationMicros": 40135,
+      "durationMicros": 3589,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3293,7 +3293,7 @@
       },
       "caseId": "graph.budget.002",
       "correct": true,
-      "durationMicros": 176978,
+      "durationMicros": 3890,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3307,7 +3307,7 @@
       },
       "caseId": "graph.budget.002",
       "correct": true,
-      "durationMicros": 12233,
+      "durationMicros": 5350,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3321,7 +3321,7 @@
       },
       "caseId": "graph.fan-out.003",
       "correct": true,
-      "durationMicros": 5351,
+      "durationMicros": 3218,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3335,7 +3335,7 @@
       },
       "caseId": "graph.fan-out.003",
       "correct": true,
-      "durationMicros": 4938,
+      "durationMicros": 3558,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3349,7 +3349,7 @@
       },
       "caseId": "graph.fan-out.003",
       "correct": true,
-      "durationMicros": 8586,
+      "durationMicros": 5131,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3363,7 +3363,7 @@
       },
       "caseId": "effect.lost-response.001",
       "correct": true,
-      "durationMicros": 8141,
+      "durationMicros": 3704,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3377,7 +3377,7 @@
       },
       "caseId": "effect.lost-response.001",
       "correct": true,
-      "durationMicros": 49263,
+      "durationMicros": 3616,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3391,7 +3391,7 @@
       },
       "caseId": "effect.lost-response.001",
       "correct": true,
-      "durationMicros": 43717,
+      "durationMicros": 4690,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3405,7 +3405,7 @@
       },
       "caseId": "effect.confirmation.002",
       "correct": true,
-      "durationMicros": 5696,
+      "durationMicros": 3263,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3419,7 +3419,7 @@
       },
       "caseId": "effect.confirmation.002",
       "correct": true,
-      "durationMicros": 4554,
+      "durationMicros": 4257,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3433,7 +3433,7 @@
       },
       "caseId": "effect.confirmation.002",
       "correct": true,
-      "durationMicros": 18221,
+      "durationMicros": 6011,
       "expected": {
         "code": "UNSUPPORTED",
         "status": "unsupported"
@@ -3447,7 +3447,7 @@
       },
       "caseId": "effect.publish-only.101",
       "correct": true,
-      "durationMicros": 29228,
+      "durationMicros": 8095,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3461,7 +3461,7 @@
       },
       "caseId": "effect.publish-only.101",
       "correct": true,
-      "durationMicros": 11146,
+      "durationMicros": 18454,
       "expected": {
         "code": null,
         "status": "committed"
@@ -3475,7 +3475,7 @@
       },
       "caseId": "effect.publish-only.101",
       "correct": true,
-      "durationMicros": 30341,
+      "durationMicros": 15535,
       "expected": {
         "code": null,
         "status": "committed"

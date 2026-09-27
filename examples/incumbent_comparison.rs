@@ -101,6 +101,31 @@ fn build_results(root: &Path) -> Result<Value, Box<dyn std::error::Error>> {
 
     // Not production any more. These are the lines the reduction removed from the
     // Kernel's shipped surface, counted where the mechanism now lives.
+    // ADR-003 recorded that the reduction would be wrong if the facet advantage scaled past the line
+    // count, and named this measurement as the thing to run. It is the reversal case, not another
+    // scenario, so it is measured across fan-out widths rather than at one size.
+    let scaling: Vec<Value> = [
+        (3usize, 1usize),
+        (10, 1),
+        (100, 1),
+        (1000, 1),
+        (10000, 1),
+        (1000, 8),
+    ]
+    .into_iter()
+    .map(|(consumers, pads)| {
+        let row = incumbent_comparison::scaling(consumers, pads)
+            .expect("the scaling measurement runs on the closed profile");
+        json!({
+            "consumers": row.consumers,
+            "unconsumedFields": row.unconsumed_fields,
+            "a3Executions": row.a3_executions,
+            "c3Executions": row.c3_executions,
+            "evaluationsAvoidedByTheFacetCache": row.avoided(),
+        })
+    })
+    .collect();
+
     let production = counted_lines(
         root,
         &[
@@ -161,6 +186,13 @@ fn build_results(root: &Path) -> Result<Value, Box<dyn std::error::Error>> {
             "tests": test,
         },
         "scenarios": scenarios,
+        "reversalCase": {
+            "question": "does the consumed-facet advantage grow past the line count on a graph of wide nodes, as ADR-003 required before the reduction could stand?",
+            "method": "one observed input carrying unconsumed fields, N readers of the single field they actually use, and a change that touches only an unconsumed field. The most favourable honest case for the engine: a whole-value cache cannot see which part of a node was consumed.",
+            "rows": scaling,
+            "verdict": "the advantage scales linearly with the number of consumers and is unbounded within any graph size worth building. One unconsumed field is enough; more of them change nothing.",
+            "notMeasured": "no cost per evaluation, so no break-even fan-out and no money figure. The avoided runs are a count and nothing else.",
+        },
         "findings": {
             "sameObservableResult": rows.iter().all(|row| {
                 row.r3_correct && row.a3_correct && row.b3_correct && row.c3_correct
@@ -314,6 +346,35 @@ fn render_human(recorded: &Value) -> String {
         ));
     }
     out.push('\n');
+
+    let reversal = &recorded["reversalCase"];
+    out.push_str("## The reversal case ADR-003 required\n\n");
+    out.push_str(&format!(
+        "{}\n\nMethod: {}\n\n",
+        reversal["question"].as_str().unwrap_or(""),
+        reversal["method"].as_str().unwrap_or(""),
+    ));
+    out.push_str(
+        "| Consumers | Unconsumed fields | A3 runs | C3 runs | Avoided |\n|---|---|---|---|---|\n",
+    );
+    for row in reversal["rows"].as_array().into_iter().flatten() {
+        out.push_str(&format!(
+            "| {} | {} | {} | {} | {} |\n",
+            row["consumers"].as_i64().unwrap_or(0),
+            row["unconsumedFields"].as_i64().unwrap_or(0),
+            row["a3Executions"].as_i64().unwrap_or(0),
+            row["c3Executions"].as_i64().unwrap_or(0),
+            row["evaluationsAvoidedByTheFacetCache"]
+                .as_i64()
+                .unwrap_or(0),
+        ));
+    }
+    out.push('\n');
+    out.push_str(&format!(
+        "Verdict: {}\n\nNot measured: {}\n\n",
+        reversal["verdict"].as_str().unwrap_or(""),
+        reversal["notMeasured"].as_str().unwrap_or(""),
+    ));
 
     let findings = &recorded["findings"];
     out.push_str("## Findings\n\n");

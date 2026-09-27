@@ -14,6 +14,8 @@ use super::impact_core::{
     Evaluator, Facet, Limits, NodeId, NodeNature, NodeVersion, Profile, Query, ReadJournal,
     Snapshot, TrustConfiguration,
 };
+use std::collections::BTreeMap;
+
 use serde_json::{Value, json};
 
 pub const LIMIT: &str = "limit";
@@ -274,4 +276,99 @@ pub fn support_query() -> Query {
         scope: "world:impact-demo".to_owned(),
         members: vec![ELIGIBLE_A.to_owned(), ELIGIBLE_B.to_owned()],
     }
+}
+
+/// A consumer that reads exactly one facet of one node, named at build time.
+///
+/// The closed arithmetic fixture has a fixed number of consumers, which is why it could only measure an
+/// advantage of 2 evaluator runs. The reversal case in ADR-003 needs the fan-out to be a parameter, so
+/// this evaluator takes its subject and field by value and can be generated as many times as the
+/// measurement needs.
+pub struct FacetConsumer {
+    pub node: String,
+    pub subject: String,
+    pub field: String,
+}
+
+impl Evaluator for FacetConsumer {
+    fn name(&self) -> &str {
+        &self.node
+    }
+
+    fn version(&self) -> &str {
+        "1"
+    }
+
+    fn granted_profile(&self) -> Profile {
+        Profile::ClosedDeterministic
+    }
+
+    fn evaluate(
+        &self,
+        _input: &Value,
+        journal: &mut dyn ReadJournal,
+    ) -> Result<(Value, Profile), super::impact_core::Error> {
+        let value = journal.read(&self.subject, Facet::Field(self.field.clone()))?;
+        Ok((value.unwrap_or(Value::Null), Profile::ClosedDeterministic))
+    }
+}
+
+/// A world with one observed input carrying `unconsumed` fields nobody reads, and `consumers`
+/// derived nodes that each read only the one field they use.
+///
+/// The two snapshots differ **only** in the first unconsumed field. So the consumed facet held, which is
+/// the situation the whole-value cache cannot see and the facet cache can.
+pub fn fanout_world(
+    revision: u64,
+    consumers: usize,
+    unconsumed: usize,
+    marker: &str,
+) -> (Snapshot, BTreeMap<NodeId, Box<dyn Evaluator>>, Vec<NodeId>) {
+    assert!(
+        unconsumed > 0,
+        "a payload with no unconsumed field has no reversal case"
+    );
+    let mut payload = serde_json::Map::new();
+    payload.insert("value".to_owned(), serde_json::json!(100));
+    for index in 0..unconsumed {
+        payload.insert(format!("pad{index}"), serde_json::json!(marker));
+    }
+
+    let mut snapshot = Snapshot::new("world:fanout", revision).with_node(
+        LIMIT,
+        NodeNature::Observed,
+        NodeVersion::new(1, "money/1", serde_json::Value::Object(payload), "producer"),
+    );
+
+    let mut evaluators: BTreeMap<NodeId, Box<dyn Evaluator>> = BTreeMap::new();
+    let mut targets = Vec::with_capacity(consumers);
+    for index in 0..consumers {
+        let node = format!("consumer_{index}");
+        snapshot = snapshot.with_node(
+            &node,
+            NodeNature::Derived,
+            NodeVersion::new(1, "verdict/1", serde_json::json!({"seen": true}), &node),
+        );
+        evaluators.insert(
+            node.clone(),
+            Box::new(FacetConsumer {
+                node: node.clone(),
+                subject: LIMIT.to_owned(),
+                field: "value".to_owned(),
+            }),
+        );
+        targets.push(node);
+    }
+
+    (snapshot, evaluators, targets)
+}
+
+/// The trust a generated set of consumers needs. It is granted by configuration, never claimed by the
+/// consumers themselves, which is the rule the profile exists to enforce.
+pub fn fanout_trust(targets: &[NodeId]) -> TrustConfiguration {
+    targets
+        .iter()
+        .fold(TrustConfiguration::default(), |trust, node| {
+            trust.grant(node, "1", Profile::ClosedDeterministic)
+        })
 }
