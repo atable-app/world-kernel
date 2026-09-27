@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Format
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Test
+        run: cargo test
+
+      - name: Schemas parse
+        run: |
+          jq empty schemas/world-change-v0.experimental.schema.json
+          jq empty schemas/experience-capsule-v0.experimental.schema.json
+
+      - name: Examples run
+        run: |
+          for example in vertical_slice admission_benchmark m2_continuation \
+                         m3_revision incumbent_comparison m4_branch transfer_benchmark; do
+            cargo run --example "$example"
+          done
+          cargo run --example incumbent_comparison -- --render-only
+          cargo run --example transfer_benchmark -- --render-only
+
+      # admission_benchmark records durations, which move every run, so the recorded artifact is
+      # restored before the drift check. Everything else in experiments/ must be byte-identical to
+      # what the run just produced: a recorded result that a fresh run no longer reproduces is the
+      # one failure this repository refuses to carry quietly.
+      - name: Recorded artifacts reproduce
+        run: |
+          git checkout -- experiments/admission-benchmark/
+          git diff --exit-code experiments/
