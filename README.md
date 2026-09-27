@@ -32,6 +32,24 @@ The first integration seams preserve product ownership:
 - Kollio documents become versioned observations while Kollio remains their canonical owner.
 - Kollio impact assessments become reassessment frontiers, never truth verdicts.
 
+## M1 benchmark
+
+An equal-information benchmark compares three systems over one versioned 80-case corpus: an
+application-specific SQLite gate, the same gate with the verifier outcome produced through the UNI
+seam, and UNI plus the Kernel. All three receive the same deserialized case, so no system gets a hidden
+oracle or an extra dependency.
+
+```bash
+cargo run --example admission_benchmark
+```
+
+The recorded run is in
+[experiments/admission-benchmark](experiments/admission-benchmark/README.md), with the method, the
+limits and a negative result: on these 80 conditions the portable envelope prevented no class of
+error that a competent application transaction does not also prevent. Whether that justifies the
+envelope is an open product decision, recorded in
+[RESULTS.md](experiments/admission-benchmark/RESULTS.md).
+
 ## Verify
 
 ```bash

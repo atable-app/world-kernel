@@ -14,11 +14,15 @@ Kollio.
 
 ## Current checkpoint
 
-- Baseline commit: `c24b3fc`.
-- The admitted-change slice, UNI exact-candidate collector, SQLite rollback and restart recovery are
-  implemented.
-- The active milestone is `M1` in `docs/SPEC.md`: an equal-information A/B/C admission benchmark with
-  80 deterministic cases.
+- Baseline commit: `c24b3fc`. The admitted-change slice, UNI exact-candidate collector, SQLite rollback
+  and restart recovery are implemented.
+- The M1 equal-information admission benchmark is implemented and recorded at `5003e90`: an 80-case
+  versioned corpus, three equal-information systems, three test-only input ablations, and a checked-in
+  result in `experiments/admission-benchmark/`.
+- All ten M1 acceptance criteria pass. A, B and C reach the same decision in all 80 cases.
+- The M1 continuation decision is a human product decision and is open: the envelope bought no
+  admission correctness on this corpus, and whether the receipt, replay and handoff value justifies it
+  has not been decided.
 
 ## Working rules
 

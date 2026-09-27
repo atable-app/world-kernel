@@ -31,17 +31,33 @@ without advancing the World twice.
 
 ## Baselines
 
-The eventual benchmark must compare equal-information systems:
+The equal-information benchmark is implemented and has been run. All three systems consume the same
+deserialized case object, the same workspace bytes and the same current authority.
 
-| System | Required implementation |
-|---|---|
-| A | A solid application-specific transaction with the same checks |
-| B | The same application using UNI for assurance |
-| C | UNI plus the portable World change envelope and replayable receipt |
+| System | Required implementation | Recorded |
+|---|---|---|
+| A | A solid application-specific transaction with the same checks | `tests/support/baseline_a.rs`, 392 lines |
+| B | The same application using UNI for assurance | `tests/support/baseline_b.rs` over A, 55 lines |
+| C | UNI plus the portable World change envelope and replayable receipt | `src/kernel.rs`, `src/model.rs`, 730 lines |
 
-This repository currently establishes C's minimal mechanics and a conformance suite. It does not yet
-claim that C beats A or B. The comparative task study, 80-case corpus and 30 percent human-time target
-from the research brief have not been run.
+A is competent by construction: it implements the same checks with its own tables, its own transaction
+order and its own authority list, and it requires a claim to cover the bytes its verifier actually
+verified.
+
+The result over all 80 cases is in
+[`experiments/admission-benchmark/RESULTS.md`](../experiments/admission-benchmark/RESULTS.md). All
+three systems reach the same decision in every case, with no decision-code disagreement. The
+portable envelope prevented no class of error that a competent application transaction does not also
+prevent on these 80 conditions.
+
+That is a negative result about admission correctness, and it is deliberately recorded as one. The
+corpus never consumes a receipt, so the replay and handoff value of C is untested rather than
+disproved. No claim about human time follows from a deterministic corpus.
+
+The three test-only ablations are what show the corpus is capable of detecting a missing check: a
+forged assessment binding admits 4 exactness cases, dropping changed reads admits 7 concurrency and
+reassessment cases, and completing a truncated coverage manifest admits 4 coverage cases. No
+production check carries a disable flag.
 
 ## First falsification gates
 
@@ -53,6 +69,8 @@ Stop generalizing the Kernel if any of these occurs:
   integration cost;
 - users do not reuse receipts or reassessment frontiers after context changes.
 
+The third gate is now the live one. It is a product decision, and it is open.
+
 ## Completed hardening step
 
 The trusted collector now runs UNI's complete public CLI path, verifies a versioned evidence bundle,
@@ -62,7 +80,11 @@ response. Replay remains effect-free because this slice has no external effect d
 
 ## Next experiment
 
-Run the same cases against an application-specific transaction baseline, then add an immutable
-candidate snapshot or descriptor-based locking experiment to measure and eliminate the remaining A-B-A
-filesystem race. Do not add an external effect dispatcher until those two results justify the extra
-state machine.
+The M1 continuation decision comes first: either fund M2 and measure the immutable single-file subject
+profile, or reduce the project to the smallest useful adapter or pattern. The recorded result gives no
+correctness argument for the envelope, so that choice has to be made on the receipt and replay value
+rather than on admission errors.
+
+If M2 proceeds, the next measurement is an A-B-A filesystem race experiment. After that, an external
+effect dispatcher is justified only if the first two results show the cost is worth paying; do not add
+one before then.

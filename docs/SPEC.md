@@ -1,8 +1,8 @@
 # World Kernel specification
 
 Status: experimental, normative for this repository  
-Last verified: 2026-09-27 at commit `c24b3fc`  
-Active milestone: M1, equal-information admission benchmark
+Last verified: 2026-09-27 at commit `5003e90`  
+Active milestone: M1 implemented and measured, continuation decision open
 
 ## 1. Document contract
 
@@ -113,6 +113,22 @@ The only supported change schema is `world-change/v0-experimental`, defined by
 The schema accepts SHA-256 identifiers with the `sha256:` prefix. Portable canonical JSON is not yet
 specified beyond the existing Rust serialization and adapter normalization. Cross-language digest
 claims therefore remain experimental.
+
+Two protocol corrections were found while building M1 and are now fixed:
+
+- `GroundedChange` and every type it contains reject unknown fields, matching the
+  `additionalProperties: false` the schema has always declared. A typo such as `baseRevison` used to
+  deserialize silently into a default.
+- The Rust `Patch` serialized its inner field as `expected_revision` while the schema has always
+  required `expectedRevision`, so a change produced by this library failed its own published schema.
+  Rust now emits `expectedRevision`, and `the_serialized_envelope_uses_exactly_the_published_schema_field_names`
+  reads the checked-in schema and asserts the emitted field names, which makes the schema executable
+  rather than decorative.
+
+The second correction changes a stored event payload shape, so a Kernel database written by `c24b3fc`
+or earlier cannot be replayed by this build. No such database is released and the schema is
+`v0-experimental`, so the rollback is a revert rather than a migration. This is recorded here because
+benchmark work was otherwise meant to leave the Kernel database untouched.
 
 ### Admission order
 
@@ -258,11 +274,11 @@ and user authority.
 | WK-08 | Partial | provider allowlist and external authority source covered; host can still mint values |
 | WK-09 | Proved for declared coverage | truncated and missing intent coverage are rejected |
 | WK-10 | Proved for current seams | UNI public CLI, Kollio JSON translation, no cross-repository writes |
-| WK-11 | Proved for current schema and events | unknown schema and event type fail closed |
-| WK-12 | Proved for current storage keys and admission | wrong World rejected and tables keyed by World |
+| WK-11 | Proved for current schema and events | unknown schema and event type fail closed; the serialized envelope is asserted field by field against the checked-in schema |
+| WK-12 | Proved for current storage keys and admission | wrong World rejected and tables keyed by World; the corpus scope family runs a live sibling World |
 
-The standard suite currently has 19 passing tests and one ignored live UNI contract test. This count
-is descriptive, not a product metric.
+The standard suite has 56 passing tests and one ignored live UNI contract test. This count is
+descriptive, not a product metric.
 
 ## 8. Active milestone M1: equal-information admission benchmark
 
@@ -288,40 +304,51 @@ baseline.
 | Path | Purpose |
 |---|---|
 | `tests/fixtures/admission-corpus.jsonl` | Versioned 80-case corpus, one self-contained case per line |
-| `tests/support/mod.rs` | Test-only module routing shared fixtures |
+| `tests/support/mod.rs` | Test-only module routing shared fixtures, compiled by two test targets and the example |
 | `tests/support/admission_case.rs` | Strict deserialization and validation for corpus cases |
+| `tests/support/assurance.rs` | The declared assurance condition, produced through the UNI seam and through an application verifier |
 | `tests/support/baseline_a.rs` | Independent application-specific SQLite implementation |
 | `tests/support/baseline_b.rs` | Same application gate consuming the normalized UNI outcome |
+| `tests/support/system_c.rs` | The Kernel path, its current-state reader and the test-only ablations |
+| `tests/support/harness.rs` | Shared driver: workspace, prelude, fault injection, results, aggregation |
+| `tests/corpus_contract.rs` | Strictness and corpus invariant tests |
 | `tests/comparative_admission.rs` | Runs A, B and C against every case and checks expected decisions |
 | `examples/admission_benchmark.rs` | Emits deterministic JSON results and aggregate counts |
 | `experiments/admission-benchmark/README.md` | Method, commands, environment and interpretation limits |
 | `experiments/admission-benchmark/results.json` | Checked-in machine-readable result for the recorded environment |
 | `experiments/admission-benchmark/RESULTS.md` | Generated human view, including failures and continuation decision |
 
+The example reaches `tests/support` with `#[path = "../tests/support/mod.rs"] mod support;` so the
+benchmark systems and the corpus parser are literally the same code in the test and the example.
+
 Production Kernel code must not acquire benchmark switches. Ablations belong in the test-only baseline
 and runner.
 
 ### Corpus contract
 
-Every JSONL record must contain:
+Every JSONL record is one line and contains every one of these keys, including
+the ones whose value is `null`. The key set follows the fixture model fixed
+below, not the earlier draft of this example, which omitted `prelude` and
+`assurance` and used `initial` for `bootstrap`.
 
 ```json
-{
-  "schema": "world-kernel-admission-case/v1",
-  "id": "candidate.substitution.001",
-  "family": "candidate_exactness",
-  "expected": {"status": "rejected", "code": "ASSESSMENT_MISMATCH"},
-  "initial": {},
-  "proposal": {},
-  "current": {},
-  "fault": null,
-  "notes": "One sentence naming the condition under test."
-}
+{"schema":"world-kernel-admission-case/v1","id":"candidate.reference.001","family":"candidate_exactness","expected":{"status":"rejected","code":"ASSESSMENT_MISMATCH"},"bootstrap":{"world":"world:bench","trustedAssuranceProviders":["uni"],"objects":[{"ref":"requirement:demo","revision":1,"digest":"sha256:requirement-v1"}]},"prelude":[],"proposal":{...the GroundedChange envelope...},"current":{"grants":{"principal:worker-a":["publishCandidate"]},"candidatePath":"candidate.bin","candidateContents":"candidate-a","candidateContentsAfterAssurance":null},"assurance":{"mode":"accepted","provider":"uni","evidencePath":"release.uni"},"fault":null,"notes":"An assessment naming a different reference cannot cover this candidate."}
 ```
 
 `initial`, `proposal` and `current` must deserialize into named Rust fixture types. They may not remain
 untyped `serde_json::Value`. The fixture types must expose all information to all three systems even
 when one implementation does not use a field.
+
+Value convention: every enum value in a corpus record is `snake_case`, except
+`expected.code`, which mirrors the Kernel's own `SCREAMING_SNAKE_CASE`
+serialization so one code is the same string in the corpus, in a rejection and in
+a report.
+
+A case is **adverse** when it injects a fault or when the correct answer is not a
+clean commit. The 60 adverse cases are 45 that must be rejected, 9 that are
+unsupported, and 6 commit-interruption cases whose expected result is a commit
+after a clean retry from an injected failure. A committed expectation is a benign
+case.
 
 The fixture model is fixed for M1:
 
@@ -394,7 +421,30 @@ enum ExpectedStatus {
 `candidate_path` is workspace-relative and must reject `..`, absolute paths and symlink escapes. The
 harness writes `candidate_contents` as UTF-8 bytes, runs assurance, optionally replaces it with
 `candidate_contents_after_assurance`, then performs admission. Prelude submissions run in listed order
-with their own grants before the measured proposal.
+with their own grants before the measured proposal. A prelude submission is world-state preparation
+rather than a measured decision, so it is admitted with the assurance already established for that
+prior commit; only the measured proposal goes through the case's declared assurance step.
+
+`proposal.candidate.digest` must equal the digest of the effective candidate contents in every case
+whose expected code is not `ASSESSMENT_MISMATCH` or `CANDIDATE_MISMATCH`. Only a deliberate producer
+error may publish bytes its assurance never covered, so a stale digest can never hide inside an
+unrelated rejection.
+
+### Unsupported cases
+
+A case declares an unimplemented capability in the producer's own declared view protocol or operation
+class, never in a separate flag:
+
+| Declaration | Meaning | Cases |
+|---|---|---|
+| `coverage.profile = closed-v1-negative-queries` | a `none exist` dependency, M4 | 4 |
+| `coverage.profile = closed-v1-graph-traversal` | a cycle or a traversal budget | 3 |
+| `intent.kind = dispatchExternalEffect` | external effect dispatch, M3 | 2 |
+
+A system reports `unsupported` when a case falls outside its declared support surface. A runner may
+read the case and never `expected`. The declared surface is printed in the result so an over-broad
+claim is visible rather than hidden inside a total, and the corpus validator rejects a `committed`
+expectation on a case that declares an unimplemented capability.
 
 Fault points are implemented with temporary SQLite triggers against the relevant table. The
 `LostResponseAfterCommit` case commits, drops the first Kernel instance without returning its outcome,
@@ -481,6 +531,22 @@ these outcomes:
 
 Do not claim a percentage of human-time improvement from the deterministic corpus. That metric requires
 repeated human tasks and belongs to a later study.
+
+### M1 result
+
+All ten acceptance criteria pass. A, B and C each produce a structured result for all 80 cases, none
+incorrectly admits an adverse case it claims to support, none has more than one unjustified rejection
+among the 20 benign cases, the 9 unsupported cases stay `unsupported` in all three systems, and each of
+the three test-only ablations weakens a decision on 4, 7 and 4 adverse cases respectively.
+
+The three systems reach the same decision in all 80 cases, with no decision-code disagreement. C did
+not prevent a class of error that competent A and B do not also prevent. The recorded cost is 392 lines
+for A, 55 for B over the same gate, and 730 for C, excluding the shared fixture and the shared UNI
+seam. This corpus never consumes a receipt, so the handoff and replay value of C is neither measured
+nor disproved.
+
+This is the third continuation-gate outcome, and choosing between reducing the project and funding M2
+is a human product decision, not an implementation step. The decision is open.
 
 ## 9. Planned milestones after M1
 
