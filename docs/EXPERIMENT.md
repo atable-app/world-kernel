@@ -1,5 +1,8 @@
 # Vertical-slice experiment
 
+This file records the experiment and its falsification gates. Normative requirements and the active
+implementation milestone live only in [SPEC.md](SPEC.md).
+
 ## Question
 
 Can a second actor apply or reject an exact candidate from public records without trusting the first

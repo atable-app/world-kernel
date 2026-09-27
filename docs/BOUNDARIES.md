@@ -1,5 +1,8 @@
 # State ownership and seams
 
+This file records the verified implementation boundary. Normative requirements and milestone order
+live only in [SPEC.md](SPEC.md).
+
 ## Verified starting state
 
 The implementation began from read-only inspection on 2026-09-27.

@@ -51,3 +51,10 @@ mutation. The host process and configured UNI binary remain trusted. Those limit
 experiment, not hidden guarantees.
 
 See [docs/BOUNDARIES.md](docs/BOUNDARIES.md) and [docs/EXPERIMENT.md](docs/EXPERIMENT.md).
+
+## Documentation map
+
+- [docs/SPEC.md](docs/SPEC.md) is the normative contract and active implementation milestone.
+- [docs/BOUNDARIES.md](docs/BOUNDARIES.md) records state ownership, trust and current proof limits.
+- [docs/EXPERIMENT.md](docs/EXPERIMENT.md) records the experimental question and falsification gates.
+- [AGENTS.md](AGENTS.md) is the short entry point for OpenCode and other coding agents.
