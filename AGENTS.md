@@ -41,6 +41,11 @@ Kollio.
   not already do" is false and stays recorded as false. The reduction is recommended on the narrower ground
   that every other capability the core produces is unconsumed by the fixture. Its reversal case is stated
   with it: on a graph of wide nodes the facet saving grows, and one example runner re-measures it.
+- The reduction was applied on 2026-09-27. `src/impact` is not a module of this crate and nothing in
+  `src/` depends on it; the engine lives in `tests/support/impact_core/` so the comparison stays
+  re-runnable. The rules it enforced are in `docs/IMPACT-CONTRACT.md`, and
+  `the_contract_document_and_the_measured_codes_agree` fails if that document and the measured engine
+  name different codes. The Kernel is now admission, history, portable continuity and adapters.
 - Boundaries that survive: the Kernel stores digests and never object bytes, a reconstruction cannot
   bootstrap its own trust, and no validity flag exists anywhere in the M3 model.
 

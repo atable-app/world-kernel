@@ -553,7 +553,11 @@ This is the third continuation-gate outcome. It was decided on 2026-09-27 in
 portable continuity of work, rather than admission superiority. The M1 result above is preserved
 unchanged and is not restated in a more favourable form.
 
-## 8c. M3: incremental and explainable revision
+## 8c. M3: incremental and explainable revision, since reduced away
+
+This section describes a capability that is no longer part of the Kernel. It is kept because the
+measurement that removed it is the reason, and the contract that outlived it is in
+[IMPACT-CONTRACT.md](IMPACT-CONTRACT.md).
 
 M2 asked whether work survives its producer. M3 asks the next question: when the conditions change, is
 the work revisable without being rebuilt, and is the difference explainable? The decision and the real-state
@@ -603,7 +607,16 @@ the decision is not to keep paying for capability nothing has measured. The reve
 with it: on a graph of wide nodes the facet saving would grow, and one example runner re-measures it.
 
 The reduction does not touch the dependency model, the read and facet contracts, the closed profile
-rules, the corpora or the explanation codes.
+rules, the corpora or the explanation codes. It was applied on 2026-09-27: `src/impact` is no longer a
+module of this crate, nothing in `src/` depends on it, and it now lives in
+`tests/support/impact_core/` so the comparison and its reversal case stay re-runnable.
+
+What the engine enforced survives as rules a consumer can be held to, written down in
+[IMPACT-CONTRACT.md](IMPACT-CONTRACT.md): no global validity flag, a recompute cannot promote a record,
+profiles are granted by the consumer, a recorded human decision is never recomputed, a dependency is what
+a run consumed, publication is a conservative compare-and-swap, and nothing launches an external effect.
+The stable codes are listed there and `the_contract_document_and_the_measured_codes_agree` fails if the
+document and the measured engine name different codes.
 
 ## 8a. M2: portable continuity
 

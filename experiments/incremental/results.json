@@ -10,11 +10,11 @@
     "production": {
       "delta": "git diff --numstat bc29a22..HEAD -- src/",
       "files": [
-        "src/impact/model.rs",
-        "src/impact/engine.rs",
-        "src/impact/mod.rs"
+        "tests/support/impact_core/model.rs",
+        "tests/support/impact_core/engine.rs",
+        "tests/support/impact_core/mod.rs"
       ],
-      "lines": 1561
+      "lines": 1574
     },
     "test": {
       "delta": "git diff --numstat bc29a22..HEAD -- tests/",

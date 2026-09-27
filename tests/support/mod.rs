@@ -1,5 +1,9 @@
 //! The shared test-only modules, compiled by three targets.
 //!
+//! `impact_core` is the impact engine that was measured and then removed from the Kernel's shipped
+//! surface, per `docs/ADR-003-measure-before-building.md`. It stays here so the comparison and its
+//! reversal case can be repeated. Nothing in `src/` depends on it.
+//!
 //! `corpus_contract.rs` includes `admission_case.rs` directly, `comparative_admission.rs`
 //! includes this directory as `support`, and `examples/admission_benchmark.rs` includes it
 //! by path. No single one of those targets uses every item, so dead-code analysis is
@@ -18,6 +22,8 @@ pub mod baseline_a;
 pub mod baseline_b;
 #[path = "harness.rs"]
 pub mod harness;
+#[path = "impact_core/mod.rs"]
+pub mod impact_core;
 #[path = "impact_fixture.rs"]
 pub mod impact_fixture;
 #[path = "incumbent_comparison.rs"]

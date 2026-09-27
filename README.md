@@ -50,23 +50,29 @@ error that a competent application transaction does not also prevent. Whether th
 envelope is an open product decision, recorded in
 [RESULTS.md](experiments/admission-benchmark/RESULTS.md).
 
-## M3 impact engine
+## The impact rules, without the engine
 
-A fresh consumer is not enough: when the conditions change, recorded work has to become revisable without
-being rebuilt, and the difference has to be explainable. `src/impact` answers that. It keeps five results
-separate, history, currency, business verdict, current authority and coverage, because a result can be
-historically true and no longer usable without either being false.
+When the conditions change, recorded work has to become revisable without being rebuilt, and the difference
+has to be explainable. An engine for that was built and measured. It is no longer part of the Kernel: a
+competent application produces the same answers without it, and it cost 1542 lines.
+
+What survived is the set of rules it happened to enforce, written down so a consumer can be held to them
+without depending on the Kernel: five separate results instead of one validity flag, a recompute that
+cannot promote a record, profiles granted by the consumer, a recorded human decision that is never
+recomputed, a dependency that is what a run actually consumed, a publication that is a conservative
+compare-and-swap, and nothing that launches an external effect. See
+[IMPACT-CONTRACT.md](docs/IMPACT-CONTRACT.md).
+
+The engine itself is in `tests/support/impact_core/`, kept only so the comparison and its reversal case
+stay re-runnable:
 
 ```bash
 cargo run --example m3_revision
-cargo run --example incumbent_comparison
 ```
 
-The engine reports, per object, whether no change can reach it, whether a change reached it and its consumed
-values held, whether it was recomputed to the same value or a new one, and what is now necessary. A recorded
-human decision is never recomputed; when its declared support moves, the engine produces an obligation and
-changes nothing. The recorded result, its coverage and its limits are in
+The recorded M3 result, its coverage and its limits are in
 [experiments/incremental](experiments/incremental/README.md).
+
 
 ## The comparison, and why the experiment stops here
 
@@ -86,7 +92,8 @@ than a whole value.
 
 Everything else the core produces, the five dimensions, the obligation, the disposition, the explanation,
 the granted profile and the protection of a recorded decision, is not consumed by the fixture. The result
-is a reduction, not a victory: reduce the Kernel to UNI plus adapters, and do not start M4. The clause
+is a reduction, not a victory: reduce the Kernel to UNI plus adapters, and do not start M4. The Kernel
+is now admission, history, portable continuity and adapters. The clause
 "the core saves nothing the application could not already do" is false and is recorded as false. The
 decision and its reversal case are in
 [ADR-003](docs/ADR-003-measure-before-building.md), the numbers in
@@ -119,5 +126,7 @@ See [docs/BOUNDARIES.md](docs/BOUNDARIES.md) and [docs/EXPERIMENT.md](docs/EXPER
 
 - [docs/SPEC.md](docs/SPEC.md) is the normative contract and active implementation milestone.
 - [docs/BOUNDARIES.md](docs/BOUNDARIES.md) records state ownership, trust and current proof limits.
+- [docs/IMPACT-CONTRACT.md](docs/IMPACT-CONTRACT.md) is what survived the removed impact engine: the rules
+  a consumer can be held to, and the stable codes.
 - [docs/EXPERIMENT.md](docs/EXPERIMENT.md) records the experimental question and falsification gates.
 - [AGENTS.md](AGENTS.md) is the short entry point for OpenCode and other coding agents.

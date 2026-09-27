@@ -10,11 +10,11 @@
 //! object consumes both booleans and nothing else. `label` exists only so that a
 //! presentation change can be shown not to disturb the arithmetic.
 
-use serde_json::{Value, json};
-use world_kernel::impact::{
+use super::impact_core::{
     Evaluator, Facet, Limits, NodeId, NodeNature, NodeVersion, Profile, Query, ReadJournal,
     Snapshot, TrustConfiguration,
 };
+use serde_json::{Value, json};
 
 pub const LIMIT: &str = "limit";
 pub const COST_A: &str = "cost_a";
@@ -42,7 +42,7 @@ impl Compare {
     fn run(
         &self,
         journal: &mut dyn ReadJournal,
-    ) -> Result<Option<Value>, world_kernel::impact::Error> {
+    ) -> Result<Option<Value>, super::impact_core::Error> {
         journal.read(self.subject, Facet::Field(self.field.to_owned()))
     }
 }
@@ -67,14 +67,14 @@ impl Evaluator for Eligibility {
         &self,
         _input: &Value,
         journal: &mut dyn ReadJournal,
-    ) -> Result<(Value, Profile), world_kernel::impact::Error> {
+    ) -> Result<(Value, Profile), super::impact_core::Error> {
         let limit = Compare::new(LIMIT, "value").run(journal)?;
         let cost = Compare::new(self.cost, "value").run(journal)?;
         let limit_present = limit.is_some();
         let verdict = match (limit, cost) {
             (Some(limit), Some(cost)) => {
                 let (Some(limit), Some(cost)) = (limit.as_f64(), cost.as_f64()) else {
-                    return Err(world_kernel::impact::Error::LimitReached(
+                    return Err(super::impact_core::Error::LimitReached(
                         "non numeric fixture value".into(),
                     ));
                 };
@@ -108,7 +108,7 @@ impl Evaluator for SupportEvaluator {
         &self,
         _input: &Value,
         journal: &mut dyn ReadJournal,
-    ) -> Result<(Value, Profile), world_kernel::impact::Error> {
+    ) -> Result<(Value, Profile), super::impact_core::Error> {
         let a = Compare::new(ELIGIBLE_A, "eligible").run(journal)?;
         let b = Compare::new(ELIGIBLE_B, "eligible").run(journal)?;
         // The support set is a set. Its order is not semantic and is normalised.
@@ -259,10 +259,10 @@ pub fn oracle(
     snapshot: &Snapshot,
     targets: &[String],
 ) -> Result<
-    std::collections::BTreeMap<NodeId, world_kernel::impact::engine::Evaluated>,
-    world_kernel::impact::Error,
+    std::collections::BTreeMap<NodeId, super::impact_core::engine::Evaluated>,
+    super::impact_core::Error,
 > {
-    world_kernel::impact::full_recompute(snapshot, targets, &evaluators(), &trust(), limits())
+    super::impact_core::full_recompute(snapshot, targets, &evaluators(), &trust(), limits())
 }
 
 /// The set-level read this fixture's support evaluator could make, exposed so a

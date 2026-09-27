@@ -27,10 +27,10 @@
     "sameWorkAvoidedEverywhere": false
   },
   "lineCounts": {
-    "applicationMechanism": 252,
-    "note": "physical lines including comments, the count a team would pay for",
-    "productionCore": 1542,
-    "tests": 1327
+    "applicationMechanism": 247,
+    "note": "physical lines including comments, the count a team would pay for. The engine lines were removed from the Kernel's shipped surface; they are counted here to price what was removed",
+    "removedFromTheKernel": 1542,
+    "tests": 1391
   },
   "notMeasured": [
     "no IntentLane path: the application mechanism was not run against a real consumer",
@@ -55,7 +55,7 @@
       },
       {
         "clause": "at a comparable price",
-        "evidence": "the saving is 2 evaluator runs on a closed 3-evaluator fixture, bought with 1542 production lines against 252 application lines",
+        "evidence": "the saving is 2 evaluator runs on a closed 3-evaluator fixture, bought with 1542 lines of engine against 247 lines of application",
         "met": true
       }
     ],
@@ -65,7 +65,7 @@
     "preRegisteredCondition": "A3 and B3 reach the same observable result as C3 on every scenario, and the core saves nothing the application could not already do at a comparable price.",
     "text": "Reduce the Kernel to UNI plus adapters and stop building M4.",
     "whatGoes": [
-      "src/impact, as a mechanism any consumer would build for itself",
+      "src/impact, as a mechanism any consumer would build for itself, moved to tests/support/impact_core so the measurement can be repeated",
       "M4, which would have added story to a scope with no measured value"
     ],
     "whatSurvives": [
@@ -146,21 +146,21 @@
     },
     {
       "id": "A3",
-      "lines": 252,
+      "lines": 247,
       "name": "application cache on whole values",
       "role": "the competent application mechanism, not a strawman"
     },
     {
       "id": "B3",
-      "lines": 252,
+      "lines": 247,
       "name": "A3 consuming UNI staleness",
       "role": "the same application, told which assurance went stale"
     },
     {
       "id": "C3",
       "lines": 1542,
-      "name": "World Kernel impact core",
-      "role": "the portable mechanism under test"
+      "name": "the impact engine",
+      "role": "the portable mechanism that was measured, no longer part of the Kernel"
     }
   ]
 }

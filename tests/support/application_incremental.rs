@@ -13,10 +13,10 @@
 
 use std::collections::BTreeMap;
 
-use serde_json::Value;
-use world_kernel::impact::{
+use super::impact_core::{
     Evaluator, Facet, Limits, NodeId, ReadJournal, Snapshot, TrustConfiguration,
 };
+use serde_json::Value;
 
 /// What one target consumed, in the application's own terms.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -68,7 +68,7 @@ pub fn revise_app(
     evaluators: &BTreeMap<NodeId, Box<dyn Evaluator>>,
     trust: &TrustConfiguration,
     limits: Limits,
-) -> Result<AppOutcome, world_kernel::impact::Error> {
+) -> Result<AppOutcome, super::impact_core::Error> {
     revise_against(snapshot, targets, cache, evaluators, trust, limits, &[])
 }
 
@@ -85,7 +85,7 @@ pub fn revise_b3(
     trust: &TrustConfiguration,
     limits: Limits,
     stale_assurances: &[String],
-) -> Result<AppOutcome, world_kernel::impact::Error> {
+) -> Result<AppOutcome, super::impact_core::Error> {
     revise_against(
         snapshot,
         targets,
@@ -108,7 +108,7 @@ fn revise_against(
     // one of them is not reusable, whatever the snapshot says. The application does
     // not re-check a declaration it was handed, which is the point of B3.
     stale_assurances: &[String],
-) -> Result<AppOutcome, world_kernel::impact::Error> {
+) -> Result<AppOutcome, super::impact_core::Error> {
     let mut values: BTreeMap<NodeId, Value> = BTreeMap::new();
     let mut executions = 0usize;
     let mut reused = 0usize;
@@ -144,31 +144,26 @@ fn revise_against(
             values.insert(target.clone(), entry.value.clone());
             working.nodes.insert(
                 target.clone(),
-                world_kernel::impact::NodeVersion::new(
-                    1,
-                    "app/cached",
-                    entry.value.clone(),
-                    target,
-                ),
+                super::impact_core::NodeVersion::new(1, "app/cached", entry.value.clone(), target),
             );
             reused += 1;
             continue;
         }
 
         if executions >= limits.max_evaluations {
-            return Err(world_kernel::impact::Error::LimitReached(format!(
+            return Err(super::impact_core::Error::LimitReached(format!(
                 "evaluation budget of {} reached",
                 limits.max_evaluations
             )));
         }
         let Some(evaluator) = evaluators.get(target) else {
-            return Err(world_kernel::impact::Error::NoEvaluator(target.clone()));
+            return Err(super::impact_core::Error::NoEvaluator(target.clone()));
         };
         if trust
             .allows(evaluator.name(), evaluator.version())
             .is_none()
         {
-            return Err(world_kernel::impact::Error::NoEvaluator(target.clone()));
+            return Err(super::impact_core::Error::NoEvaluator(target.clone()));
         }
 
         let mut journal = AppJournal {
@@ -187,7 +182,7 @@ fn revise_against(
         values.insert(target.clone(), value.clone());
         working.nodes.insert(
             target.clone(),
-            world_kernel::impact::NodeVersion::new(1, "app/derived", value, target),
+            super::impact_core::NodeVersion::new(1, "app/derived", value, target),
         );
     }
 
@@ -211,9 +206,9 @@ impl ReadJournal for AppJournal<'_> {
         &mut self,
         subject: &str,
         facet: Facet,
-    ) -> Result<Option<Value>, world_kernel::impact::Error> {
+    ) -> Result<Option<Value>, super::impact_core::Error> {
         if self.reads.len() >= self.max_reads {
-            return Err(world_kernel::impact::Error::LimitReached(
+            return Err(super::impact_core::Error::LimitReached(
                 "read budget reached".into(),
             ));
         }
@@ -228,7 +223,7 @@ impl ReadJournal for AppJournal<'_> {
         Ok(value)
     }
 
-    fn read_absence(&mut self, subject: &str) -> Result<(), world_kernel::impact::Error> {
+    fn read_absence(&mut self, subject: &str) -> Result<(), super::impact_core::Error> {
         self.reads
             .push((subject.to_owned(), Facet::Whole.fingerprint(None)));
         Ok(())
@@ -236,12 +231,12 @@ impl ReadJournal for AppJournal<'_> {
 
     fn read_query(
         &mut self,
-        query: &world_kernel::impact::Query,
-    ) -> Result<Vec<(NodeId, u64)>, world_kernel::impact::Error> {
-        let members = world_kernel::impact::QueryRead::resolve(self.snapshot, &query.members);
+        query: &super::impact_core::Query,
+    ) -> Result<Vec<(NodeId, u64)>, super::impact_core::Error> {
+        let members = super::impact_core::QueryRead::resolve(self.snapshot, &query.members);
         self.reads.push((
             query.query.clone(),
-            world_kernel::impact::QueryRead::collection_fingerprint(&members),
+            super::impact_core::QueryRead::collection_fingerprint(&members),
         ));
         Ok(members)
     }

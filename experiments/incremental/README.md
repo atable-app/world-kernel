@@ -15,8 +15,8 @@ still be reused and on what basis, what is now necessary, and why each object is
 
 | Piece | Where |
 |---|---|
-| The model: nodes, versions, captured reads, query reads, the five dimensions, obligations, explanations | `src/impact/model.rs` |
-| The engine: plan, re-evaluate, stop propagation, publish, plus the independent oracle | `src/impact/engine.rs` |
+| The model: nodes, versions, captured reads, query reads, the five dimensions, obligations, explanations | `tests/support/impact_core/model.rs` |
+| The engine: plan, re-evaluate, stop propagation, publish, plus the independent oracle | `tests/support/impact_core/engine.rs` |
 | The closed arithmetic fixture and its evaluators | `tests/support/impact_fixture.rs` |
 | The equivalence property and the arithmetic mutations | `tests/incremental_revision.rs` |
 | The confirmation matrix and the mutation checks | `tests/m3_confirmation.rs` |

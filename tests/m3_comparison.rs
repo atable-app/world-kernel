@@ -21,7 +21,7 @@ use support::{
     impact_fixture as fixture, incumbent_comparison,
 };
 
-use world_kernel::impact::{
+use support::impact_core::{
     Disposition, EvaluationRecord, Limits, NodeId, Profile, TrustConfiguration, full_recompute,
     revise,
 };
@@ -345,8 +345,8 @@ fn the_limits_are_reported_the_same_way() {
 /// What the application mechanism can say about a consumer it kept: the value,
 /// and nothing else.
 fn stale_support(
-    base: &world_kernel::impact::Snapshot,
-    target: &world_kernel::impact::Snapshot,
+    base: &support::impact_core::Snapshot,
+    target: &support::impact_core::Snapshot,
 ) -> Option<Value> {
     let mut cache = AppCache::new();
     revise_app(
@@ -519,4 +519,68 @@ fn the_recorded_result_file_matches_a_fresh_measurement() {
         "the core does buy a consumed facet"
     );
     assert_eq!(clauses[2]["met"].as_bool(), Some(true));
+}
+
+/// The contract document and the measured engine must name the same codes.
+///
+/// The engine was removed from the Kernel's shipped surface, so these strings are the only thing a
+/// consumer has to depend on. A code that exists in one place and not the other is a lie to whoever
+/// reads it, and this test is what catches it.
+#[test]
+fn the_contract_document_and_the_measured_codes_agree() {
+    let contract = std::fs::read_to_string(
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("docs/IMPACT-CONTRACT.md"),
+    )
+    .expect("the contract is checked in");
+    let engine = std::fs::read_to_string(
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/support/impact_core/engine.rs"),
+    )
+    .expect("the measured engine is checked in");
+
+    let is_code = |candidate: &str| {
+        // A code is snake_case and long enough not to be prose. This excludes prose in backticks and
+        // payloads like `app/cached`.
+        candidate.len() > 8
+            && candidate
+                .chars()
+                .all(|c| c.is_ascii_lowercase() || c == '_')
+    };
+
+    // The engine's codes are string literals; the contract writes them in backticks.
+    let emitted: std::collections::BTreeSet<String> = engine
+        .match_indices('"')
+        .step_by(2)
+        .skip(1)
+        .filter_map(|(at, _)| {
+            let rest = &engine[at + 1..];
+            let end = rest.find('"')?;
+            let literal = &rest[..end];
+            is_code(literal).then(|| literal.to_owned())
+        })
+        .collect();
+    let documented: std::collections::BTreeSet<String> = contract
+        .lines()
+        .filter(|line| line.starts_with("| "))
+        .filter_map(|line| {
+            let start = line.find('`')? + 1;
+            let rest = &line[start..];
+            let end = rest.find('`')?;
+            let code = &rest[..end];
+            is_code(code).then(|| code.to_owned())
+        })
+        .collect();
+
+    let missing_from_docs: Vec<&String> = emitted.difference(&documented).collect();
+    let missing_from_engine: Vec<&String> = documented.difference(&emitted).collect();
+
+    assert!(
+        missing_from_docs.is_empty(),
+        "the engine emits codes the contract does not name: {missing_from_docs:?}"
+    );
+    assert!(
+        missing_from_engine.is_empty(),
+        "the contract names codes the engine does not emit: {missing_from_engine:?}"
+    );
+    assert!(emitted.len() >= 8, "the code list did not shrink unnoticed");
 }

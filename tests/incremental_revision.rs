@@ -17,10 +17,10 @@
 
 mod support;
 
-use support::impact_fixture as fixture;
-use world_kernel::impact::{
+use support::impact_core::{
     Coverage, Currency, Disposition, EvaluationRecord, NodeNature, Profile, Revised, revise,
 };
+use support::impact_fixture as fixture;
 
 /// The observable result of a pass: values, normalized obligations, coverage and
 /// currency. Run identifiers, durations and timestamps are not compared.
@@ -72,7 +72,7 @@ fn observable(revised: &Revised) -> Observable {
 }
 
 fn oracle_observable(
-    recomputed: &std::collections::BTreeMap<String, world_kernel::impact::engine::Evaluated>,
+    recomputed: &std::collections::BTreeMap<String, support::impact_core::engine::Evaluated>,
 ) -> Observable {
     let mut outputs: Vec<(String, String)> = recomputed
         .iter()
@@ -90,7 +90,7 @@ fn oracle_observable(
 /// Records the fixture's derived nodes at a snapshot, by full recompute, so the
 /// incremental pass starts from a realistic base.
 fn records_at(
-    snapshot: &world_kernel::impact::Snapshot,
+    snapshot: &support::impact_core::Snapshot,
 ) -> std::collections::BTreeMap<String, EvaluationRecord> {
     let owned: Vec<String> = fixture::DERIVED.iter().map(|id| (*id).to_owned()).collect();
     fixture::oracle(snapshot, &owned)
@@ -101,8 +101,8 @@ fn records_at(
 }
 
 fn revise_from(
-    base: &world_kernel::impact::Snapshot,
-    target: &world_kernel::impact::Snapshot,
+    base: &support::impact_core::Snapshot,
+    target: &support::impact_core::Snapshot,
     targets: &[&str],
 ) -> Revised {
     let owned: Vec<String> = targets.iter().map(|id| (*id).to_owned()).collect();
@@ -342,11 +342,11 @@ fn a_tombstoned_read_is_not_silently_skipped() {
     let mut s0 = fixture::snapshot(0, 100, 80, 110, "draft");
     s0.nodes.insert(
         fixture::LIMIT.to_owned(),
-        world_kernel::impact::NodeVersion::tombstone(2, "producer"),
+        support::impact_core::NodeVersion::tombstone(2, "producer"),
     );
     s0.nodes.insert(
         fixture::COST_B.to_owned(),
-        world_kernel::impact::NodeVersion::new(
+        support::impact_core::NodeVersion::new(
             1,
             "money/1",
             serde_json::json!({"value": 110}),
@@ -399,7 +399,7 @@ fn a_recorded_decision_is_never_replaced_by_the_engine() {
             .obligations
             .iter()
             .any(|obligation| obligation.target == fixture::DECISION
-                && obligation.work == world_kernel::impact::WorkType::HumanReview),
+                && obligation.work == support::impact_core::WorkType::HumanReview),
         "and it produces the obligation rather than acting"
     );
     assert_eq!(
@@ -422,7 +422,7 @@ fn an_evaluator_a_consumer_did_not_grant_cannot_claim_the_closed_profile() {
         &records_at(&s0),
         &[fixture::ELIGIBLE_A.to_owned()],
         &fixture::evaluators(),
-        &world_kernel::impact::TrustConfiguration::default(),
+        &support::impact_core::TrustConfiguration::default(),
         fixture::limits(),
     );
 
@@ -533,10 +533,10 @@ fn a_stale_plan_may_not_be_published_as_current() {
     let s1 = fixture::snapshot(1, 90, 80, 110, "draft");
     let revised = revise_from(&s0, &s1, &fixture::DERIVED);
 
-    assert!(world_kernel::impact::assert_publishable(&revised, 1).is_ok());
+    assert!(support::impact_core::assert_publishable(&revised, 1).is_ok());
 
     // Something moved the world on before publication.
-    let error = match world_kernel::impact::assert_publishable(&revised, 2) {
+    let error = match support::impact_core::assert_publishable(&revised, 2) {
         Ok(()) => panic!("a plan computed against another revision must not publish"),
         Err(error) => error,
     };
@@ -574,16 +574,16 @@ fn a_profile_a_consumer_does_not_cover_is_not_reported_as_closed() {
 fn an_observed_input_is_not_treated_as_recomputable() {
     let snapshot = fixture::snapshot(0, 100, 80, 110, "draft");
 
-    assert!(world_kernel::impact::is_recomputable(
+    assert!(support::impact_core::is_recomputable(
         snapshot.nature(fixture::ELIGIBLE_A)
     ));
-    assert!(!world_kernel::impact::is_recomputable(
+    assert!(!support::impact_core::is_recomputable(
         snapshot.nature(fixture::LIMIT)
     ));
-    assert!(!world_kernel::impact::is_recomputable(
+    assert!(!support::impact_core::is_recomputable(
         snapshot.nature(fixture::COST_A)
     ));
-    assert!(!world_kernel::impact::is_recomputable(
+    assert!(!support::impact_core::is_recomputable(
         snapshot.nature(fixture::DECISION)
     ));
     assert_eq!(

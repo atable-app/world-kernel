@@ -1,8 +1,14 @@
 //! World Kernel experimental contract.
+//!
+//! The Kernel is admission, history and portable continuity, plus the adapters that reach UNI and
+//! Kollio through their public surfaces. It is not the impact engine: that was measured against a
+//! competent application and left the shipped surface, as decided in
+//! `docs/ADR-003-measure-before-building.md`. The engine is still in the repository, in
+//! `tests/support/impact_core/`, so the measurement can be repeated. What survives it is written down as
+//! a rule a consumer can be held to in `docs/IMPACT-CONTRACT.md`, not as a struct in here.
 
 pub mod adapters;
 pub mod continuation;
-pub mod impact;
 mod kernel;
 mod model;
 

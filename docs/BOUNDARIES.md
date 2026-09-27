@@ -79,6 +79,12 @@ code must not run inside the host and mint provider name `uni` directly.
 WK-03 remains partial because negative-query dependencies are not represented. WK-02 does not yet
 provide a transactionally versioned external authority snapshot.
 
+The impact engine was removed from the Kernel's shipped surface on 2026-09-27, per
+`docs/ADR-003-measure-before-building.md`, so WK-05 and the five-dimension separation are no longer
+enforced by this crate. They are now rules in `docs/IMPACT-CONTRACT.md`, and a consumer that adopts them
+is responsible for holding itself to them. The rule itself is unchanged: an adapter returns a
+reassessment frontier, not a verdict, and no part of the Kernel collapses impact into truth.
+
 UNI interface claims above follow its checked-in `README.md`, where `report` is byte-stable and bundles
 are the transport surface, plus `docs/evidence.md`, which defines `uni-bundle-0.1` integrity and
 cross-check semantics. The collector has a live contract test against the local UNI CLI in addition to

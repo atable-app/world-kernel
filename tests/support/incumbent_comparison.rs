@@ -5,10 +5,10 @@
 
 use std::collections::BTreeMap;
 
-use serde_json::Value;
-use world_kernel::impact::{
+use super::impact_core::{
     Evaluated, EvaluationRecord, NodeId, Revised, Snapshot, full_recompute, revise,
 };
+use serde_json::Value;
 
 use super::application_incremental::{AppCache, revise_app, revise_b3};
 use super::impact_fixture as fixture;
@@ -20,7 +20,7 @@ pub fn targets() -> Vec<NodeId> {
 /// R3: the full recompute. Its work is the reference for avoided work.
 pub fn run_r3(
     snapshot: &Snapshot,
-) -> Result<(BTreeMap<NodeId, Value>, usize), world_kernel::impact::Error> {
+) -> Result<(BTreeMap<NodeId, Value>, usize), super::impact_core::Error> {
     let recomputed: BTreeMap<NodeId, Evaluated> = full_recompute(
         snapshot,
         &targets(),
@@ -44,7 +44,7 @@ pub struct ApplicationRun {
 pub fn run_a3(
     base: &Snapshot,
     target: &Snapshot,
-) -> Result<ApplicationRun, world_kernel::impact::Error> {
+) -> Result<ApplicationRun, super::impact_core::Error> {
     let mut cache = AppCache::new();
     // The application's own first pass establishes the cache, as an application
     // would have done before the conditions changed.
@@ -79,7 +79,7 @@ pub fn run_b3(
     base: &Snapshot,
     target: &Snapshot,
     stale: &[String],
-) -> Result<ApplicationRun, world_kernel::impact::Error> {
+) -> Result<ApplicationRun, super::impact_core::Error> {
     let mut cache = AppCache::new();
     // The warm-up builds the cache before anything changes. The declaration
     // applies to the pass that would otherwise reuse it.
@@ -111,7 +111,7 @@ pub fn run_b3(
 pub fn run_c3(
     base: &Snapshot,
     target: &Snapshot,
-) -> Result<(BTreeMap<NodeId, Value>, usize, usize), world_kernel::impact::Error> {
+) -> Result<(BTreeMap<NodeId, Value>, usize, usize), super::impact_core::Error> {
     let recorded: BTreeMap<NodeId, EvaluationRecord> = full_recompute(
         base,
         &targets(),
