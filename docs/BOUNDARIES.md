@@ -33,8 +33,10 @@ idempotency, transaction ordering and receipt creation remain inside the module.
 `Kernel::snapshot()` and `Kernel::replay()` are the read seams. Replay consumes recorded events only.
 It never calls adapters, models or external systems.
 
-Adapters are pure translation seams. They do not reach into UNI or Kollio private storage and they do
-not write back into either product.
+Kollio adapters are pure translation seams. The UNI collector invokes only UNI's public CLI: `verify`,
+the versioned `bundle export` / `bundle verify` transport, and the byte-stable JSON `report`. It never
+reads UNI's private cache directly or writes product-owned files itself. UNI remains responsible for
+its own evidence and decision state.
 
 ## Trust model
 
@@ -42,15 +44,23 @@ The host process and Kernel database are trusted in this first mono-authority pr
 not trusted to mint authority. A World stores the names of assurance providers its owner trusts.
 Merely placing an `AcceptedAssessment` in a proposal does not make an unknown provider acceptable.
 
-The remaining weak point is the exact-subject binding around `uni --json report`: the current stable
-report contains the decision but not the candidate digest. A trusted collector must compute and bind
-that digest in the same operation. A later UNI export should carry this binding directly.
+The stable UNI report contains the decision but not the candidate digest. `UniCollector` closes the
+ordinary substitution gap by hashing the file before and after verification, verifying UNI's exported
+bundle through UNI itself, and requiring a valid bundle evidence record whose workspace-relative path
+and SHA-256 equal the candidate. The resulting assessment reference hashes the normalized evidence,
+stable report and candidate together.
+
+The remaining filesystem race is an A-B-A mutation during the verifier command: without an immutable
+snapshot or operating-system lock, the candidate can theoretically change and return to its original
+bytes between the two Kernel hashes. The mono-authority profile therefore still trusts the host process
+and the configured UNI binary. Also, `AcceptedAssessment` is a data type, not a signature: untrusted
+code must not run inside the host and mint provider name `uni` directly.
 
 ## Invariant coverage
 
 | Invariant | Current evidence |
 |---|---|
-| WK-01 exact subject | Assessment reference and digest must match the candidate |
+| WK-01 exact subject | UNI bundle evidence path and digest must match the candidate; admission rechecks the assessment subject and digest |
 | WK-02 current authority | `AuthoritySource` checked on every new submission |
 | WK-03 current context | World revision and positive object reads checked |
 | WK-04 no half commit | Projection and event share one SQLite transaction |
@@ -66,3 +76,7 @@ that digest in the same operation. A later UNI export should carry this binding 
 WK-03 remains partial because negative-query dependencies are not represented. WK-02 does not yet
 provide a transactionally versioned external authority snapshot.
 
+UNI interface claims above follow its checked-in `README.md`, where `report` is byte-stable and bundles
+are the transport surface, plus `docs/evidence.md`, which defines `uni-bundle-0.1` integrity and
+cross-check semantics. The collector has a live contract test against the local UNI CLI in addition to
+its fake-process seam tests.

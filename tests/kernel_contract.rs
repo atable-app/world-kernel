@@ -241,6 +241,51 @@ fn another_process_can_reopen_the_world_and_continue_from_the_same_history() {
     assert_eq!(reopened.replay().unwrap(), expected);
 }
 
+#[test]
+fn failure_at_the_last_durable_write_rolls_back_projection_and_event() {
+    let dir = tempdir().unwrap();
+    let path = dir.path().join("world.db");
+    let mut kernel = test_kernel(&path);
+    let fault_connection = rusqlite::Connection::open(&path).unwrap();
+    fault_connection
+        .execute_batch(
+            "CREATE TRIGGER interrupt_before_commit
+             BEFORE INSERT ON submissions
+             BEGIN
+               SELECT RAISE(ABORT, 'simulated interruption before commit');
+             END;",
+        )
+        .unwrap();
+
+    let result = kernel.submit(
+        &valid_change(),
+        &authority("principal:worker-a", "publishCandidate"),
+    );
+
+    assert!(result.is_err());
+    let snapshot = kernel.snapshot().unwrap();
+    assert_eq!(snapshot.revision, 0);
+    assert!(!snapshot.objects.contains_key("artifact:demo"));
+    assert_eq!(kernel.replay().unwrap(), snapshot);
+}
+
+#[test]
+fn lost_response_after_commit_returns_the_same_receipt_after_restart() {
+    let dir = tempdir().unwrap();
+    let path = dir.path().join("world.db");
+    let grants = authority("principal:worker-a", "publishCandidate");
+    let original = {
+        let mut kernel = test_kernel(&path);
+        kernel.submit(&valid_change(), &grants).unwrap()
+    };
+
+    let mut restarted = Kernel::open(&path, "world:test").unwrap();
+    let recovered = restarted.submit(&valid_change(), &grants).unwrap();
+
+    assert_eq!(recovered, original);
+    assert_eq!(restarted.snapshot().unwrap().revision, 1);
+}
+
 fn test_kernel(path: impl AsRef<std::path::Path>) -> Kernel {
     Kernel::create(
         path,

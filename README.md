@@ -24,10 +24,11 @@ transaction.
 `Kernel::snapshot` reads the current projection. `Kernel::replay` reconstructs it from the event log
 without invoking a model or an external effect.
 
-The first adapters are read-only:
+The first integration seams preserve product ownership:
 
-- UNI stable JSON reports become assurance references only when the report is `Accepted` and the host
-  binds it to an exact candidate collected in the same trusted operation.
+- `UniCollector` hashes the candidate before and after UNI verification, asks UNI to export and
+  validate its versioned evidence bundle, requires valid `artifact_files` evidence for that exact
+  path and digest, and only then binds the byte-stable accepted report to the candidate.
 - Kollio documents become versioned observations while Kollio remains their canonical owner.
 - Kollio impact assessments become reassessment frontiers, never truth verdicts.
 
@@ -44,8 +45,9 @@ cargo run --example vertical_slice
 
 This prototype has no external effect dispatcher, signatures, distributed authority, negative-query
 read sets or generic merge protocol. `AuthoritySource` is checked synchronously at admission but is not
-yet a versioned authority ledger. The UNI adapter does not prove by itself that the caller bound the
-report to the correct artifact. Those limitations are part of the experiment, not hidden guarantees.
+yet a versioned authority ledger. The UNI collector detects ordinary mutation and post-verification
+substitution, but it does not provide an immutable filesystem snapshot against a concurrent A-B-A
+mutation. The host process and configured UNI binary remain trusted. Those limitations are part of the
+experiment, not hidden guarantees.
 
 See [docs/BOUNDARIES.md](docs/BOUNDARIES.md) and [docs/EXPERIMENT.md](docs/EXPERIMENT.md).
-

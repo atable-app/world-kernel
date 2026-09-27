@@ -10,7 +10,8 @@ actor's conversation, while preserving enough history to reconstruct the resulti
 The runnable example joins three independent pieces:
 
 1. A Kollio document is observed as a versioned dependency. Kollio remains its owner.
-2. A UNI stable report is normalized into an assurance reference for an exact candidate.
+2. A UNI stable report and UNI-verified evidence bundle are normalized into an assurance reference for
+   an exact candidate.
 3. World Kernel checks the current reads and authority, commits the candidate and emits a receipt.
 
 Run it with:
@@ -19,9 +20,11 @@ Run it with:
 cargo run --example vertical_slice
 ```
 
-The contract tests then inject candidate substitution, authority removal, stale dependencies,
-incomplete context and idempotency conflicts. Every rejected case must leave the World revision and
-projection unchanged.
+The contract tests then inject mutation during verification, candidate substitution after assurance,
+authority removal, stale dependencies, incomplete context, idempotency conflicts and failure at the
+last durable write. Every rejected or interrupted case must leave the World revision and projection
+unchanged. A restart test also proves that a lost response after commit returns the original receipt
+without advancing the World twice.
 
 ## Baselines
 
@@ -47,9 +50,16 @@ Stop generalizing the Kernel if any of these occurs:
   integration cost;
 - users do not reuse receipts or reassessment frontiers after context changes.
 
+## Completed hardening step
+
+The trusted collector now runs UNI's complete public CLI path, verifies a versioned evidence bundle,
+binds an exact candidate digest and rejects uncovered or substituted artifacts. SQLite fault injection
+proves rollback at the last durable write, and process restart proves receipt recovery after a lost
+response. Replay remains effect-free because this slice has no external effect dispatcher.
+
 ## Next experiment
 
-Add a trusted collector that runs UNI's complete CLI path, computes the candidate digest and returns a
-single bound record. Then interrupt the process immediately before and after the SQLite commit. A new
-process must recover the same receipt and must never re-run an external effect during replay.
-
+Run the same cases against an application-specific transaction baseline, then add an immutable
+candidate snapshot or descriptor-based locking experiment to measure and eliminate the remaining A-B-A
+filesystem race. Do not add an external effect dispatcher until those two results justify the extra
+state machine.
