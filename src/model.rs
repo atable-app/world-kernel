@@ -87,7 +87,12 @@ pub struct AcceptedAssessment {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "op", rename_all = "camelCase", deny_unknown_fields)]
+#[serde(
+    tag = "op",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase",
+    deny_unknown_fields
+)]
 pub enum Patch {
     PutObject {
         #[serde(rename = "ref")]

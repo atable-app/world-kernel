@@ -90,6 +90,55 @@ fn accepted_change_is_committed_once_and_replays_to_the_same_state() {
 }
 
 #[test]
+fn the_serialized_envelope_uses_exactly_the_published_schema_field_names() {
+    let schema: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/schemas/world-change-v0.experimental.schema.json"
+        ))
+        .unwrap(),
+    )
+    .unwrap();
+    let envelope = serde_json::to_value(valid_change()).unwrap();
+    let properties = schema["properties"].as_object().unwrap();
+    let required = schema["required"].as_array().unwrap();
+
+    let emitted = envelope.as_object().unwrap();
+    for name in emitted.keys() {
+        assert!(
+            properties.contains_key(name),
+            "envelope emits {name}, which the schema does not declare"
+        );
+    }
+    for name in required {
+        assert!(
+            emitted.contains_key(name.as_str().unwrap()),
+            "envelope omits the required field {name}"
+        );
+    }
+    assert_eq!(
+        properties.len(),
+        emitted.len(),
+        "schema and envelope disagree"
+    );
+
+    let patch_schema = &schema["properties"]["patches"]["items"];
+    let patch_properties = patch_schema["properties"].as_object().unwrap();
+    let patch = envelope["patches"][0].as_object().unwrap();
+    for name in patch.keys() {
+        assert!(
+            patch_properties.contains_key(name),
+            "patch emits {name}, which the schema does not declare"
+        );
+    }
+    assert_eq!(
+        patch_properties.len(),
+        patch.len(),
+        "schema and patch disagree"
+    );
+}
+
+#[test]
 fn an_unknown_field_in_a_proposal_is_rejected_rather_than_ignored() {
     let mut envelope = serde_json::to_value(valid_change()).unwrap();
     let object = envelope.as_object_mut().unwrap();
