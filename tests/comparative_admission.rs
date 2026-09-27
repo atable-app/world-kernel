@@ -101,6 +101,59 @@ fn known_unsupported_cases_are_never_rewritten_as_successes() {
 }
 
 #[test]
+fn the_run_is_reproducible_apart_from_the_recorded_durations() {
+    let corpus = corpus();
+    let first = Benchmark::run(&corpus).unwrap();
+    let second = Benchmark::run(&corpus).unwrap();
+
+    let decisions = |benchmark: &Benchmark| {
+        benchmark
+            .results
+            .iter()
+            .map(|result| {
+                (
+                    result.case_id.clone(),
+                    result.system,
+                    result.actual.clone(),
+                    result.correct,
+                )
+            })
+            .collect::<Vec<_>>()
+    };
+
+    assert_eq!(decisions(&first), decisions(&second));
+}
+
+#[test]
+fn the_recorded_result_file_matches_a_fresh_run_apart_from_timings() {
+    let corpus = corpus();
+    let recorded: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("experiments/admission-benchmark/results.json"),
+        )
+        .expect("results.json is checked in"),
+    )
+    .unwrap();
+
+    let fresh = Benchmark::run(&corpus).unwrap();
+    let recorded_cases = recorded["cases"].as_array().expect("cases are recorded");
+    assert_eq!(recorded_cases.len(), fresh.results.len());
+
+    for (recorded_case, result) in recorded_cases.iter().zip(&fresh.results) {
+        let case = result.case_id.as_str();
+        assert_eq!(
+            recorded_case["caseId"].as_str(),
+            Some(case),
+            "order changed"
+        );
+        assert_eq!(recorded_case["actual"], json!(result.actual), "{case}");
+        assert_eq!(recorded_case["expected"], json!(result.expected), "{case}");
+        assert_eq!(recorded_case["correct"], json!(result.correct), "{case}");
+    }
+}
+
+#[test]
 fn an_adverse_case_in_a_supported_family_is_never_committed() {
     let corpus = corpus();
     let mut checked = 0;

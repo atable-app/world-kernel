@@ -109,7 +109,9 @@ impl ActualOutcome {
     }
 }
 
+/// The per-case record shape required by the SPEC output contract.
 #[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CaseResult {
     pub case_id: String,
     pub system: SystemId,
@@ -125,46 +127,20 @@ pub struct ExpectedOutcomeRecord {
     pub code: Option<BenchmarkCode>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum RunError {
+    #[error("storage failure: {0}")]
     Storage(String),
+    #[error("case {case_id} prelude {index} did not advance the world: {detail}")]
     PreludeDidNotCommit {
         case_id: String,
         index: usize,
         detail: String,
     },
-    InterruptedFaultDidNotInterrupt {
-        case_id: String,
-        detail: String,
-    },
-    FaultAdvancedState {
-        case_id: String,
-        detail: String,
-    },
-}
-
-impl std::fmt::Display for RunError {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Storage(detail) => write!(formatter, "storage failure: {detail}"),
-            Self::PreludeDidNotCommit {
-                case_id,
-                index,
-                detail,
-            } => write!(
-                formatter,
-                "case {case_id} prelude {index} did not advance the world: {detail}"
-            ),
-            Self::InterruptedFaultDidNotInterrupt { case_id, detail } => write!(
-                formatter,
-                "case {case_id} was expected to be interrupted but was not: {detail}"
-            ),
-            Self::FaultAdvancedState { case_id, detail } => write!(
-                formatter,
-                "case {case_id} advanced state across an interruption: {detail}"
-            ),
-        }
-    }
+    #[error("case {case_id} was expected to be interrupted but was not: {detail}")]
+    InterruptedFaultDidNotInterrupt { case_id: String, detail: String },
+    #[error("case {case_id} advanced state across an interruption: {detail}")]
+    FaultAdvancedState { case_id: String, detail: String },
 }
 
 /// The workspace a case runs in, holding the exact bytes the fixture declared.
@@ -771,6 +747,7 @@ impl Benchmark {
 }
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DecisionDisagreement {
     pub case_id: String,
     pub a: Option<BenchmarkCode>,
