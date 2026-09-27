@@ -71,23 +71,14 @@ pub enum GateOutcome {
     Refused(BenchmarkCode),
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GateError {
-    Storage(rusqlite::Error),
+    #[error("application storage error: {0}")]
+    Storage(#[from] rusqlite::Error),
+    #[error("application scope is not open: {0}")]
     Interrupted(String),
-    Serialization(serde_json::Error),
-}
-
-impl From<rusqlite::Error> for GateError {
-    fn from(error: rusqlite::Error) -> Self {
-        Self::Storage(error)
-    }
-}
-
-impl From<serde_json::Error> for GateError {
-    fn from(error: serde_json::Error) -> Self {
-        Self::Serialization(error)
-    }
+    #[error("application serialization error: {0}")]
+    Serialization(#[from] serde_json::Error),
 }
 
 /// The application's own authority list.
@@ -174,6 +165,36 @@ impl BaselineA {
             [&self.scope],
             |row| row.get(0),
         )?)
+    }
+
+    /// The application's own read seam for a stored object.
+    pub fn object(&self, subject: &str) -> Result<Option<(u64, String)>, GateError> {
+        Ok(self
+            .connection
+            .query_row(
+                "SELECT revision, digest FROM app_objects WHERE scope_id = ?1 AND subject = ?2",
+                params![self.scope, subject],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .optional()?)
+    }
+
+    /// The application's own reopen seam, used after a restart.
+    pub fn reopened(path: impl AsRef<Path>, scope: &str) -> Result<Self, GateError> {
+        Self::reopen(path, scope)
+    }
+
+    /// Installs a temporary fault on the last durable write of an application
+    /// commit, so an interruption can be observed at that exact moment.
+    pub fn install_interrupted_commit(&self) -> Result<(), GateError> {
+        self.connection.execute_batch(
+            "CREATE TRIGGER app_interrupted_commit
+             BEFORE INSERT ON app_requests
+             BEGIN
+               SELECT RAISE(ABORT, 'simulated interruption before commit');
+             END;",
+        )?;
+        Ok(())
     }
 
     /// The application's admission gate, in its own order.
