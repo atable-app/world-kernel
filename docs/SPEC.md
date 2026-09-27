@@ -240,11 +240,12 @@ policy, cache, binding or decision code.
 Current limitation: the two file hashes do not exclude an A-B-A mutation during verification. The
 general workspace profile remains trusted-host only until M2 defines a sealed subject profile.
 
-Live verification command:
+Live verification command. `UNI_BIN` must be an absolute path: the runner executes the binary with the
+declared workspace as its working directory, so a relative path cannot resolve.
 
 ```bash
 cargo build -p uni-cli --manifest-path ../uni/Cargo.toml
-UNI_BIN=../uni/target/debug/uni \
+UNI_BIN="$(cd ../uni && pwd)/target/debug/uni" \
   cargo test --test uni_collector real_uni_cli_binds_valid_evidence_to_the_candidate -- --ignored
 ```
 
