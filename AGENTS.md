@@ -11,8 +11,8 @@ Kollio.
    `docs/M3-PROTOCOL.md` before working on impact, and `docs/ADR-003-measure-before-building.md` plus
    `docs/ADR-004-the-facet-advantage-scales.md` before adding any capability, because the reduce-or-stop
    decision was reversed and M4 is authorised to tranche 1. `docs/M4-PROTOCOL.md` is pre-registered and
-   must be read before working on branches. The impact rules are also written down in
-   `docs/IMPACT-CONTRACT.md`.
+   must be read before working on branches. `docs/M5-PROTOCOL.md` is pre-registered and must be read
+   before working on transfer. The impact rules are also written down in `docs/IMPACT-CONTRACT.md`.
 2. Read `docs/BOUNDARIES.md` when work touches ownership, trust, UNI, Kollio or external state.
 3. Read `docs/EXPERIMENT.md` when work touches benchmarks, falsification or claims about value.
 4. Inspect the code and tests before relying on a document's description of current behavior. Running
@@ -50,6 +50,11 @@ Kollio.
   unconsumed field is enough. `src/impact` is restored; the Kernel is admission, history, portable
   continuity, the impact engine and the adapters. The rules are in `docs/IMPACT-CONTRACT.md` and
   `the_contract_document_and_the_measured_codes_agree` still binds that document to the engine.
+- M5 tranche 1 is implemented in `src/experience.rs` and `src/transfer.rs`, with
+  `tests/transfer_plan.rs`, `tests/transfer_benchmark.rs` and a checked-in
+  `experiments/transfer-benchmark/` result. 30 closed cases, zero false direct transfers, and a **tie**
+  with a competent non-Kernel baseline. That tie is the recorded result and it does not fund tranche 2.
+  `schemas/experience-capsule-v0.experimental.schema.json` is strict and a test binds it to the types.
 - M4 tranche 1 is implemented in `src/branch.rs` and `tests/branch_convergence.rs`. A combination of two
   individually valid branches is blocked by a constraint check on the reconstructed candidate, and a
   composition of exactly the limit is admissible. The oracle in `tests/support/branch_fixture.rs` is a
@@ -75,6 +80,9 @@ Kollio.
 - Never collapse history, currency, business verdict, authority and coverage into one validity flag, and
   never let a manifest or an evaluator award itself a stronger trust profile than the configuration grants.
 - Never recompute a recorded human decision. Produce an obligation and change nothing.
+- Never collapse an unknown fact, an absent fact, an unobserved capability and an undeclared key into one
+  state. Never let a source assurance become a target assurance, and never let a difference become
+  bridgeable because it looks bridgeable: adaptability is declared and defaults to false.
 - Use test-driven development for behavior changes. A failing contract test must precede the fix.
 - Update `docs/SPEC.md` when a durable requirement or milestone status changes. Update
   `docs/BOUNDARIES.md` when a proved guarantee or trust assumption changes. Do not create another
@@ -95,7 +103,9 @@ cargo run --example m2_continuation
 cargo run --example m3_revision
 cargo run --example incumbent_comparison
 cargo run --example m4_branch
+cargo run --example transfer_benchmark
 jq empty schemas/world-change-v0.experimental.schema.json
+jq empty schemas/experience-capsule-v0.experimental.schema.json
 ```
 
 Record `UNI_BIN` as an absolute path when running the live UNI contract test. The runner executes the

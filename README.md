@@ -50,6 +50,29 @@ error that a competent application transaction does not also prevent. Whether th
 envelope is an open product decision, recorded in
 [RESULTS.md](experiments/admission-benchmark/RESULTS.md).
 
+## Transferable experience
+
+A past attempt, packaged so it can be evaluated somewhere else. The output is a plan, not a boolean, and
+the rule it exists to protect is that **similarity is not applicability**: two contexts can match on every
+loud key and still differ on the one that matters.
+
+```bash
+cargo run --example transfer_benchmark
+```
+
+`src/experience.rs` refuses to collapse four states that look alike: a fact that is unknown, a fact that is
+absent, a capability that was never checked, and a key nobody declared. `src/transfer.rs` compares the
+capsule's declared conditions against a target and returns one of five statuses with the obligations the
+status implies. Four of those requirements are construction sites rather than rules to remember: an
+instantiated target candidate is built with an empty assurance list, adaptability is a declared boolean
+defaulting to false, a recurrent prior failure is an obligation rather than a sentence, and a plan bound to
+a revision that has since moved refuses to instantiate.
+
+The recorded result is a **tie** with a competent non-Kernel baseline, and it is recorded as one. 30 closed
+cases across four families, zero false direct transfers on either side, one real capability difference
+found, seven mutations each failing a test. A tie funds nothing further. The result is in
+[experiments/transfer-benchmark](experiments/transfer-benchmark/RESULTS.md).
+
 ## Branch convergence
 
 Two alternatives, one adoption. Alpha and Beta each look fine on their own, and combining them breaks a
@@ -57,6 +80,7 @@ rule neither broke. That is the case a value-comparison merge passes and a real 
 
 ```bash
 cargo run --example m4_branch
+cargo run --example transfer_benchmark
 ```
 
 `src/branch.rs` forks from an immutable base, prepares a proposal against pinned source and target,
@@ -150,7 +174,8 @@ See [docs/BOUNDARIES.md](docs/BOUNDARIES.md) and [docs/EXPERIMENT.md](docs/EXPER
 - [docs/BOUNDARIES.md](docs/BOUNDARIES.md) records state ownership, trust and current proof limits.
 - [docs/IMPACT-CONTRACT.md](docs/IMPACT-CONTRACT.md) states the impact rules a consumer can be held to, and
   the stable codes, bound to the engine by a test.
-- [docs/M4-PROTOCOL.md](docs/M4-PROTOCOL.md) is the pre-registered scope of the branch tranche, and
+- [docs/M4-PROTOCOL.md](docs/M4-PROTOCOL.md) and [docs/M5-PROTOCOL.md](docs/M5-PROTOCOL.md) are the
+  pre-registered scopes of the branch and transfer tranches.
   [ADR-004](docs/ADR-004-the-facet-advantage-scales.md) is the reversal of the reduction and the M4 decision.
 - [docs/EXPERIMENT.md](docs/EXPERIMENT.md) records the experimental question and falsification gates.
 - [AGENTS.md](AGENTS.md) is the short entry point for OpenCode and other coding agents.

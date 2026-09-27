@@ -3,9 +3,9 @@
 Status: experimental, normative for this repository  
 Last verified: 2026-09-27, M3 measured and the reduction decided in
 [ADR-003](ADR-003-measure-before-building.md)  
-Active milestone: M4 tranche 1, branch convergence, pre-registered in
-[M4-PROTOCOL.md](M4-PROTOCOL.md) and authorised by
-[ADR-004](ADR-004-the-facet-advantage-scales.md)
+Active milestone: M5 tranche 1, transferable experience, pre-registered in
+[M5-PROTOCOL.md](M5-PROTOCOL.md). M4 tranche 1 is done and remains limited to the stories in
+[M4-PROTOCOL.md](M4-PROTOCOL.md).
 
 ## 1. Document contract
 
@@ -608,6 +608,37 @@ ADR-004 says reduce rather than proceed.
 What is deliberately absent in tranche 1: multi-parent merge, automatic re-grounding, a
 `safe_to_merge` boolean, any automatic merge, and any second impact engine. A target that moved since a
 proposal was prepared yields a stale proposal, not a silent rebase.
+
+## 8f. M5 tranche 1: transferable experience
+
+M4 explores alternatives. M5 asks whether a past attempt can be evaluated for reuse somewhere else, and
+the answer is a plan rather than a boolean. The scope authorised is a closed benchmark only, pre-registered
+in [M5-PROTOCOL.md](M5-PROTOCOL.md).
+
+The invariant the types exist to protect: **similarity is not applicability.** A capsule declares the
+conditions it believes matter, a `ContextDelta` compares exactly those against a target, and a
+`TransferPlan` reports one of five statuses plus the obligations the status implies. Three states are kept
+apart on purpose and the type system refuses to collapse them: a fact that is *unknown*, a fact that is
+*absent*, and a fact nobody *declared*. Collapsing the first into the second is what turns a confident
+retrieval into a false direct transfer.
+
+Four requirements are properties of the construction rather than rules someone must remember:
+
+- an instantiated target candidate is built with an **empty** assurance list, so source assurance cannot
+  become target assurance by being copied;
+- adaptability is a **declared** boolean on a condition, defaulting to false, so a difference is refused
+  rather than guessed bridgeable;
+- a recurrent prior failure is an **obligation** in the plan, not only a sentence in the explanation;
+- plans are bound to both the capsule revision and the target context revision, and a stale plan refuses
+  to instantiate.
+
+**The recorded result is a tie, and it is recorded as one.** A competent baseline that compares the same
+declared conditions with the same unknown state does the same work. 30 closed cases across the four
+families, zero false direct transfers on both sides, one capability difference found (a gate that does not
+model a declared parameter produces six false incompatibilities), seven mutations each failing a test. The
+brief's seventh continuation condition is unreachable from this workspace and is recorded as such. The
+result is in [experiments/transfer-benchmark](experiments/transfer-benchmark/RESULTS.md), produced by
+`cargo run --example transfer_benchmark`.
 
 ## 8d. The comparison, and the reduction it decided
 

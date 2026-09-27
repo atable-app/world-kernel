@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world-experience-capsule-v0.experimental.schema.json",
+  "title": "World Kernel experience capsule, experimental v0",
+  "description": "An immutable, packaged past attempt. Unknown facts, absent facts, unobserved capabilities and unsupported capabilities are four distinct states and are not collapsed. A capsule carries a claim about the completeness of its own declared conditions and cannot upgrade that claim for itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "revision",
+    "source_context",
+    "problem",
+    "intervention",
+    "applicability_conditions",
+    "outcome",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": { "const": "world-experience-capsule/v0" },
+    "id": { "type": "string", "minLength": 1 },
+    "revision": { "type": "integer", "minimum": 1 },
+    "source_context": { "$ref": "#/$defs/contextSnapshot" },
+    "problem": { "type": "string", "minLength": 1 },
+    "intervention": { "type": "string", "minLength": 1 },
+    "applicability_conditions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/applicabilityCondition" }
+    },
+    "dependencies": { "type": "array", "items": { "type": "string" } },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "outcome": { "$ref": "#/$defs/experienceOutcome" },
+    "evidence_refs": { "type": "array", "items": { "type": "string" } },
+    "assurance_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Assurances obtained in the source context. They are never inherited by a target."
+    },
+    "known_failures": { "type": "array", "items": { "$ref": "#/$defs/failureObservation" } },
+    "provenance": { "$ref": "#/$defs/provenanceRecord" }
+  },
+  "$defs": {
+    "fact": {
+      "description": "Known, established absent, or explicitly not known. The last one is not the second one.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["known"], "properties": { "known": true } },
+        { "type": "object", "additionalProperties": false, "required": ["absent"], "properties": { "absent": true } },
+        { "type": "object", "additionalProperties": false, "required": ["unknown"], "properties": { "unknown": true } }
+      ]
+    },
+    "capabilityState": {
+      "description": "Available, unavailable, known unsupported, or never checked. Never checked is not unavailable.",
+      "enum": ["available", "unavailable", "unsupported", "not_observed"]
+    },
+    "applicabilityCoverage": {
+      "description": "A claim the capsule makes about its own completeness. A producer never grants itself a stronger profile than a consumer allows, and this is the same rule applied to conditions.",
+      "enum": ["closed_declared", "partial_declared", "opaque"]
+    },
+    "contextSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_id", "revision"],
+      "properties": {
+        "context_id": { "type": "string", "minLength": 1 },
+        "revision": { "type": "integer", "minimum": 1 },
+        "facts": { "type": "object", "additionalProperties": { "$ref": "#/$defs/fact" } },
+        "capabilities": { "type": "object", "additionalProperties": { "$ref": "#/$defs/capabilityState" } },
+        "constraints": { "type": "object" },
+        "coverage": { "$ref": "#/$defs/applicabilityCoverage" }
+      }
+    },
+    "applicabilityCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "kind"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": [
+            "equals",
+            "not_equals",
+            "present",
+            "absent",
+            "gte",
+            "lte",
+            "member_of",
+            "capability_available",
+            "capability_unavailable",
+            "predicate_ref"
+          ]
+        },
+        "expected": {},
+        "adaptable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the intervention carries a parameter that can be re-derived for this key. A difference on an adaptable key is an adaptation; a difference on any other key with no adaptation supplied is an incompatibility. It defaults to false because guessing that a difference is bridgeable is how a false direct transfer happens with extra steps."
+        }
+      }
+    },
+    "experienceOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdict", "detail"],
+      "properties": {
+        "verdict": { "type": "string", "minLength": 1 },
+        "detail": { "type": "string", "minLength": 1 },
+        "limits": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "What this outcome does not establish. Usually that it holds anywhere else."
+        }
+      }
+    },
+    "failureObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "condition_key", "condition_value", "detail"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "condition_key": { "type": "string", "minLength": 1 },
+        "condition_value": {},
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "provenanceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["author", "activity", "source_revision"],
+      "properties": {
+        "author": { "type": "string", "minLength": 1 },
+        "activity": { "type": "string", "minLength": 1 },
+        "source_revision": { "type": "integer", "minimum": 1 },
+        "used_refs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "References into history. Not a claim of causation."
+        }
+      }
+    }
+  }
+}

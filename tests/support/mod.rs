@@ -27,3 +27,5 @@ pub mod impact_fixture;
 pub mod incumbent_comparison;
 #[path = "system_c.rs"]
 pub mod system_c;
+#[path = "transfer_fixture.rs"]
+pub mod transfer_fixture;
