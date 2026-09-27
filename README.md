@@ -1,0 +1,51 @@
+# World Kernel
+
+World Kernel is an experimental local runtime for grounded changes. It connects an exact candidate,
+the observations it read, an assurance result, current authority, an atomic commit and a replayable
+receipt.
+
+It is deliberately not an agent framework, a model router, a policy engine or the source of truth for
+integrated products. Producers propose. Assurance providers evaluate. The Kernel admits and records a
+change inside the World it owns.
+
+## Current slice
+
+The Rust library exposes one deep mutation interface:
+
+```rust
+kernel.submit(&grounded_change, &authority)
+```
+
+It returns either a typed rejection or a receipt. The implementation checks the exact candidate,
+trusted assurance provider, current authority, world revision, dependency revisions, context coverage,
+patch preconditions and idempotency before publishing the projection and event in one SQLite
+transaction.
+
+`Kernel::snapshot` reads the current projection. `Kernel::replay` reconstructs it from the event log
+without invoking a model or an external effect.
+
+The first adapters are read-only:
+
+- UNI stable JSON reports become assurance references only when the report is `Accepted` and the host
+  binds it to an exact candidate collected in the same trusted operation.
+- Kollio documents become versioned observations while Kollio remains their canonical owner.
+- Kollio impact assessments become reassessment frontiers, never truth verdicts.
+
+## Verify
+
+```bash
+cargo test
+cargo clippy --all-targets --all-features -- -D warnings
+cargo fmt --check
+cargo run --example vertical_slice
+```
+
+## Scope limits
+
+This prototype has no external effect dispatcher, signatures, distributed authority, negative-query
+read sets or generic merge protocol. `AuthoritySource` is checked synchronously at admission but is not
+yet a versioned authority ledger. The UNI adapter does not prove by itself that the caller bound the
+report to the correct artifact. Those limitations are part of the experiment, not hidden guarantees.
+
+See [docs/BOUNDARIES.md](docs/BOUNDARIES.md) and [docs/EXPERIMENT.md](docs/EXPERIMENT.md).
+

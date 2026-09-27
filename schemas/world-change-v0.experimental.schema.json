@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://memolabs.dev/schemas/world-change-v0.experimental.schema.json",
+  "title": "Grounded World Change",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "world",
+    "proposalId",
+    "idempotencyKey",
+    "actor",
+    "baseRevision",
+    "intent",
+    "candidate",
+    "reads",
+    "coverage",
+    "assessments",
+    "patches"
+  ],
+  "properties": {
+    "schema": {"const": "world-change/v0-experimental"},
+    "world": {"type": "string", "minLength": 1},
+    "proposalId": {"type": "string", "minLength": 1},
+    "idempotencyKey": {"type": "string", "minLength": 1},
+    "actor": {"type": "string", "minLength": 1},
+    "baseRevision": {"type": "integer", "minimum": 0},
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "target"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "target": {"type": "string", "minLength": 1}
+      }
+    },
+    "candidate": {"$ref": "#/$defs/candidate"},
+    "reads": {"type": "array", "items": {"$ref": "#/$defs/objectRevision"}},
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "completeFor", "truncated"],
+      "properties": {
+        "profile": {"type": "string", "minLength": 1},
+        "completeFor": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "truncated": {"type": "boolean"}
+      }
+    },
+    "assessments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["provider", "subject", "subjectDigest", "assessmentRef"],
+        "properties": {
+          "provider": {"type": "string", "minLength": 1},
+          "subject": {"type": "string", "minLength": 1},
+          "subjectDigest": {"type": "string", "pattern": "^sha256:"},
+          "assessmentRef": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "patches": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["op", "ref", "expectedRevision", "digest"],
+        "properties": {
+          "op": {"const": "putObject"},
+          "ref": {"type": "string", "minLength": 1},
+          "expectedRevision": {"type": ["integer", "null"], "minimum": 0},
+          "digest": {"type": "string", "pattern": "^sha256:"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "digest"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1},
+        "digest": {"type": "string", "pattern": "^sha256:"}
+      }
+    },
+    "objectRevision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "revision", "digest"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1},
+        "revision": {"type": "integer", "minimum": 0},
+        "digest": {"type": "string", "pattern": "^sha256:"}
+      }
+    }
+  }
+}
+
