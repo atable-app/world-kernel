@@ -9,7 +9,7 @@ jobs:
   gate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -40,11 +40,31 @@ jobs:
           cargo run --example incumbent_comparison -- --render-only
           cargo run --example transfer_benchmark -- --render-only
 
-      # admission_benchmark records durations, which move every run, so the recorded artifact is
-      # restored before the drift check. Everything else in experiments/ must be byte-identical to
-      # what the run just produced: a recorded result that a fresh run no longer reproduces is the
-      # one failure this repository refuses to carry quietly.
+      # admission_benchmark records durations, which move on every run, so its artifact is restored
+      # first. Every other file in experiments/ must then match what the run just produced. Two
+      # recorded json files also carry an environment block naming the machine the measurement was
+      # recorded on (arch and os): that is provenance, not measurement, and it is correct that it
+      # says aarch64/macos while this runner is x86_64/linux. For those files the environment
+      # identity is stripped from both sides before comparing; nothing else is allowed to differ.
+      # A recorded result a fresh run no longer reproduces is the one failure this repository
+      # refuses to carry quietly.
       - name: Recorded artifacts reproduce
         run: |
           git checkout -- experiments/admission-benchmark/
-          git diff --exit-code experiments/
+          strip_env() {
+            jq -S 'if has("environment") then del(.environment.arch, .environment.os) else . end'
+          }
+          drift=0
+          while IFS= read -r file; do
+            if git diff --quiet HEAD -- "$file"; then
+              continue
+            fi
+            if [[ "$file" == *.json ]] \
+               && diff -q <(git show "HEAD:$file" | strip_env) <(strip_env < "$file") > /dev/null; then
+              continue
+            fi
+            echo "::error::$file does not reproduce from a fresh run"
+            git diff HEAD -- "$file" | sed -n '1,40p'
+            drift=1
+          done < <(git ls-files experiments/)
+          exit $drift
