@@ -122,6 +122,16 @@ unconsumed by the fixture, so the decision was not to keep paying for capability
 
 That was the stopping point M1, M2 and M3 did not have. It did not hold: ADR-004 reversed the reduction
 on the same day, because the reversal case ADR-003 itself required fires, and M4 resumed at tranche 1 only.
+M5 then measured transferable experience against the same standard and produced the same sentence a fourth
+time. Its gate scored condition 5 on complexity, as Amendment 1 of its protocol required, and the
+competent baseline reached the same decisions and the same safety outcomes in 515 lines against the
+Kernel's 1007, so the brief's reduction trigger fired rather than merely being available. The reduction
+the trigger ordered is applied by [ADR-005](ADR-005-reduce-to-the-representation.md): the transfer planner
+left the shipped surface, the rules it enforced are written down as rules a consumer can be held to in
+[TRANSFER-CONTRACT.md](TRANSFER-CONTRACT.md), the representation `src/experience.rs` stayed in the crate,
+and the measured planner stayed in the repository so the comparison can be repeated. The recorded transfer
+artifact was not rescored, and its gate still reads three met, two not met, two unreachable; tranche 2 is
+not funded, so M5 closes as a reduction on the same disc as the ones before it, not as an extension.
 
 ## What would resume it
 
