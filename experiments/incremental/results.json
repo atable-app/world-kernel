@@ -14,7 +14,7 @@
         "src/impact/engine.rs",
         "src/impact/mod.rs"
       ],
-      "lines": 1559
+      "lines": 1561
     },
     "test": {
       "delta": "git diff --numstat bc29a22..HEAD -- tests/",
@@ -23,7 +23,7 @@
         "tests/m3_confirmation.rs",
         "tests/support/impact_fixture.rs"
       ],
-      "lines": 1656
+      "lines": 1676
     }
   },
   "coverage": {

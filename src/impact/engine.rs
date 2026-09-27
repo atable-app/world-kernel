@@ -104,7 +104,9 @@ impl TrustConfiguration {
         self
     }
 
-    fn allows(&self, evaluator: &str, version: &str) -> Option<Profile> {
+    /// Whether this configuration runs the evaluator at all, and at which
+    /// strongest profile.
+    pub fn allows(&self, evaluator: &str, version: &str) -> Option<Profile> {
         self.granted
             .get(&(evaluator.to_owned(), version.to_owned()))
             .copied()

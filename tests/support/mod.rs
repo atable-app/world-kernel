@@ -8,6 +8,8 @@
 
 #[path = "admission_case.rs"]
 pub mod admission_case;
+#[path = "application_incremental.rs"]
+pub mod application_incremental;
 #[path = "assurance.rs"]
 pub mod assurance;
 #[path = "baseline_a.rs"]
@@ -18,5 +20,7 @@ pub mod baseline_b;
 pub mod harness;
 #[path = "impact_fixture.rs"]
 pub mod impact_fixture;
+#[path = "incumbent_comparison.rs"]
+pub mod incumbent_comparison;
 #[path = "system_c.rs"]
 pub mod system_c;

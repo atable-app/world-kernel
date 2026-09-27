@@ -14,7 +14,7 @@ Corpus: 80 cases, 60 adverse, 20 benign, schema `"world-kernel-admission-case/v1
 - unjustified rejections among the benign cases: none
 - harness errors: none
 - unsupported cases by family: {"external_effect_uncertainty":2,"graph_termination":3,"negative_query_dependency":4}
-- timing: median 5994 us, p95 10935 us (descriptive only)
+- timing: median 1694 us, p95 2919 us (descriptive only)
 - implementation: 413 lines across tests/support/baseline_a.rs
 
 ### System B
@@ -24,7 +24,7 @@ Corpus: 80 cases, 60 adverse, 20 benign, schema `"world-kernel-admission-case/v1
 - unjustified rejections among the benign cases: none
 - harness errors: none
 - unsupported cases by family: {"external_effect_uncertainty":2,"graph_termination":3,"negative_query_dependency":4}
-- timing: median 6313 us, p95 12141 us (descriptive only)
+- timing: median 1871 us, p95 2998 us (descriptive only)
 - implementation: 55 lines across tests/support/baseline_b.rs
 
 ### System C
@@ -34,7 +34,7 @@ Corpus: 80 cases, 60 adverse, 20 benign, schema `"world-kernel-admission-case/v1
 - unjustified rejections among the benign cases: none
 - harness errors: none
 - unsupported cases by family: {"external_effect_uncertainty":2,"graph_termination":3,"negative_query_dependency":4}
-- timing: median 8956 us, p95 14073 us (descriptive only)
+- timing: median 2576 us, p95 3843 us (descriptive only)
 - implementation: 957 lines across src/kernel.rs, src/model.rs, tests/support/system_c.rs
 
 ## Decision-code disagreements between A, B and C

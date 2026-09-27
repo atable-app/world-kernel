@@ -8,7 +8,8 @@ Kollio.
 1. Read `docs/SPEC.md` before planning or changing behavior. It is the normative product and protocol
    specification, and it names the active milestone. Read `docs/ADR-001-portable-continuation.md` and
    `docs/M2-PROTOCOL.md` before working on continuation, and `docs/ADR-002-revisable-work.md` and
-   `docs/M3-PROTOCOL.md` before working on impact.
+   `docs/M3-PROTOCOL.md` before working on impact, and `docs/ADR-003-measure-before-building.md` before
+   adding any capability, because it records the reduce-or-stop decision and there is no M4.
 2. Read `docs/BOUNDARIES.md` when work touches ownership, trust, UNI, Kollio or external state.
 3. Read `docs/EXPERIMENT.md` when work touches benchmarks, falsification or claims about value.
 4. Inspect the code and tests before relying on a document's description of current behavior. Running
@@ -28,8 +29,18 @@ Kollio.
 - M2 is implemented and recorded at `bc29a22`: `docs/M2-PROTOCOL.md` and `experiments/continuation/`.
   All 24 pre-registered sequences are covered for C2, 4 of them for C2 only because A2 and B2 have no
   export of their own yet, so no M2 cost comparison exists.
-- M3 is in progress at `docs/M3-PROTOCOL.md` and `experiments/incremental/`. 15 of the 24 stories are
+- M3 is recorded at `docs/M3-PROTOCOL.md` and `experiments/incremental/`. 15 of the 24 stories are
   covered, 4 are partial and 5 are not covered. H3-Transfert and H3-Utilite are not measured.
+- The equal-information comparison ran on 2026-09-27 and is recorded in
+  `experiments/incumbent-comparison/`, produced by `cargo run --example incumbent_comparison`. R3, A3, B3
+  and C3 reached the same observable result on all 7 scenarios. A3 and B3 avoided the same work as C3 on
+  6 of them; on the 7th the core ran 0 evaluators where the application ran 2, because a consumed facet is
+  a narrower cache key than a whole value.
+- The reduce-or-stop decision is recorded in `docs/ADR-003-measure-before-building.md`. **There is no M4.**
+  Two of the three pre-registered clauses are met; the clause "the core saves nothing the application could
+  not already do" is false and stays recorded as false. The reduction is recommended on the narrower ground
+  that every other capability the core produces is unconsumed by the fixture. Its reversal case is stated
+  with it: on a graph of wide nodes the facet saving grows, and one example runner re-measures it.
 - Boundaries that survive: the Kernel stores digests and never object bytes, a reconstruction cannot
   bootstrap its own trust, and no validity flag exists anywhere in the M3 model.
 
@@ -42,6 +53,8 @@ Kollio.
 - Preserve the distinction between impact and truth, assurance and authority, internal commit and
   external effect.
 - Add no external effect dispatcher. The M1 gate was decided; M2 is an experiment, not a platform.
+- Add no fourth capability. The reduce-or-stop decision is recorded, and starting M4 contradicts it. If the
+  comparison is to be re-run, re-run it; do not build past it.
 - Never let a continuation package supply its own trust configuration or an expected head.
 - Never collapse history, currency, business verdict, authority and coverage into one validity flag, and
   never let a manifest or an evaluator award itself a stronger trust profile than the configuration grants.
@@ -64,11 +77,16 @@ cargo run --example vertical_slice
 cargo run --example admission_benchmark
 cargo run --example m2_continuation
 cargo run --example m3_revision
+cargo run --example incumbent_comparison
 jq empty schemas/world-change-v0.experimental.schema.json
 ```
 
 Record `UNI_BIN` as an absolute path when running the live UNI contract test. The runner executes the
 binary with the declared workspace as its working directory, so a relative path cannot resolve.
+
+`incumbent_comparison` writes `experiments/incumbent-comparison/results.json` and `RESULTS.md`, and
+`tests/m3_comparison.rs` asserts the checked-in result matches a fresh measurement, so the artifact cannot
+drift from the run. If that test fails, re-run the example rather than editing the artifact.
 
 When changing `ProcessUniRunner`, also build UNI and run the ignored live contract test as documented
 in `docs/SPEC.md`.

@@ -14,6 +14,6 @@ pub use engine::{
 };
 pub use model::{
     Authority, CapturedRead, Coverage, Currency, Disposition, Error, EvaluationRecord, Explanation,
-    Facet, Finding, HistoryState, NodeId, NodeNature, NodeVersion, Obligation, Outcome, Profile,
-    QueryRead, ReadBinding, Snapshot, WorkType,
+    FACET_COMPARATOR_VERSION, Facet, Finding, HistoryState, NodeId, NodeNature, NodeVersion,
+    Obligation, Outcome, Profile, QueryRead, ReadBinding, Snapshot, WorkType,
 };

@@ -1,8 +1,10 @@
 # World Kernel specification
 
 Status: experimental, normative for this repository  
-Last verified: 2026-09-27 at commit `f686d9a`, M2 in progress  
-Active milestone: M2 portable continuity, decided in [ADR-001](ADR-001-portable-continuation.md)
+Last verified: 2026-09-27, M3 measured and the reduction decided in
+[ADR-003](ADR-003-measure-before-building.md)  
+Active milestone: none. The experiment has a stopping point, recorded in
+[ADR-003](ADR-003-measure-before-building.md). There is no M4.
 
 ## 1. Document contract
 
@@ -577,6 +579,31 @@ is not assumed safe.
 M3 is not a platform. Graph termination, conditional branches, time-triggered expiry, contradiction
 arbitration and a durable store for the engine itself are not covered by the recorded run, and the transfer
 hypothesis to a second domain is not tested at all.
+
+## 8d. The comparison, and the reduction it decided
+
+M3 concluded the third consecutive "capability established, differential value not measured". The
+continuation rule therefore authorised neither M4 nor a reduction, because neither had been measured. The
+only increment that could settle it was the equal-information comparison pre-registered in section 17 of
+the M3 mandate and accepted in [ADR-003](ADR-003-measure-before-building.md).
+
+Four systems received the same seven scenarios: R3 a full recompute, A3 a competent application cache
+on whole values, B3 the same application consuming UNI staleness, and C3 the core. The result is in
+[experiments/incumbent-comparison](experiments/incumbent-comparison/RESULTS.md), measured by
+`cargo run --example incumbent_comparison`.
+
+All four reached the same observable result on all seven scenarios. A3 and B3 avoided the same work as
+C3 on six of them. On the seventh, the core ran no evaluator where the application ran two, because a
+consumed facet is a narrower cache key than a whole value.
+
+Two of the three pre-registered clauses of ADR-003 are met. The clause "the core saves nothing the
+application could not already do" is false, and stays recorded as false. The reduction is recommended
+on the narrower ground that every other capability the core produces is unconsumed by the fixture, so
+the decision is not to keep paying for capability nothing has measured. The reversal case is stated
+with it: on a graph of wide nodes the facet saving would grow, and one example runner re-measures it.
+
+The reduction does not touch the dependency model, the read and facet contracts, the closed profile
+rules, the corpora or the explanation codes.
 
 ## 8a. M2: portable continuity
 

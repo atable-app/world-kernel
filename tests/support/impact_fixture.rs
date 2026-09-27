@@ -170,6 +170,26 @@ pub fn limits() -> Limits {
 }
 
 /// A snapshot built from the four inputs and the derived results they imply.
+/// The same fixture with an extra, unconsumed field on the limit node.
+///
+/// Nothing in the arithmetic reads it, so a whole-value cache invalidates on it
+/// and a consumed-facet cache does not. That difference is the point of the
+/// field, and it is only visible in a scenario that changes it.
+pub fn snapshot_with_note(revision: u64, limit: i64, note: &str) -> Snapshot {
+    let mut snapshot = snapshot(revision, limit, 80, 110, "draft");
+    snapshot = snapshot.with_node(
+        LIMIT,
+        NodeNature::Observed,
+        NodeVersion::new(
+            2,
+            "money/1",
+            json!({"value": limit, "note": note}),
+            "producer",
+        ),
+    );
+    snapshot
+}
+
 pub fn snapshot(revision: u64, limit: i64, cost_a: i64, cost_b: i64, label: &str) -> Snapshot {
     let eligible_a = cost_a <= limit;
     let eligible_b = cost_b <= limit;

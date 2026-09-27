@@ -60,9 +60,9 @@ Interface: why(node), why_reused(node).
 
 M1 and M2 costs are historical and are not summed with M3
 
-Production: 1559 lines across src/impact/model.rs, src/impact/engine.rs, src/impact/mod.rs.
+Production: 1561 lines across src/impact/model.rs, src/impact/engine.rs, src/impact/mod.rs.
 
-Test evidence: 1656 lines across tests/incremental_revision.rs, tests/m3_confirmation.rs, tests/support/impact_fixture.rs.
+Test evidence: 1676 lines across tests/incremental_revision.rs, tests/m3_confirmation.rs, tests/support/impact_fixture.rs.
 
 Reproduce with:
 

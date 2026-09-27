@@ -59,6 +59,7 @@ historically true and no longer usable without either being false.
 
 ```bash
 cargo run --example m3_revision
+cargo run --example incumbent_comparison
 ```
 
 The engine reports, per object, whether no change can reach it, whether a change reached it and its consumed
@@ -66,6 +67,30 @@ values held, whether it was recomputed to the same value or a new one, and what 
 human decision is never recomputed; when its declared support moves, the engine produces an obligation and
 changes nothing. The recorded result, its coverage and its limits are in
 [experiments/incremental](experiments/incremental/README.md).
+
+## The comparison, and why the experiment stops here
+
+Three milestones produced the same sentence: capability established, differential value not measured. The
+only increment that could settle it was to measure the core against a competent application that had the
+same information. So the last run is a comparison, not a milestone.
+
+```bash
+cargo run --example incumbent_comparison
+```
+
+R3 is a full recompute, A3 is a competent application cache on whole values, B3 is the same application
+consuming UNI staleness, and C3 is the core. All four got the same seven scenarios. All four reached the
+same observable result. On six of the seven, A3 and B3 avoided exactly the work C3 avoided. On the seventh,
+the core ran no evaluator where the application ran two, because a consumed facet is a narrower cache key
+than a whole value.
+
+Everything else the core produces, the five dimensions, the obligation, the disposition, the explanation,
+the granted profile and the protection of a recorded decision, is not consumed by the fixture. The result
+is a reduction, not a victory: reduce the Kernel to UNI plus adapters, and do not start M4. The clause
+"the core saves nothing the application could not already do" is false and is recorded as false. The
+decision and its reversal case are in
+[ADR-003](docs/ADR-003-measure-before-building.md), the numbers in
+[RESULTS.md](experiments/incumbent-comparison/RESULTS.md).
 
 ## Verify
 

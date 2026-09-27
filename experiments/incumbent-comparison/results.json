@@ -1,0 +1,166 @@
+{
+  "decision": "docs/ADR-003-measure-before-building.md",
+  "equalInformation": {
+    "fixture": "tests/support/impact_fixture.rs",
+    "shared": [
+      "the same snapshots",
+      "the same evaluators",
+      "the same trust configuration",
+      "the same ordered target list",
+      "no expected result is given to any system"
+    ]
+  },
+  "findings": {
+    "b3IsA3WhenNothingIsDeclared": true,
+    "b3WhenSomethingIsDeclared": {
+      "a3Executions": 0,
+      "b3Executions": 1,
+      "costMore": true,
+      "detail": "the fixture declares no assurance, so B3 on these scenarios is A3 with an empty list. Given a reference it actually relied on, B3 re-runs that consumer and answers identically for one more evaluation. Consuming a declaration is not free.",
+      "sameAnswer": true
+    },
+    "consumedFacetSavedWorkOn": [
+      "unconsumed_field_change"
+    ],
+    "evaluationsTheFacetCacheAvoided": 2,
+    "sameObservableResult": true,
+    "sameWorkAvoidedEverywhere": false
+  },
+  "lineCounts": {
+    "applicationMechanism": 252,
+    "note": "physical lines including comments, the count a team would pay for",
+    "productionCore": 1542,
+    "tests": 1327
+  },
+  "notMeasured": [
+    "no IntentLane path: the application mechanism was not run against a real consumer",
+    "no Sarah path: the fixture is invented arithmetic, not a real operator",
+    "no Apple path: no public surface was exercised",
+    "no human utility: nothing here measures whether anyone is better served",
+    "no generative DAG: the fixture is closed and hand-checkable",
+    "no M2 or M3 cross-system comparison: this is the incremental scope only",
+    "no M4: the decision in ADR-003 was to measure before building, not to build"
+  ],
+  "recommendation": {
+    "conditionClauses": [
+      {
+        "clause": "A3 and B3 reach the same observable result as C3 on every scenario",
+        "evidence": "all 7 scenarios agreed with the full recompute",
+        "met": true
+      },
+      {
+        "clause": "the core saves nothing the application could not already do",
+        "evidence": "NOT MET. On 1 of 7 scenarios the core ran fewer evaluators than the application, by 2 runs in total, because a consumed facet is a narrower key than a whole value.",
+        "met": false
+      },
+      {
+        "clause": "at a comparable price",
+        "evidence": "the saving is 2 evaluator runs on a closed 3-evaluator fixture, bought with 1542 production lines against 252 application lines",
+        "met": true
+      }
+    ],
+    "decision": "reduce",
+    "decisionRests": "Two of the three pre-registered clauses are met outright. The third is not, and it is the only measured advantage the core has over a competent application. The reduction is therefore a decision not to pay for capability that nothing measured, on the strength of one small measured saving that a consumer could buy back for a fraction of the price. It is not a claim that the capability is worthless.",
+    "falsifier": "The reduction would be wrong if A3 had to grow a facet comparator, a disposition or an obligation to pass these scenarios. It did not have to. The one difference the core does buy, a consumed facet, is available to the application for a fraction of the lines, and on a graph with many unconsumed fields that advantage would grow rather than shrink, which is the case to re-measure before anyone rebuilds this.",
+    "preRegisteredCondition": "A3 and B3 reach the same observable result as C3 on every scenario, and the core saves nothing the application could not already do at a comparable price.",
+    "text": "Reduce the Kernel to UNI plus adapters and stop building M4.",
+    "whatGoes": [
+      "src/impact, as a mechanism any consumer would build for itself",
+      "M4, which would have added story to a scope with no measured value"
+    ],
+    "whatSurvives": [
+      "the five impact dimensions, because they keep a consumer from collapsing them",
+      "the obligation, because an application cache cannot tell a consumer that work is owed",
+      "the disposition, because a cache reports a value and not what happened to it",
+      "the explanation, because a cache cannot say why a consumer was kept",
+      "consumer-granted profiles, because a cache decides its own competence",
+      "the decision rule, because a cache would recompute a recorded human decision"
+    ]
+  },
+  "scenarios": [
+    {
+      "a3Executions": 2,
+      "agreed": true,
+      "b3Executions": 2,
+      "c3Executions": 2,
+      "referenceExecutions": 3,
+      "scenario": "mutation_1_limit_100_to_90"
+    },
+    {
+      "a3Executions": 3,
+      "agreed": true,
+      "b3Executions": 3,
+      "c3Executions": 3,
+      "referenceExecutions": 3,
+      "scenario": "mutation_2_limit_90_to_70"
+    },
+    {
+      "a3Executions": 0,
+      "agreed": true,
+      "b3Executions": 0,
+      "c3Executions": 0,
+      "referenceExecutions": 3,
+      "scenario": "mutation_3_label_change"
+    },
+    {
+      "a3Executions": 1,
+      "agreed": true,
+      "b3Executions": 1,
+      "c3Executions": 1,
+      "referenceExecutions": 3,
+      "scenario": "mutation_5_changed_input_same_output"
+    },
+    {
+      "a3Executions": 3,
+      "agreed": true,
+      "b3Executions": 3,
+      "c3Executions": 3,
+      "referenceExecutions": 3,
+      "scenario": "mutation_6_diamond"
+    },
+    {
+      "a3Executions": 2,
+      "agreed": true,
+      "b3Executions": 2,
+      "c3Executions": 0,
+      "referenceExecutions": 3,
+      "scenario": "unconsumed_field_change"
+    },
+    {
+      "a3Executions": 0,
+      "agreed": true,
+      "b3Executions": 0,
+      "c3Executions": 0,
+      "referenceExecutions": 3,
+      "scenario": "mutation_7_unchanged_world"
+    }
+  ],
+  "schema": "world-incumbent-comparison/v1",
+  "systems": [
+    {
+      "id": "R3",
+      "lineNote": "an oracle is not something a team would ship, so it has no price here; its cost is the reference column",
+      "lines": null,
+      "name": "full recompute",
+      "role": "correction oracle, not a weak baseline, not a competitor"
+    },
+    {
+      "id": "A3",
+      "lines": 252,
+      "name": "application cache on whole values",
+      "role": "the competent application mechanism, not a strawman"
+    },
+    {
+      "id": "B3",
+      "lines": 252,
+      "name": "A3 consuming UNI staleness",
+      "role": "the same application, told which assurance went stale"
+    },
+    {
+      "id": "C3",
+      "lines": 1542,
+      "name": "World Kernel impact core",
+      "role": "the portable mechanism under test"
+    }
+  ]
+}
