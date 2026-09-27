@@ -6,7 +6,7 @@ use thiserror::Error;
 pub const EXPERIMENTAL_SCHEMA: &str = "world-change/v0-experimental";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorldBootstrap {
     pub world: String,
     pub trusted_assurance_providers: BTreeSet<String>,
@@ -14,7 +14,7 @@ pub struct WorldBootstrap {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ObjectRevision {
     #[serde(rename = "ref")]
     pub reference: String,
@@ -38,7 +38,7 @@ pub struct WorldSnapshot {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct GroundedChange {
     pub schema: String,
     pub world: String,
@@ -55,12 +55,14 @@ pub struct GroundedChange {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Intent {
     pub kind: String,
     pub target: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Candidate {
     #[serde(rename = "ref")]
     pub reference: String,
@@ -68,7 +70,7 @@ pub struct Candidate {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Coverage {
     pub profile: String,
     pub complete_for: BTreeSet<String>,
@@ -76,7 +78,7 @@ pub struct Coverage {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct AcceptedAssessment {
     pub provider: String,
     pub subject: String,
@@ -85,7 +87,7 @@ pub struct AcceptedAssessment {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "op", rename_all = "camelCase")]
+#[serde(tag = "op", rename_all = "camelCase", deny_unknown_fields)]
 pub enum Patch {
     PutObject {
         #[serde(rename = "ref")]

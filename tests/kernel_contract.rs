@@ -90,6 +90,30 @@ fn accepted_change_is_committed_once_and_replays_to_the_same_state() {
 }
 
 #[test]
+fn an_unknown_field_in_a_proposal_is_rejected_rather_than_ignored() {
+    let mut envelope = serde_json::to_value(valid_change()).unwrap();
+    let object = envelope.as_object_mut().unwrap();
+    object.insert("baseRevison".to_owned(), serde_json::json!(7));
+
+    let error = serde_json::from_value::<GroundedChange>(envelope).unwrap_err();
+
+    assert!(error.to_string().contains("unknown field"));
+}
+
+#[test]
+fn an_unknown_field_in_a_patch_is_rejected_rather_than_ignored() {
+    let mut envelope = serde_json::to_value(valid_change()).unwrap();
+    envelope["patches"][0].as_object_mut().unwrap().insert(
+        "expectedRevisionIgnored".to_owned(),
+        serde_json::json!(null),
+    );
+
+    let error = serde_json::from_value::<GroundedChange>(envelope).unwrap_err();
+
+    assert!(error.to_string().contains("unknown field"));
+}
+
+#[test]
 fn repeating_the_same_idempotency_key_returns_the_original_receipt() {
     let dir = tempdir().unwrap();
     let mut kernel = Kernel::create(
