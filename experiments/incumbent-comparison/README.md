@@ -24,7 +24,7 @@ so the human view can never claim something the recorded measurement does not co
 | R3 | a full recompute, used as the correction oracle, not as a weak baseline |
 | A3 | a competent application cache on whole values, not a strawman |
 | B3 | the same application, told which UNI assurance went stale |
-| C3 | the World Kernel impact core |
+| C3 | the impact engine, measured and then removed from the Kernel |
 
 All four receive the same snapshots, the same evaluators, the same trust configuration and the same
 ordered target list. They choose their own representation. None is given an expected result. The harness

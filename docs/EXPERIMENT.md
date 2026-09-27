@@ -69,7 +69,10 @@ Stop generalizing the Kernel if any of these occurs:
   integration cost;
 - users do not reuse receipts or reassessment frontiers after context changes.
 
-The third gate is now the live one. It is a product decision, and it is open.
+None of these four gates fired. The third one, whether a competent application provides the same value
+at lower cost, was measured twice and came back negative both times, for admission safety and then for
+incremental revision. The fourth, whether users reuse receipts, was never reachable: no human ran the
+system, so that gate is untested rather than passed.
 
 ## Completed hardening step
 
@@ -78,13 +81,56 @@ binds an exact candidate digest and rejects uncovered or substituted artifacts. 
 proves rollback at the last durable write, and process restart proves receipt recovery after a lost
 response. Replay remains effect-free because this slice has no external effect dispatcher.
 
-## Next experiment
+## What followed M1, in order
 
-The M1 continuation decision comes first: either fund M2 and measure the immutable single-file subject
-profile, or reduce the project to the smallest useful adapter or pattern. The recorded result gives no
-correctness argument for the envelope, so that choice has to be made on the receipt and replay value
-rather than on admission errors.
+M1 concluded "no admission superiority, cost measured". That is a negative result and it was recorded as
+one.
 
-If M2 proceeds, the next measurement is an A-B-A filesystem race experiment. After that, an external
-effect dispatcher is justified only if the first two results show the cost is worth paying; do not add
-one before then.
+M2 asked whether work survives its producer. A fresh consumer can now reconstruct a work state and its
+justifications from an exported package and decide what it may resume. The capability was demonstrated
+for the Kernel only, because the two application baselines had no export of their own, so no cost
+comparison exists. Result: [experiments/continuation](experiments/continuation/README.md).
+
+M3 asked whether recorded work is revisable without being rebuilt, and whether the difference is
+explainable. Five dimensions stayed separate, a consumed dependency forced re-evaluation, a recorded
+human decision was never recomputed, and every result carried an explanation. 15 of 24 pre-registered
+stories were covered, 4 partial, 5 not. Transfer to a second domain and human utility were never
+measured. Result: [experiments/incremental](experiments/incremental/README.md).
+
+Then the comparison, in [ADR-003](ADR-003-measure-before-building.md). A full recompute, a competent
+application cache, the same application consuming UNI staleness, and the impact core were given the same
+seven scenarios. All four agreed on every observable result. The application avoided the same work as the
+core on six of the seven. On the seventh the core ran no evaluator where the application ran two, because
+a consumed facet is a narrower cache key than a whole value, and that cost 1542 lines. Result:
+[experiments/incumbent-comparison](experiments/incumbent-comparison/RESULTS.md).
+
+The reduction was applied. `src/impact` left the shipped surface, the rules it enforced were written down
+as rules a consumer can be held to in [IMPACT-CONTRACT.md](IMPACT-CONTRACT.md), and the engine stayed in
+the repository so the comparison can be repeated.
+
+## Why it stopped
+
+Three milestones ran in sequence and produced the same sentence each time: capability established,
+differential value not measured. The pattern is the finding. Every remaining increment was spent adding
+capability, and capability was not the thing in doubt.
+
+The equal-information comparison was the one measurement that could settle it, and it settled it against
+the Kernel on the incremental scope. One clause of its pre-registered condition stayed false and is
+recorded as false: the core does buy a consumed facet, worth 2 evaluator runs on a closed 3-evaluator
+fixture. The reduction rests on the narrower ground that every other capability the core produced was
+unconsumed by the fixture, so the decision was not to keep paying for capability nothing had measured.
+
+So there is no M4. This is the stopping point that M1, M2 and M3 did not have.
+
+## What would resume it
+
+Exactly one thing, and it is cheap. Re-run `cargo run --example incumbent_comparison` against a graph of
+wide nodes with many unconsumed fields. The consumed-facet advantage is the only measured advantage the
+removed engine had, and it grows with the number of unconsumed fields per node and with graph width. On
+this fixture it was 2 evaluator runs against 1542 lines. If a wider graph makes that saving scale past the
+line count, the reduction was wrong and the rules in `docs/IMPACT-CONTRACT.md` should be implemented
+properly rather than documented. Until that measurement exists, the reduction stands and the cost of being
+wrong is one example runner.
+
+Nothing else resumes it. A second domain, a human path, an external effect ledger and the A-B-A
+filesystem race are all unbuilt, unauthorized and not worth resuming on the evidence in this repository.

@@ -283,7 +283,7 @@ and user authority.
 The standard suite has 130 passing tests and one ignored live UNI contract test. This count is
 descriptive, not a product metric.
 
-## 8. Active milestone M1: equal-information admission benchmark
+## 8. M1: equal-information admission benchmark, recorded
 
 ### Question
 
@@ -639,9 +639,26 @@ A continuation is never a self-authorization. The reconstructed World's trusted 
 are the consumer's own configuration, passed explicitly, and a reconstruction never writes them. Reading
 the past requires no trust; admitting anything new is a separate, explicit act.
 
-## 9. Milestones
+## 9. Milestones, as originally planned, and what happened to them
 
-### M2 as originally planned: sealed single-file subject profile
+This section was written before any measurement and it is kept because a plan that quietly disappears is
+harder to audit than one that is visibly superseded. Read it against
+[ADR-003](ADR-003-measure-before-building.md) and against the recorded results.
+
+**The milestone names in this section collided with the experiment's own M2 and M3.** The plan below means
+M2 for a sealed single-file subject profile and M3 for an external effect ledger, while
+[M2-PROTOCOL.md](M2-PROTOCOL.md) and [M3-PROTOCOL.md](M3-PROTOCOL.md) used M2 for portable continuity
+and M3 for incremental revision. Both label sets were in circulation. The plan's labels are retained here
+for the audit trail and must not be read as referring to the protocol files.
+
+**None of this list was built, and one entry is now forbidden.** The plan's M4 context completeness is the
+M4 that [ADR-003](ADR-003-measure-before-building.md) explicitly rules out. Do not build it. The plan's
+M2, its M3 and its M5 remain unimplemented and unauthorized.
+
+The experiment's actual milestones were M1 admission (recorded), M2 portable continuity (recorded), M3
+incremental revision (recorded, then reduced away), and no M4.
+
+### Plan M2: sealed single-file subject profile (not built)
 
 Eliminate the current A-B-A window for a constrained single-file release artifact. The collector must
 verify and later publish bytes from one host-owned immutable staging object. General mutable workspace
@@ -650,7 +667,7 @@ verification remains a separate, weaker profile.
 Required proof: a concurrent mutator cannot cause bytes B to be verified while bytes A are admitted or
 published under A's digest.
 
-### M3 External effect ledger
+### Plan M3: external effect ledger (not built)
 
 Add typed effect intentions only after M1 and M2. States are `pending`, `dispatched`, `confirmed`,
 `failed`, `unknown` and `compensated`. Replay never dispatches. A lost response after send produces
@@ -659,14 +676,20 @@ Add typed effect intentions only after M1 and M2. States are `pending`, `dispatc
 Required proof: crash injection before send, after send and after confirmation never causes a blind
 duplicate.
 
-### M4 Context completeness
+No external effect dispatcher exists and none is authorized. The M1 gate was decided and the Kernel is not
+a platform.
+
+### Plan M4: context completeness (forbidden)
 
 Add versioned authority snapshots, negative query dependencies and named coverage profiles whose
 completeness is established by trusted collectors rather than producer declaration.
 
 Required proof: adding an object that invalidates a prior `none exist` read makes the proposal stale.
 
-### M5 Portable reassessment frontier
+This entry is contradicted by [ADR-003](ADR-003-measure-before-building.md), which recorded that there is
+no M4. It is kept only to be visibly retired.
+
+### Plan M5: portable reassessment frontier (not built)
 
 Connect at least two independent domains without moving their rules into the Kernel. UNI decides proof
 sufficiency. Kollio decides how a human revises a retained decision. The Kernel carries changed
@@ -689,6 +712,23 @@ Reduce or stop the platform direction when any of these is observed:
 
 The right result may be a small reusable admission library. The experiment must be allowed to discover
 that result.
+
+### The record, condition by condition
+
+| Condition | Status | Evidence |
+|---|---|---|
+| a competent application transaction provides the same safety, replay and handoff value at lower total integration cost | **partly fired** | fired for admission safety: 80 of 80 cases agree, no decision-code disagreement, and the portable envelope prevented no error class the application did not also prevent. Fired again for incremental revision: 7 of 7 scenarios agree and the core bought 2 evaluator runs for 1542 lines. Replay and handoff value remain **unmeasured**, not disproved, because no consumer ever consumed a receipt. |
+| a second adapter requires domain rules inside the Kernel | not observed | one domain only. The Kollio adapter returns a reassessment frontier and no domain condition reaches `Kernel::submit`. A second domain was never attempted. |
+| exact subject binding cannot be kept through the real application path | not observed | the collector ran UNI's real CLI and bound an exact candidate digest, and the live contract test passes. |
+| an operation advertised as mediated remains writable through an equivalent unmediated path | untested | no mediated operation was advertised, so the condition was never reachable. |
+| users do not reuse receipts, reassessment frontiers or handoff records | untested | no human ran the system. This condition is not answerable in this repository at all. |
+| modeling and adapter work costs more than the errors or restart work it removes | not measured | never measured as a time or a cost. The reduction rests on measured evaluator counts and measured lines, not on this condition. |
+
+One condition partly fired and the experiment stopped. The experiment was **not** falsified: no condition
+was observed to be true outright, and the two that would have ended it most cleanly, a second adapter
+needing domain rules and users not reusing receipts, were never reachable here. The reduction is a
+decision about cost, taken after three milestones produced no evidence of value, and it is recorded as a
+decision rather than dressed up as a refutation.
 
 ## 11. Rollback and compatibility
 
